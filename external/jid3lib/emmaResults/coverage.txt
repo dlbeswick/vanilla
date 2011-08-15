@@ -1,0 +1,24 @@
+[EMMA v2.0.5312 report, generated Tue Mar 14 21:50:42 EST 2006]
+-------------------------------------------------------------------------------
+OVERALL COVERAGE SUMMARY:
+
+[class, %]	[method, %]	[block, %]	[line, %]	[name]
+51%  (92/182)!	48%  (866/1791)!	63%  (33141/52651)!	61%  (7384.8/12041)!	all classes
+
+OVERALL STATS SUMMARY:
+
+total packages:	5
+total classes:	182
+total methods:	1791
+total executable files:	180
+total executable lines:	12041
+
+COVERAGE BREAKDOWN BY PACKAGE:
+
+[class, %]	[method, %]	[block, %]	[line, %]	[name]
+29%  (33/112)!	34%  (299/892)!	40%  (6988/17316)!	40%  (1660/4153)!	org.farng.mp3.id3
+55%  (6/11)!	44%  (52/118)!	46%  (1098/2398)!	49%  (304.4/627)!	org.farng.mp3.filename
+80%  (12/15)!	65%  (130/200)!	55%  (2107/3832)!	55%  (508.3/927)!	org.farng.mp3.lyrics3
+96%  (25/26)!	70%  (189/271)!	77%  (7095/9274)!	78%  (1638.3/2106)!	org.farng.mp3.object
+89%  (16/18)!	63%  (196/310)!	80%  (15853/19831)!	77%  (3273.8/4228)!	org.farng.mp3
+-------------------------------------------------------------------------------
