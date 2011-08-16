@@ -19,7 +19,6 @@
 package org.kreed.vanilla;
 
 import java.io.File;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;

@@ -27,6 +27,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
+import org.kreed.vanilla_dev.R;
 
 /**
  * A configuration dialog for the OneCellWidget. Displays the double tap

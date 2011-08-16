@@ -20,7 +20,6 @@ package org.kreed.vanilla;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.ContentResolver;

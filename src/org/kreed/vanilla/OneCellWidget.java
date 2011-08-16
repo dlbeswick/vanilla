@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
+import org.kreed.vanilla_dev.R;
 
 /**
  * Provider for the smallish one cell widget. Handles updating for current

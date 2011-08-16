@@ -24,19 +24,29 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Debug;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import org.farng.mp3.MP3File;
+import org.farng.mp3.TagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.id3.AbstractID3v2Frame;
+import org.farng.mp3.id3.FrameBodyTXXX;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -61,7 +71,7 @@ public class Song implements Parcelable {
 	private static int mRandomSongIdx = -1;
 	private static int mRandomSongLastPopulatedIdx = -1;
 	private static int mMediaStoreSongCountCache = -1;
-	private static final int mRandomSongLastPopulationSize = 20;
+	private static final int mRandomSongPopulationSize = 20;
 
 	private static final String[] FILLED_PROJECTION = {
 		MediaStore.Audio.Media._ID,
@@ -99,6 +109,9 @@ public class Song implements Parcelable {
 	 */
 	public String artist;
 
+	private float replaygainAlbumGain = Float.MAX_VALUE;
+	private float replaygainTrackGain = Float.MAX_VALUE;
+	
 	/**
 	 * Song flags. Currently FLAG_RANDOM or 0.
 	 */
@@ -131,6 +144,51 @@ public class Song implements Parcelable {
 	public static boolean isSongAvailable()
 	{
 		return getMediaStoreSongCount() > 0;
+	}
+	
+	protected static ArrayList<Song> getSongsById(List<Long> ids, boolean isRandom)
+	{
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+		StringBuilder selection = new StringBuilder("_ID IN (");
+
+		boolean first = true;
+		for (long id : ids) {
+			if (!first)
+				selection.append(",");
+			
+			first = false;
+			
+			selection.append(String.valueOf(id));
+		}
+
+		selection.append(")");
+		
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection.toString(), null, null);
+		
+		if (cursor == null) {
+			return new ArrayList<Song>();
+		}
+
+		ArrayList<Song> result = new ArrayList<Song>();
+		
+		long count = cursor.getCount();
+		if (count > 0) {
+			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+				Song newSong = new Song(-1);
+				newSong.populate(cursor);
+				
+				if (isRandom)
+					newSong.flags |= FLAG_RANDOM;
+				
+				result.add(newSong);
+			}
+		}
+		
+		cursor.close();
+		
+		return result;
 	}
 	
 	/**
@@ -169,53 +227,23 @@ public class Song implements Parcelable {
 		}
 		
 		if (mRandomSongIdx > mRandomSongLastPopulatedIdx) {
-			mRandomSongs.clear();
-			mRandomSongs.ensureCapacity(mRandomSongLastPopulationSize);
+			assert(!mRandomSongIds.isEmpty());
 			
-			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
-			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-			List<Long> selectedIds = mRandomSongIds.subList(mRandomSongIdx, mRandomSongIdx + mRandomSongLastPopulationSize);
+			List<Long> selectedIds = mRandomSongIds.subList(mRandomSongIdx, mRandomSongIdx + mRandomSongPopulationSize);
 			
-			StringBuilder selection = new StringBuilder("_ID IN (");
-
-			boolean first = true;
-			for (Long id : selectedIds) {
-				if (!first)
-					selection.append(",");
-				
-				first = false;
-				
-				selection.append(id.toString());
-			}
-
-			selection.append(")");
+		    //Debug.startMethodTracing("getSongsById");
+		    mRandomSongs = getSongsById(selectedIds, true);
+		    //Debug.stopMethodTracing();
 			
-			Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection.toString(), null, null);
-			
-			if (cursor == null) {
+			if (mRandomSongs.isEmpty()) {
 				mRandomSongIdx = -1;
 				return null;
 			}
-			
-			long count = cursor.getCount();
-			if (count > 0) {
-				assert(count <= mRandomSongLastPopulationSize);
-				
-				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-					Song newSong = new Song(-1);
-					newSong.populate(cursor);
-					newSong.flags |= FLAG_RANDOM;
-					mRandomSongs.add(newSong);
-				}
-			}
-			
-			cursor.close();
-			
-			mRandomSongLastPopulatedIdx = mRandomSongIdx + mRandomSongLastPopulationSize;  
+
+			mRandomSongLastPopulatedIdx = mRandomSongIdx + mRandomSongPopulationSize;  
 		}
 
-		Song result = mRandomSongs.get(mRandomSongIdx % mRandomSongLastPopulationSize);
+		Song result = mRandomSongs.get(mRandomSongIdx % mRandomSongPopulationSize);
 		
 		++mRandomSongIdx;
 		
@@ -241,6 +269,84 @@ public class Song implements Parcelable {
 		this.flags = flags;
 	}
 
+	public boolean hasReplaygainAlbumGain()
+	{
+		return replaygainAlbumGain != Float.MAX_VALUE;
+	}
+	
+	public boolean hasReplaygainTrackGain()
+	{
+		return replaygainAlbumGain != Float.MAX_VALUE;
+	}
+	
+	public float getReplaygainAlbumGain()
+	{
+		if (replaygainAlbumGain == Float.MAX_VALUE)
+			return 0.0f;
+		else
+			return replaygainAlbumGain;
+	}
+	
+	public float getReplaygainTrackGain()
+	{
+		if (replaygainTrackGain == Float.MAX_VALUE)
+			return 0.0f;
+		else
+			return replaygainTrackGain;
+	}
+	
+	// Returns Float.MAX_VALUE if text is an invalid value.
+	protected float parseReplaygainDbValue(String text)
+	{
+		int dbIndex = text.toLowerCase().indexOf("db");
+		if (dbIndex == -1)
+			return Float.MAX_VALUE;
+		
+		try {
+			return Float.parseFloat(text.substring(0, dbIndex - 1));
+		} catch (NumberFormatException e) {
+			Log.i(this.getClass().getName(), String.format("Failed to parse replaygain db value '%s': %s", text, e.toString()));
+			return Float.MAX_VALUE;
+		}
+	}
+	
+	protected void populateReplaygainInfo(String path)
+	{
+		try {
+			MP3File mp3file = new MP3File(new File(path), false);
+			
+			Iterator<AbstractID3v2Frame> iterator = mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("TXXX"));
+			
+			if (iterator != null) {
+				while (iterator.hasNext()) {
+					FrameBodyTXXX txxx = (FrameBodyTXXX)iterator.next().getBody();
+					String description = txxx.getDescription();
+					
+					if (description.equalsIgnoreCase("replaygain_track_gain")) {
+						replaygainTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+						Log.i(this.getClass().getName(), String.format("Track gain for song %s is %sdb.", path, replaygainTrackGain));
+					} else if (description.equalsIgnoreCase("replaygain_album_gain")) {
+						replaygainAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+						Log.i(this.getClass().getName(), String.format("Album gain for song %s is %sdb.", path, replaygainAlbumGain));
+					}
+				}
+			}
+			
+			if (!hasReplaygainTrackGain())
+				Log.i(this.getClass().getName(), String.format("No replaygain track gain frame found in id3 tag for file %s.", path));
+			
+			if (!hasReplaygainAlbumGain())
+				Log.i(this.getClass().getName(), String.format("No replaygain album gain frame found in id3 tag for file %s.", path));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Populate fields with data from the supplied cursor.
 	 *
@@ -254,6 +360,8 @@ public class Song implements Parcelable {
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
 		albumId = cursor.getLong(5);
+
+		populateReplaygainInfo(path);
 	}
 
 	/**

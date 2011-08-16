@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import org.kreed.vanilla_dev.R;
 
 /**
  * A preference that provides a dialog with a slider for idle time.

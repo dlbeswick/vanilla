@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.RemoteViews;
+import org.kreed.vanilla_dev.R;
 
 /**
  * Simple 1x4 widget to show currently playing song, album art, and play/pause,

@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import org.kreed.vanilla_dev.R;
 
 /**
  * Notification subclass that provides information about the current song.
