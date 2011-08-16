@@ -9,20 +9,20 @@ import java.util.NoSuchElementException;
  * @author Eric Farng
  * @version $Revision: 1.1 $
  */
-public class FilenameParenthesisIterator implements Iterator {
+public class FilenameParenthesisIterator implements Iterator<Object> {
 
     /**
      * iterator after the parenthesis
      */
-    private Iterator afterIterator = null;
+    private Iterator<?> afterIterator = null;
     /**
      * iterator before the parenthesis
      */
-    private Iterator beforeIterator = null;
+    private Iterator<?> beforeIterator = null;
     /**
      * iterator between the parenthesis
      */
-    private Iterator middleIterator = null;
+    private Iterator<?> middleIterator = null;
 
     /**
      * Creates a new FilenameParenthesisIterator object.

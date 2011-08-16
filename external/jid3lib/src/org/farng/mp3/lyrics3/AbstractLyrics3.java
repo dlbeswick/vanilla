@@ -33,12 +33,12 @@ public abstract class AbstractLyrics3 extends AbstractMP3Tag {
     public void append(final RandomAccessFile file) throws IOException, TagException {
         AbstractLyrics3 oldTag;
         try {
-            oldTag = new Lyrics3v2(file);
+            oldTag = new Lyrics3v2(file, null);
             oldTag.append(this);
             oldTag.write(file);
         } catch (TagNotFoundException ex) {
             try {
-                oldTag = new Lyrics3v1(file);
+                oldTag = new Lyrics3v1(file, null);
                 oldTag.append(this);
                 oldTag.write(file);
             } catch (TagNotFoundException ex2) {
@@ -65,15 +65,19 @@ public abstract class AbstractLyrics3 extends AbstractMP3Tag {
         }
     }
 
+    public void write(final RandomAccessFile file) throws IOException, TagException {
+    	write(file, null); // fix
+    }
+    
     public void overwrite(final RandomAccessFile file) throws IOException, TagException {
         AbstractLyrics3 oldTag;
         try {
-            oldTag = new Lyrics3v2(file);
+            oldTag = new Lyrics3v2(file, null);
             oldTag.overwrite(this);
             oldTag.write(file);
         } catch (TagNotFoundException ex) {
             try {
-                oldTag = new Lyrics3v1(file);
+                oldTag = new Lyrics3v1(file, null);
                 oldTag.overwrite(this);
                 oldTag.write(file);
             } catch (TagNotFoundException ex2) {

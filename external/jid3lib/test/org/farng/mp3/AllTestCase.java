@@ -81,7 +81,7 @@ public class AllTestCase extends TestCase {
     /**
      *
      */
-    private static HashMap testClassMap = new HashMap();
+    private static HashMap<Class<?>, Class<?>> testClassMap = new HashMap<Class<?>, Class<?>>();
     /**
      *
      */
@@ -114,11 +114,11 @@ public class AllTestCase extends TestCase {
      */
     public static void checkAllTestMethodsExist() {
         String message = "\n";
-        Iterator iterator = testClassMap.keySet().iterator();
-        Class testedClass;
+        Iterator<Class<?>> iterator = testClassMap.keySet().iterator();
+        Class<?> testedClass;
         while (iterator.hasNext()) {
-            testedClass = (Class) iterator.next();
-            message += checkTestMethodsExist(testedClass, (Class) testClassMap.get(testedClass));
+            testedClass = (Class<?>) iterator.next();
+            message += checkTestMethodsExist(testedClass, (Class<?>) testClassMap.get(testedClass));
         }
         if (message.length() > 0) {
             fail(message);
@@ -148,8 +148,8 @@ public class AllTestCase extends TestCase {
         });
         String className;
         String testClassName;
-        Class testerClass;
-        Class testedClass;
+        Class<?> testerClass;
+        Class<?> testedClass;
         int index;
         for (int i = 0; i < sourceArray.length; i++) {
             className = sourceArray[i].getName();
@@ -174,7 +174,7 @@ public class AllTestCase extends TestCase {
         return missingClasses;
     }
 
-    public static String checkTestMethodsExist(Class baseClass, Class testClass) {
+    public static String checkTestMethodsExist(Class<?> baseClass, Class<?> testClass) {
         Method[] methods = baseClass.getDeclaredMethods();
         String methodName;
         Method testMethod;
@@ -185,7 +185,7 @@ public class AllTestCase extends TestCase {
                 methodName = methods[i].getName();
                 methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
                 try {
-                    testMethod = testClass.getDeclaredMethod("test" + methodName, null);
+                    testMethod = testClass.getDeclaredMethod("test" + methodName, (Class<?>[])null);
                     if (testMethod == null) {
                         throw new NoSuchMethodException("test" + methodName);
                     }

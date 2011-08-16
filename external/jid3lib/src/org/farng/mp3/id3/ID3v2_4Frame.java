@@ -2,6 +2,8 @@ package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagUtility;
 import org.farng.mp3.lyrics3.FieldBodyAUT;
 import org.farng.mp3.lyrics3.FieldBodyEAL;
@@ -286,14 +288,14 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
      * Creates a new ID3v2_4Frame object.
      */
     public ID3v2_4Frame(final Lyrics3v2Field field) throws InvalidTagException {
-        final String id = field.getIdentifier();
+        final TagIdentifier id = field.getIdentifier();
         final String value;
         if (id.equals("IND")) {
             throw new InvalidTagException("Cannot create ID3v2.40 frame from Lyrics3 indications field.");
         } else if (id.equals("LYR")) {
             final FieldBodyLYR lyric = (FieldBodyLYR) field.getBody();
             ObjectLyrics3Line line;
-            final Iterator iterator = lyric.iterator();
+            final Iterator<?> iterator = lyric.iterator();
             final FrameBodySYLT sync;
             final FrameBodyUSLT unsync;
             final boolean hasTimeStamp = lyric.hasTimeStamp();
@@ -339,9 +341,10 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
 
     /**
      * Creates a new ID3v2_4Frame object.
+     * "parent" is the AbstractID3-derived instance making use of the frame.
      */
-    public ID3v2_4Frame(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public ID3v2_4Frame(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public int getSize() {
@@ -362,29 +365,53 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
         return super.equals(obj);
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
-        long filePointer;
+    // "parent" is the AbstractID3-derived instance making use of this frame.
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        long filePointer = file.getFilePointer();
         final byte[] buffer = new byte[4];
-        byte b;
-
+                
         // lets scan for a non-zero byte;
-        do {
-            filePointer = file.getFilePointer();
-            b = file.readByte();
-            org.farng.mp3.id3.AbstractID3v2.incrementPaddingCounter();
-        } while (b == 0);
-        file.seek(filePointer);
+    	boolean foundNonZeroByte = file.read() > 0;
+    	        
+        if (!foundNonZeroByte) {
+        	byte[] readAry = new byte[1024];
+        	
+        	do {
+	        	filePointer = file.getFilePointer();
+	        	
+	        	int bytesRead = file.read(readAry);
+	        	
+	        	if (bytesRead <= 0)
+	        		break;
+	
+	        	for (byte b : readAry) {
+	        		if (b != 0) {
+	        			foundNonZeroByte = true;
+	        			break;
+	        		} else {
+	        			++filePointer;
+	        		}
+	        	}
+        	} while (!foundNonZeroByte);
+        }
+        
+		if (!foundNonZeroByte)
+			throw new InvalidTagException("Didn't find any non-null byte before end of file.");
+		
+		file.seek(filePointer);
         org.farng.mp3.id3.AbstractID3v2.decrementPaddingCounter();
 
         // read the four character identifier
         file.read(buffer, 0, 4);
-        final String identifier = new String(buffer, 0, 4);
 
         // is this a valid identifier?
-        if (isValidID3v2FrameIdentifier(identifier) == false) {
+        if (TagFrameIdentifier.isValidID3v2FrameIdentifier(buffer) == false) {
             file.seek(file.getFilePointer() - 3);
-            throw new InvalidTagException(identifier + " is not a valid ID3v2.40 frame");
+            throw new InvalidTagException(buffer.toString() + " is not a valid ID3v2.40 frame");
         }
+        
+        TagFrameIdentifier identifier = TagFrameIdentifier.get(buffer);
+        
         filePointer = file.getFilePointer();
 
         // skip the 4 byte size
@@ -401,13 +428,14 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
         this.unsynchronization = (buffer[1] & TagConstant.MASK_V24_FRAME_UNSYNCHRONIZATION) != 0;
         this.dataLengthIndicator = (buffer[1] & TagConstant.MASK_V24_DATA_LENGTH_INDICATOR) != 0;
         file.seek(filePointer);
-        this.setBody(readBody(identifier, file));
+        this.setBody(readBody(identifier, file, parent));
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    // "parent" is the AbstractID3-derived instance making use of this frame.
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final byte[] buffer = new byte[4];
         final long filePointer;
-        final String str = TagUtility.truncate(getIdentifier(), 4);
+        final String str = TagUtility.truncate(getIdentifier().toString(), 4);
         for (int i = 0; i < str.length(); i++) {
             buffer[i] = (byte) str.charAt(i);
         }
@@ -445,6 +473,6 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
         }
         file.write(buffer, 0, 2);
         file.seek(filePointer);
-        this.getBody().write(file);
+        this.getBody().write(file, parent);
     }
 }

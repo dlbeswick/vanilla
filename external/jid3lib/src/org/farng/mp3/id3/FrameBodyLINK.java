@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectStringFixedLength;
 import org.farng.mp3.object.ObjectStringNullTerminated;
 import org.farng.mp3.object.ObjectStringSizeTerminated;
@@ -87,8 +89,8 @@ public class FrameBodyLINK extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyLINK object.
      */
-    public FrameBodyLINK(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyLINK(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public String getAdditionalData() {
@@ -107,8 +109,13 @@ public class FrameBodyLINK extends AbstractID3v2FrameBody {
         setObject("Frame Identifier", frameIdentifier);
     }
 
-    public String getIdentifier() {
-        return "LINK" + ((char) 0) + getFrameIdentifier() + ((char) 0) + getAdditionalData();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("LINK");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getFrameIdentifier() + ((char) 0) + getAdditionalData();
     }
 
     protected void setupObjectList() {

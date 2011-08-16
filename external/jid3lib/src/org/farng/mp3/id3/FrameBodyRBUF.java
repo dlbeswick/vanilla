@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectBooleanByte;
 import org.farng.mp3.object.ObjectNumberFixedLength;
 
@@ -71,12 +73,13 @@ public class FrameBodyRBUF extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyRBUF object.
      */
-    public FrameBodyRBUF(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyRBUF(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "RBUF";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("RBUF");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     protected void setupObjectList() {

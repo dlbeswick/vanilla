@@ -2,6 +2,8 @@ package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagUtility;
 
 import java.io.IOException;
@@ -121,9 +123,10 @@ public class ID3v2_3Frame extends ID3v2_2Frame {
 
     /**
      * Creates a new ID3v2_3Frame object.
+     * "parent" is the AbstractID3-derived instance making use of the frame.
      */
-    public ID3v2_3Frame(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public ID3v2_3Frame(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public int getSize() {
@@ -156,7 +159,8 @@ public class ID3v2_3Frame extends ID3v2_2Frame {
         return super.equals(obj);
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
+    // "parent" is the AbstractID3-derived instance making use of this frame.
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         byte b;
         long filePointer;
         final byte[] buffer = new byte[4];
@@ -172,10 +176,10 @@ public class ID3v2_3Frame extends ID3v2_2Frame {
 
         // read the four character identifier
         file.read(buffer, 0, 4);
-        final String identifier = new String(buffer, 0, 4);
+        final byte[] identifier = buffer;
 
         // is this a valid identifier?
-        if (isValidID3v2FrameIdentifier(identifier) == false) {
+        if (TagFrameIdentifier.isValidID3v2FrameIdentifier(identifier) == false) {
             file.seek(file.getFilePointer() - 3);
             throw new InvalidTagException(identifier + " is not a valid ID3v2.30 frame");
         }
@@ -193,13 +197,14 @@ public class ID3v2_3Frame extends ID3v2_2Frame {
         this.encryption = (buffer[1] & TagConstant.MASK_V23_ENCRYPTION) != 0;
         this.groupingIdentity = (buffer[1] & TagConstant.MASK_V23_GROUPING_IDENTITY) != 0;
         file.seek(filePointer);
-        this.setBody(readBody(identifier, file));
+        this.setBody(readBody(TagFrameIdentifier.get(identifier), file, parent));
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    // "parent" is the AbstractID3-derived instance making use of this frame.
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final long filePointer;
         final byte[] buffer = new byte[4];
-        final String str = TagUtility.truncate(getIdentifier(), 4);
+        final String str = TagUtility.truncate(getIdentifier().toString(), 4);
         for (int i = 0; i < str.length(); i++) {
             buffer[i] = (byte) str.charAt(i);
         }
@@ -231,21 +236,21 @@ public class ID3v2_3Frame extends ID3v2_2Frame {
         }
         file.write(buffer, 0, 2);
         file.seek(filePointer);
-        this.getBody().write(file);
+        this.getBody().write(file, parent);
     }
 
     protected void setAlterPreservation() {
-        final String str = getIdentifier();
-        if (str.equals("ETCO") ||
-            str.equals("EQUA") ||
-            str.equals("MLLT") ||
-            str.equals("POSS") ||
-            str.equals("SYLT") ||
-            str.equals("SYTC") ||
-            str.equals("RVAD") ||
-            str.equals("TENC") ||
-            str.equals("TLEN") ||
-            str.equals("TSIZ")) {
+        final TagIdentifier identifier = getIdentifier();
+        if (identifier == TagFrameIdentifier.get("ETCO") ||
+            identifier == TagFrameIdentifier.get("EQUA") ||
+            identifier == TagFrameIdentifier.get("MLLT") ||
+            identifier == TagFrameIdentifier.get("POSS") ||
+            identifier == TagFrameIdentifier.get("SYLT") ||
+            identifier == TagFrameIdentifier.get("SYTC") ||
+            identifier == TagFrameIdentifier.get("RVAD") ||
+            identifier == TagFrameIdentifier.get("TENC") ||
+            identifier == TagFrameIdentifier.get("TLEN") ||
+            identifier == TagFrameIdentifier.get("TSIZ")) {
             this.tagAlterPreservation = false;
             this.fileAlterPreservation = true;
         } else {

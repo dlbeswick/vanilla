@@ -23,4 +23,6 @@ public abstract class AbstractID3 extends AbstractMP3Tag {
     protected AbstractID3(final AbstractID3 copyObject) {
         super(copyObject);
     }
+    
+    public abstract boolean tit2FrameHas6ByteHeader();
 }

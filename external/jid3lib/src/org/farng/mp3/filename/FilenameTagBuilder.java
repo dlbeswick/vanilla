@@ -143,9 +143,9 @@ public class FilenameTagBuilder {
      * @param composite composite to update.
      */
     public static void updateCompositeFromAllOption(final AbstractFilenameComposite composite) {
-        final Iterator iterator = TagOptionSingleton.getInstance().getKeywordIterator();
+        final Iterator<?> iterator = TagOptionSingleton.getInstance().getKeywordIterator();
         while (iterator.hasNext()) {
-            composite.matchAgainstKeyword((Class) iterator.next());
+            composite.matchAgainstKeyword((Class<?>) iterator.next());
         }
     }
 
@@ -172,7 +172,7 @@ public class FilenameTagBuilder {
     private static String[] parseDelimiter(final String token) {
         String[] tokenArray = null;
         if (token != null && token.length() > 0) {
-            final Iterator iterator = TagOptionSingleton.getInstance().getFilenameDelimiterIterator();
+            final Iterator<?> iterator = TagOptionSingleton.getInstance().getFilenameDelimiterIterator();
             int index;
             String delimiter;
             while (iterator.hasNext()) {
@@ -199,7 +199,7 @@ public class FilenameTagBuilder {
     private static String[] parseEndWordDelimiter(final String token) {
         String[] tokenArray = null;
         if (token != null && token.length() > 0) {
-            final Iterator iterator = TagOptionSingleton.getInstance().getEndWordDelimiterIterator();
+            final Iterator<?> iterator = TagOptionSingleton.getInstance().getEndWordDelimiterIterator();
             int index;
             String delimiter;
             while (iterator.hasNext()) {
@@ -237,7 +237,7 @@ public class FilenameTagBuilder {
             int openIndex = token.length();
             int tempIndex;
             final int closeIndex;
-            final Iterator iterator = option.getOpenParenthesisIterator();
+            final Iterator<?> iterator = option.getOpenParenthesisIterator();
 
             // find first parenthesis
             while (iterator.hasNext()) {
@@ -277,7 +277,7 @@ public class FilenameTagBuilder {
     private static String[] parseStartWordDelimiter(final String token) {
         String[] tokenArray = null;
         if (token != null && token.length() > 0) {
-            final Iterator iterator = TagOptionSingleton.getInstance().getStartWordDelimiterIterator();
+            final Iterator<?> iterator = TagOptionSingleton.getInstance().getStartWordDelimiterIterator();
             int index;
             String delimiter;
             while (iterator.hasNext()) {

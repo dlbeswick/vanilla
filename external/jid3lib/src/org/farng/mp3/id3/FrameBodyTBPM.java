@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -39,11 +41,12 @@ public class FrameBodyTBPM extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTBPM object.
      */
-    public FrameBodyTBPM(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTBPM(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TBPM";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TBPM");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

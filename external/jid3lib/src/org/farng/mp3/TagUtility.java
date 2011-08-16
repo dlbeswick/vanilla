@@ -31,12 +31,12 @@ public class TagUtility {
      * Convenience <code>HashMap</code> to help fix capitilization of words. It maps all words in
      * <code>TagConstants.upperLowerCase</code> from all lower case to their desired capitilziation.
      */
-    private static final Map capitalizationMap;
+    private static final Map<String, String> capitalizationMap;
 
     static {
         UPPERCASE = (int) 'A' - (int) 'a';
-        capitalizationMap = new HashMap(32);
-        final Iterator iterator = TagOptionSingleton.getInstance().getUpperLowerCaseWordListIterator();
+        capitalizationMap = new HashMap<String, String>(32);
+        final Iterator<?> iterator = TagOptionSingleton.getInstance().getUpperLowerCaseWordListIterator();
         while (iterator.hasNext()) {
             final String word = (String) iterator.next();
             capitalizationMap.put(word.toLowerCase(), word);
@@ -88,7 +88,7 @@ public class TagUtility {
      *
      * @return true if the identifier is a valid ID3v2.2 frame identifier
      */
-    public static boolean isID3v2_2FrameIdentifier(final String identifier) {
+    public static boolean isID3v2_2FrameIdentifier(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
@@ -97,7 +97,7 @@ public class TagUtility {
         } else if (identifier.length() == 3) {
             return TagConstant.id3v2_2FrameIdToString.containsKey(identifier);
         } else {
-            final String upperIdentifier = identifier.toUpperCase();
+            final String upperIdentifier = identifier.toString().toUpperCase();
             if (upperIdentifier.charAt(3) >= 'A' && upperIdentifier.charAt(3) <= 'Z') {
                 return TagConstant.id3v2_2FrameIdToString.containsKey(upperIdentifier.substring(0, 4));
             }
@@ -112,16 +112,16 @@ public class TagUtility {
      *
      * @return true if the identifier is a valid ID3v2.3 frame identifier
      */
-    public static boolean isID3v2_3FrameIdentifier(final String identifier) {
+    public static boolean isID3v2_3FrameIdentifier(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return false;
         }
-        return TagConstant.id3v2_3FrameIdToString.containsKey(identifier.substring(0, 4));
+        return TagConstant.id3v2_3FrameIdToString.containsKey(identifier);
     }
-
+    
     /**
      * Returns true if the identifier is a valid ID3v2.4 frame identifier
      *
@@ -129,14 +129,14 @@ public class TagUtility {
      *
      * @return true if the identifier is a valid ID3v2.4 frame identifier
      */
-    public static boolean isID3v2_4FrameIdentifier(final String identifier) {
+    public static boolean isID3v2_4FrameIdentifier(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return false;
         }
-        return TagConstant.id3v2_4FrameIdToString.containsKey(identifier.substring(0, 4));
+        return TagConstant.id3v2_4FrameIdToString.containsKey(identifier);
     }
 
     /**
@@ -266,72 +266,72 @@ public class TagUtility {
         return filename.substring(0, index) + addition + filename.substring(index);
     }
 
-    public static String convertFrameID2_2to2_3(final String identifier) {
+    public static TagIdentifier convertFrameID2_2to2_3(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 3) {
             return null;
         }
-        return (String) TagConstant.id3v2_2ToId3v2_3.get(identifier.subSequence(0, 3));
+        return TagConstant.id3v2_2ToId3v2_3.get(identifier);
     }
 
-    public static String convertFrameID2_2to2_4(final String identifier) {
+    public static TagIdentifier convertFrameID2_2to2_4(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 3) {
             return null;
         }
-        String id = (String) TagConstant.id3v2_2ToId3v2_3.get(identifier.substring(0, 3));
+        TagIdentifier id = TagConstant.id3v2_2ToId3v2_3.get(identifier);
         if (id != null) {
-            id = (String) TagConstant.id3v2_3ToId3v2_4.get(id);
+            id = TagConstant.id3v2_3ToId3v2_4.get(id);
         }
         return id;
     }
 
-    public static String convertFrameID2_3to2_2(final String identifier) {
+    public static TagIdentifier convertFrameID2_3to2_2(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return null;
         }
-        return (String) TagConstant.id3v2_3ToId3v2_2.get(identifier.substring(0, 4));
+        return TagConstant.id3v2_3ToId3v2_2.get(identifier);
     }
 
-    public static String convertFrameID2_3to2_4(final String identifier) {
+    public static TagIdentifier convertFrameID2_3to2_4(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return null;
         }
-        return (String) TagConstant.id3v2_3ToId3v2_4.get(identifier.substring(0, 4));
+        return TagConstant.id3v2_3ToId3v2_4.get(identifier);
     }
 
-    public static String convertFrameID2_4to2_2(final String identifier) {
+    public static TagIdentifier convertFrameID2_4to2_2(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return null;
         }
-        String id = (String) TagConstant.id3v2_4ToId3v2_3.get(identifier.substring(0, 4));
+        TagIdentifier id = TagConstant.id3v2_4ToId3v2_3.get(identifier);
         if (id != null) {
-            id = (String) TagConstant.id3v2_3ToId3v2_2.get(id);
+            id = TagConstant.id3v2_3ToId3v2_2.get(id);
         }
         return id;
     }
 
-    public static String convertFrameID2_4to2_3(final String identifier) {
+    public static TagIdentifier convertFrameID2_4to2_3(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 4) {
             return null;
         }
-        return (String) TagConstant.id3v2_4ToId3v2_3.get(identifier);
+        return TagConstant.id3v2_4ToId3v2_3.get(identifier);
     }
 
     /**
@@ -388,7 +388,8 @@ public class TagUtility {
      * and call the copy constructor through reflection.
      */
     public static Object copyObject(final Object copyObject) {
-        final Constructor constructor;
+        final Constructor<? extends Object> constructor;
+        @SuppressWarnings("rawtypes")
         final Class[] constructorParameterArray;
         final Object[] parameterArray;
         if (copyObject == null) {
@@ -432,7 +433,7 @@ public class TagUtility {
                                                 str.length());
         }
         final TagOptionSingleton option = TagOptionSingleton.getInstance();
-        final Stack stack = new Stack();
+        final Stack<String> stack = new Stack<String>();
         String chString;
         String open;
         char ch;
@@ -451,7 +452,7 @@ public class TagUtility {
                     if (stack.size() <= 0) {
                         return -1;
                     }
-                    open = (String) stack.pop();
+                    open = stack.pop();
                     if (option.getCloseParenthesis(open).equals(chString) == false) {
                         return -1;
                     }

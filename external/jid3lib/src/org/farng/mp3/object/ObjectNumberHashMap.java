@@ -24,8 +24,8 @@ public class ObjectNumberHashMap extends ObjectNumberFixedLength implements Obje
     public static final String TIME_STAMP_FORMAT = "Time Stamp Format";
     public static final String TYPE_OF_CHANNEL = "Type Of Channel";
     public static final String RECIEVED_AS = "Recieved As";
-    private HashMap idToString = null;
-    private HashMap stringToId = null;
+    private HashMap<?, String> idToString = null;
+    private HashMap<String, ?> stringToId = null;
     private boolean hasEmptyValue = false;
 
     /**
@@ -78,11 +78,11 @@ public class ObjectNumberHashMap extends ObjectNumberFixedLength implements Obje
         this.stringToId = copyObject.stringToId;
     }
 
-    public HashMap getIdToString() {
+    public HashMap<?, ?> getIdToString() {
         return this.idToString;
     }
 
-    public HashMap getStringToId() {
+    public HashMap<?, ?> getStringToId() {
         return this.stringToId;
     }
 
@@ -127,13 +127,13 @@ public class ObjectNumberHashMap extends ObjectNumberFixedLength implements Obje
         return super.equals(obj);
     }
 
-    public Iterator iterator() {
+    public Iterator<String> iterator() {
         if (this.idToString == null) {
             return null;
         }
 
         // put them in a treeset first to sort them
-        final TreeSet treeSet = new TreeSet(this.idToString.values());
+        final TreeSet<String> treeSet = new TreeSet<String>(this.idToString.values());
         if (this.hasEmptyValue) {
             treeSet.add("");
         }

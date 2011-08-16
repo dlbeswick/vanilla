@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -38,11 +40,16 @@ public class FrameBodyWOAR extends AbstractFrameBodyUrlLink {
     /**
      * Creates a new FrameBodyWOAR object.
      */
-    public FrameBodyWOAR(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyWOAR(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "WOAR" + ((char) 0) + getUrlLink();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("WOAR");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getUrlLink();
     }
 }

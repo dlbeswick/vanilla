@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringHashMap;
 import org.farng.mp3.object.ObjectStringNullTerminated;
@@ -62,8 +64,8 @@ public class FrameBodyCOMM extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyCOMM object.
      */
-    public FrameBodyCOMM(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyCOMM(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public String getBriefDescription() {
@@ -78,8 +80,13 @@ public class FrameBodyCOMM extends AbstractID3v2FrameBody {
         return (String) getObject("Description");
     }
 
-    public String getIdentifier() {
-        return "COMM" + ((char) 0) + getLanguage() + ((char) 0) + getDescription();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("COMM");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getLanguage() + ((char) 0) + getDescription();
     }
 
     public void setLanguage(final String language) {

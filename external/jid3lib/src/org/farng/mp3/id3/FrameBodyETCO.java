@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.AbstractMP3Object;
 import org.farng.mp3.object.ObjectGroupRepeated;
 import org.farng.mp3.object.ObjectNumberFixedLength;
@@ -107,12 +109,17 @@ public class FrameBodyETCO extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyETCO object.
      */
-    public FrameBodyETCO(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyETCO(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "ETCO" + ((char) 0) + getOwner();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("ETCO");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getOwner();
     }
 
     public String getOwner() {

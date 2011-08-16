@@ -16,8 +16,8 @@ import java.util.TreeSet;
 public class ObjectStringHashMap extends ObjectStringFixedLength implements ObjectHashMapInterface {
 
     public static final String LANGUAGE = "Language";
-    HashMap idToString = null;
-    HashMap stringToId = null;
+    HashMap<String, String> idToString = null;
+    HashMap<String, String> stringToId = null;
     boolean hasEmptyValue = false;
 
     /**
@@ -43,11 +43,11 @@ public class ObjectStringHashMap extends ObjectStringFixedLength implements Obje
         this.stringToId = copyObject.stringToId;
     }
 
-    public HashMap getIdToString() {
+    public HashMap<?, ?> getIdToString() {
         return this.idToString;
     }
 
-    public HashMap getStringToId() {
+    public HashMap<?, ?> getStringToId() {
         return this.stringToId;
     }
 
@@ -88,13 +88,13 @@ public class ObjectStringHashMap extends ObjectStringFixedLength implements Obje
         return super.equals(obj);
     }
 
-    public Iterator iterator() {
+    public Iterator<String> iterator() {
         if (this.idToString == null) {
             return null;
         }
 
         // put them in a treeset first to sort them
-        final TreeSet treeSet = new TreeSet(this.idToString.values());
+        final TreeSet<String> treeSet = new TreeSet<String>(this.idToString.values());
         if (this.hasEmptyValue) {
             treeSet.add("");
         }

@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -22,6 +24,7 @@ public class FrameBodyTIT2 extends AbstractFrameBodyTextInformation {
 
     /**
      * Creates a new FrameBodyTIT2 object.
+     * "parent" is the AbstractID3-derived instance making use of this frame body.
      */
     public FrameBodyTIT2(final FrameBodyTIT2 body) {
         super(body);
@@ -37,11 +40,12 @@ public class FrameBodyTIT2 extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTIT2 object.
      */
-    public FrameBodyTIT2(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTIT2(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TIT2";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TIT2");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

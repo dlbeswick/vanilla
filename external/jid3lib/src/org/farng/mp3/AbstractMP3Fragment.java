@@ -98,8 +98,8 @@ public abstract class AbstractMP3Fragment extends AbstractMP3FileItem {
         final boolean equals;
         if (obj instanceof AbstractMP3Fragment) {
             final AbstractMP3Fragment abstractMP3Fragment = (AbstractMP3Fragment) obj;
-            final String equalsIdentifier = abstractMP3Fragment.getIdentifier();
-            final String thisIdentifier = getIdentifier();
+            final TagIdentifier equalsIdentifier = abstractMP3Fragment.getIdentifier();
+            final TagIdentifier thisIdentifier = getIdentifier();
             if (thisIdentifier.equals(equalsIdentifier)) {
                 final AbstractMP3FragmentBody equalsBody = abstractMP3Fragment.getBody();
                 final AbstractMP3FragmentBody thisBody = getBody();

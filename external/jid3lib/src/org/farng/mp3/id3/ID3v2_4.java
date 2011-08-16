@@ -4,7 +4,9 @@ import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.filename.FilenameTag;
 import org.farng.mp3.lyrics3.AbstractLyrics3;
@@ -356,7 +358,7 @@ public class ID3v2_4 extends ID3v2_3 {
                 } else {
                     lyric = new Lyrics3v2(mp3tag);
                 }
-                final Iterator iterator = lyric.iterator();
+                final Iterator<?> iterator = lyric.iterator();
                 Lyrics3v2Field field;
                 ID3v2_4Frame newFrame;
                 while (iterator.hasNext()) {
@@ -380,8 +382,8 @@ public class ID3v2_4 extends ID3v2_3 {
         this.read(file);
     }
 
-    public String getIdentifier() {
-        return "ID3v2.40";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("ID3v2.40");
     }
 
     public int getSize() {
@@ -398,7 +400,7 @@ public class ID3v2_4 extends ID3v2_3 {
                 size += 2;
             }
         }
-        final Iterator iterator = this.getFrameIterator();
+        final Iterator<?> iterator = this.getFrameIterator();
         AbstractID3v2Frame frame;
         while (iterator.hasNext()) {
             frame = (AbstractID3v2Frame) iterator.next();
@@ -547,8 +549,8 @@ public class ID3v2_4 extends ID3v2_3 {
         resetPaddingCounter();
         while ((file.getFilePointer() - filePointer) <= size) {
             try {
-                next = new ID3v2_4Frame(file);
-                final String id = next.getIdentifier();
+                next = new ID3v2_4Frame(file, this);
+                final TagIdentifier id = next.getIdentifier();
                 if (this.hasFrame(id)) {
                     this.appendDuplicateFrameId(id + "; ");
                     this.incrementDuplicateBytes(this.getFrame(id).getSize());
@@ -594,7 +596,7 @@ public class ID3v2_4 extends ID3v2_3 {
     }
 
     public String toString() {
-        final Iterator iterator = this.getFrameIterator();
+        final Iterator<?> iterator = this.getFrameIterator();
         AbstractID3v2Frame frame;
         String str = getIdentifier() + " " + this.getSize() + "\n";
         str += ("compression              = " + this.compression + "\n");
@@ -633,10 +635,10 @@ public class ID3v2_4 extends ID3v2_3 {
         super.write(tag);
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         int size;
         final String str;
-        final Iterator iterator;
+        final Iterator<?> iterator;
         ID3v2_4Frame frame;
         final byte[] buffer = new byte[6];
         final MP3File mp3 = new MP3File();
@@ -718,7 +720,7 @@ public class ID3v2_4 extends ID3v2_3 {
         iterator = this.getFrameIterator();
         while (iterator.hasNext()) {
             frame = (ID3v2_4Frame) iterator.next();
-            frame.write(file);
+            frame.write(file, parent);
         }
     }
 
@@ -750,7 +752,7 @@ public class ID3v2_4 extends ID3v2_3 {
             this.unsynchronization = id3tag.unsynchronization;
         }
         final AbstractID3v2 id3tag = mp3tag;
-        final Iterator iterator = id3tag.getFrameIterator();
+        final Iterator<?> iterator = id3tag.getFrameIterator();
         AbstractID3v2Frame frame;
         ID3v2_4Frame newFrame;
         while (iterator.hasNext()) {
@@ -762,7 +764,7 @@ public class ID3v2_4 extends ID3v2_3 {
 
     public String getYearReleased() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TDRC");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TDRC"));
         if (frame != null) {
             FrameBodyTDRC body = (FrameBodyTDRC) frame.getBody();
             text = body.getText();
@@ -771,12 +773,16 @@ public class ID3v2_4 extends ID3v2_3 {
     }
 
     public void setYearReleased(String yearReleased) {
-        AbstractID3v2Frame field = getFrame("TDRC");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TDRC"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTDRC((byte) 0, yearReleased));
             setFrame(field);
         } else {
             ((FrameBodyTDRC) field.getBody()).setText(yearReleased);
         }
+    }
+
+    public boolean tit2FrameHas6ByteHeader() {
+    	return false;
     }
 }

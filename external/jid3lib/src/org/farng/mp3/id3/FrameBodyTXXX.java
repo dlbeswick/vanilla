@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringNullTerminated;
 import org.farng.mp3.object.ObjectStringSizeTerminated;
@@ -56,8 +58,8 @@ public class FrameBodyTXXX extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyTXXX object.
      */
-    public FrameBodyTXXX(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyTXXX(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public String getBriefDescription() {
@@ -69,11 +71,16 @@ public class FrameBodyTXXX extends AbstractID3v2FrameBody {
     }
 
     public String getDescription() {
-        return (String) getObject("Description");
+        return (String)getObject("Description");
     }
 
-    public String getIdentifier() {
-        return "TXXX" + ((char) 0) + getDescription();
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TXXX");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getDescription();
     }
 
     public void setText(final String text) {
@@ -81,7 +88,7 @@ public class FrameBodyTXXX extends AbstractID3v2FrameBody {
     }
 
     public String getText() {
-        return (String) getObject("Text");
+        return (String)getObject("Text");
     }
 
     protected void setupObjectList() {

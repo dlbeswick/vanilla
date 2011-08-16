@@ -9,16 +9,16 @@ import java.util.NoSuchElementException;
  * @author Eric Farng
  * @version $Revision: 1.1 $
  */
-public class FilenameDelimiterIterator implements Iterator {
+public class FilenameDelimiterIterator implements Iterator<Object> {
 
     /**
      * iterator for the composite before the delimiter
      */
-    private Iterator afterIterator = null;
+    private Iterator<?> afterIterator = null;
     /**
      * iterator for the composite after the delimiter
      */
-    private Iterator beforeIterator = null;
+    private Iterator<?> beforeIterator = null;
 
     /**
      * Creates a new FilenameDelimiterIterator object.

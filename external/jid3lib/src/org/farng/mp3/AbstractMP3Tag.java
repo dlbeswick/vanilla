@@ -1,11 +1,13 @@
 package org.farng.mp3;
 
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.AbstractID3v2Frame;
 import org.farng.mp3.id3.ID3v2_4;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -194,17 +196,18 @@ public abstract class AbstractMP3Tag extends AbstractMP3FileItem {
     public boolean isSubsetOf(final AbstractMP3Tag abstractMP3Tag) {
         final AbstractID3v2 subset = new ID3v2_4(this);
         final AbstractID3v2 superset = new ID3v2_4(abstractMP3Tag);
-        final Iterator iterator = subset.iterator();
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = subset.iterator();
         while (iterator.hasNext()) {
-            final AbstractID3v2Frame subsetFrame = (AbstractID3v2Frame) iterator.next();
-            final String identifier = subsetFrame.getIdentifier();
-            final AbstractID3v2Frame supersetFrame = superset.getFrame(identifier);
-            if (supersetFrame == null) {
-                return false;
-            }
-            if (!subsetFrame.isSubsetOf(supersetFrame)) {
-                return false;
-            }
+        	for (AbstractID3v2Frame subsetFrame : iterator.next()) {
+	            final TagIdentifier identifier = subsetFrame.getIdentifier();
+	            final AbstractID3v2Frame supersetFrame = superset.getFrame(identifier);
+	            if (supersetFrame == null) {
+	                return false;
+	            }
+	            if (!subsetFrame.isSubsetOf(supersetFrame)) {
+	                return false;
+	            }
+        	}
         }
         return true;
     }
@@ -224,21 +227,23 @@ public abstract class AbstractMP3Tag extends AbstractMP3FileItem {
         return obj instanceof AbstractMP3Tag && super.equals(obj);
     }
 
-    public abstract Iterator iterator();
+    public abstract Iterator<?> iterator();
 
     /**
-     * This method does nothing, but is called by subclasses for completeness
+     * This method does nothing, but is implemented in derived classes.
      *
      * @param abstractMP3Tag tag to overwrite
      */
     public abstract void overwrite(AbstractMP3Tag abstractMP3Tag);
 
     /**
-     * This method does nothing, but is called by subclasses for completeness
+     * This method does nothing, but is implemented in derived classes.
      *
-     * @param abstractMP3Tag tag to write to
+     * @param file tag to write to
+     * @throws IOException 
+     * @throws TagException 
      */
-    public abstract void write(AbstractMP3Tag abstractMP3Tag);
+    public abstract void write(RandomAccessFile file, AbstractID3 parent) throws IOException, TagException;
 
     public abstract String getSongTitle();
 

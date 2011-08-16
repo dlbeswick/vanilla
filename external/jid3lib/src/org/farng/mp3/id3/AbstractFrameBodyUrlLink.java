@@ -39,9 +39,9 @@ public abstract class AbstractFrameBodyUrlLink extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyUrlLink object.
      */
-    protected AbstractFrameBodyUrlLink(final RandomAccessFile file) throws IOException, InvalidTagException {
+    protected AbstractFrameBodyUrlLink(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         super();
-        read(file);
+        read(file, parent);
     }
 
     public String getBriefDescription() {

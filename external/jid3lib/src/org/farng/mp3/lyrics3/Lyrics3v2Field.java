@@ -3,9 +3,12 @@ package org.farng.mp3.lyrics3;
 import org.farng.mp3.AbstractMP3Fragment;
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagOptionSingleton;
 import org.farng.mp3.TagUtility;
 import org.farng.mp3.id3.AbstractFrameBodyTextInformation;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.id3.AbstractID3v2Frame;
 import org.farng.mp3.id3.FrameBodyCOMM;
 import org.farng.mp3.id3.FrameBodySYLT;
@@ -88,33 +91,33 @@ public class Lyrics3v2Field extends AbstractMP3Fragment {
     public Lyrics3v2Field(final AbstractID3v2Frame frame) throws TagException {
         final AbstractFrameBodyTextInformation textFrame;
         final String text;
-        final String frameIdentifier = frame.getIdentifier();
-        if (frameIdentifier.startsWith("USLT")) {
+        final TagIdentifier frameIdentifier = frame.getIdentifier();
+        if (frameIdentifier.toString().startsWith("USLT")) {
             this.setBody(new FieldBodyLYR(""));
             ((FieldBodyLYR) this.getBody()).addLyric((FrameBodyUSLT) frame.getBody());
-        } else if (frameIdentifier.startsWith("SYLT")) {
+        } else if (frameIdentifier.toString().startsWith("SYLT")) {
             this.setBody(new FieldBodyLYR(""));
             ((FieldBodyLYR) this.getBody()).addLyric((FrameBodySYLT) frame.getBody());
-        } else if (frameIdentifier.startsWith("COMM")) {
+        } else if (frameIdentifier.toString().startsWith("COMM")) {
             text = new String(((FrameBodyCOMM) frame.getBody()).getText());
             this.setBody(new FieldBodyINF(text));
-        } else if (frameIdentifier.equals("TCOM")) {
+        } else if (frameIdentifier.toString().equals("TCOM")) {
             textFrame = (AbstractFrameBodyTextInformation) frame.getBody();
             this.setBody(new FieldBodyAUT(""));
             if ((textFrame != null) && (((textFrame.getText())).length() > 0)) {
                 this.setBody(new FieldBodyAUT((textFrame.getText())));
             }
-        } else if (frameIdentifier.equals("TALB")) {
+        } else if (frameIdentifier.toString().equals("TALB")) {
             textFrame = (AbstractFrameBodyTextInformation) frame.getBody();
             if ((textFrame != null) && ((textFrame.getText()).length() > 0)) {
                 this.setBody(new FieldBodyEAL((textFrame.getText())));
             }
-        } else if (frameIdentifier.equals("TPE1")) {
+        } else if (frameIdentifier.toString().equals("TPE1")) {
             textFrame = (AbstractFrameBodyTextInformation) frame.getBody();
             if ((textFrame != null) && ((textFrame.getText()).length() > 0)) {
                 this.setBody(new FieldBodyEAR((textFrame.getText())));
             }
-        } else if (frameIdentifier.equals("TIT2")) {
+        } else if (frameIdentifier.toString().equals("TIT2")) {
             textFrame = (AbstractFrameBodyTextInformation) frame.getBody();
             if ((textFrame != null) && ((textFrame.getText()).length() > 0)) {
                 this.setBody(new FieldBodyETT((textFrame.getText())));
@@ -127,13 +130,13 @@ public class Lyrics3v2Field extends AbstractMP3Fragment {
     /**
      * Creates a new Lyrics3v2Field object.
      */
-    public Lyrics3v2Field(final RandomAccessFile file) throws InvalidTagException, IOException {
-        this.read(file);
+    public Lyrics3v2Field(final RandomAccessFile file, AbstractID3 parent) throws InvalidTagException, IOException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
+    public TagIdentifier getIdentifier() {
         if (this.getBody() == null) {
-            return "";
+            return TagFrameIdentifier.EMPTY;
         }
         return this.getBody().getIdentifier();
     }
@@ -142,7 +145,7 @@ public class Lyrics3v2Field extends AbstractMP3Fragment {
         return this.getBody().getSize() + 5 + getIdentifier().length();
     }
 
-    public void read(final RandomAccessFile file) throws InvalidTagException, IOException {
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws InvalidTagException, IOException {
         final byte[] buffer = new byte[6];
 
         // lets scan for a non-zero byte;
@@ -172,35 +175,37 @@ public class Lyrics3v2Field extends AbstractMP3Fragment {
         return this.getBody().toString();
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         if (((this.getBody()).getSize() > 0) || TagOptionSingleton.getInstance().isLyrics3SaveEmptyField()) {
             final byte[] buffer = new byte[3];
-            final String str = getIdentifier();
+            final String str = getIdentifier().toString();
             for (int i = 0; i < str.length(); i++) {
                 buffer[i] = (byte) str.charAt(i);
             }
             file.write(buffer, 0, str.length());
-            this.getBody().write(file);
+            this.getBody().write(file, parent);
         }
     }
 
     private AbstractLyrics3v2FieldBody readBody(final String identifier, final RandomAccessFile file)
             throws InvalidTagException, IOException {
         final AbstractLyrics3v2FieldBody newBody;
+        
+        // dbeswick tbd: fix these nulls, bad design
         if (identifier.equals("AUT")) {
-            newBody = new FieldBodyAUT(file);
+            newBody = new FieldBodyAUT(file, null);
         } else if (identifier.equals("EAL")) {
-            newBody = new FieldBodyEAL(file);
+            newBody = new FieldBodyEAL(file, null);
         } else if (identifier.equals("EAR")) {
-            newBody = new FieldBodyEAR(file);
+            newBody = new FieldBodyEAR(file, null);
         } else if (identifier.equals("ETT")) {
-            newBody = new FieldBodyETT(file);
+            newBody = new FieldBodyETT(file, null);
         } else if (identifier.equals("IMG")) {
             newBody = new FieldBodyIMG(file);
         } else if (identifier.equals("IND")) {
-            newBody = new FieldBodyIND(file);
+            newBody = new FieldBodyIND(file, null);
         } else if (identifier.equals("INF")) {
-            newBody = new FieldBodyINF(file);
+            newBody = new FieldBodyINF(file, null);
         } else if (identifier.equals("LYR")) {
             newBody = new FieldBodyLYR(file);
         } else {

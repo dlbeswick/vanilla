@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectStringNullTerminated;
 
@@ -55,8 +57,8 @@ public class FrameBodyPRIV extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyPRIV object.
      */
-    public FrameBodyPRIV(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyPRIV(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public String getBriefDescription() {
@@ -71,8 +73,13 @@ public class FrameBodyPRIV extends AbstractID3v2FrameBody {
         return (byte[]) getObject("Private Data");
     }
 
-    public String getIdentifier() {
-        return "PRIV" + ((char) 0) + getOwner() + ((char) 0) + (new String(getData()));
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("PRIV");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getOwner() + ((char) 0) + (new String(getData()));
     }
 
     public void setOwner(final String owner) {

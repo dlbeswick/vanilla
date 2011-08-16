@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -44,11 +46,12 @@ public class FrameBodyTCOP extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTCOP object.
      */
-    public FrameBodyTCOP(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTCOP(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TCOP";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TCOP");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

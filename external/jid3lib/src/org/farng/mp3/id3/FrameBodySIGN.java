@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectNumberFixedLength;
 
@@ -52,8 +54,8 @@ public class FrameBodySIGN extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodySIGN object.
      */
-    public FrameBodySIGN(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodySIGN(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public void setGroupSymbol(final byte groupSymbol) {
@@ -67,8 +69,13 @@ public class FrameBodySIGN extends AbstractID3v2FrameBody {
         return 0;
     }
 
-    public String getIdentifier() {
-        return "SIGN" + ((char) 0) + getGroupSymbol() + ((char) 0) + (new String(getSignature()));
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("SIGN");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getGroupSymbol() + ((char) 0) + (new String(getSignature()));
     }
 
     public void setSignature(final byte[] signature) {

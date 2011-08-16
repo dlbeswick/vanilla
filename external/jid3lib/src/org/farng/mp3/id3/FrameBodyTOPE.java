@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -38,11 +40,13 @@ public class FrameBodyTOPE extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTOPE object.
      */
-    public FrameBodyTOPE(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTOPE(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TOPE";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TOPE");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
+
 }

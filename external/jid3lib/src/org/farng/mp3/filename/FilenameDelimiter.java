@@ -151,7 +151,7 @@ public class FilenameDelimiter extends AbstractFilenameComposite {
      *
      * @return an iterator through each <code>FilenameToken</code> in this composite
      */
-    public Iterator iterator() {
+    public Iterator<?> iterator() {
         return new FilenameDelimiterIterator(this);
     }
 
@@ -162,7 +162,7 @@ public class FilenameDelimiter extends AbstractFilenameComposite {
      *
      * @param id3v2FrameBodyClass Class of keywords to match against.
      */
-    public void matchAgainstKeyword(final Class id3v2FrameBodyClass) {
+    public void matchAgainstKeyword(final Class<?> id3v2FrameBodyClass) {
         if (AbstractID3v2FrameBody.class.isAssignableFrom(id3v2FrameBodyClass)) {
             if (beforeComposite != null) {
                 beforeComposite.matchAgainstKeyword(id3v2FrameBodyClass);

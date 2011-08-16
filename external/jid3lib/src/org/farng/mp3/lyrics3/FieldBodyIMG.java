@@ -2,11 +2,15 @@ package org.farng.mp3.lyrics3;
 
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagOptionSingleton;
+import org.farng.mp3.object.AbstractMP3Object;
 import org.farng.mp3.object.ObjectLyrics3Image;
 
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -29,7 +33,7 @@ import java.util.Iterator;
  */
 public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
 
-    private ArrayList images = new ArrayList();
+    private ArrayList<ObjectLyrics3Image> images = new ArrayList<ObjectLyrics3Image>();
 
     /**
      * Creates a new FieldBodyIMG object.
@@ -71,11 +75,12 @@ public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
         this.read(file);
     }
 
-    public String getIdentifier() {
-        return "IMG";
-    }
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("IMG");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }   
 
-    public int getSize() {
+	public int getSize() {
         int size = 0;
         ObjectLyrics3Image image;
         for (int i = 0; i < this.images.size(); i++) {
@@ -89,7 +94,7 @@ public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
         if ((object instanceof FieldBodyIMG) == false) {
             return false;
         }
-        final ArrayList superset = ((FieldBodyIMG) object).images;
+        final ArrayList<ObjectLyrics3Image> superset = ((FieldBodyIMG) object).images;
         for (int i = 0; i < this.images.size(); i++) {
             if (superset.contains(this.images.get(i)) == false) {
                 return false;
@@ -121,8 +126,8 @@ public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
         return super.equals(obj);
     }
 
-    public Iterator iterator() {
-        return this.images.iterator();
+    public Iterator<AbstractMP3Object> iterator() {
+        return (Collections.<AbstractMP3Object>unmodifiableList(this.images)).iterator();
     }
 
     protected void setupObjectList() {
@@ -190,7 +195,7 @@ public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
         String token;
         int offset = 0;
         int delim = imageString.indexOf(TagConstant.SEPERATOR_LINE);
-        this.images = new ArrayList();
+        this.images = new ArrayList<ObjectLyrics3Image>();
         while (delim >= 0) {
             token = imageString.substring(offset, delim);
             image = new ObjectLyrics3Image("Image");

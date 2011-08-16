@@ -1,9 +1,12 @@
 package org.farng.mp3.lyrics3;
 
 import org.farng.mp3.AbstractMP3Tag;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.TagOptionSingleton;
 import org.farng.mp3.TagUtility;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.id3.ID3v1;
 
 import java.io.IOException;
@@ -67,7 +70,7 @@ public class Lyrics3v1 extends AbstractLyrics3 {
                 lyricTag = new Lyrics3v2(mp3Tag);
             }
             final FieldBodyLYR lyricField;
-            lyricField = (FieldBodyLYR) lyricTag.getField("LYR").getBody();
+            lyricField = (FieldBodyLYR) lyricTag.getField(TagFrameIdentifier.get("LYR")).getBody();
             this.lyric = new String(lyricField.getLyric().trim());
         }
     }
@@ -75,12 +78,12 @@ public class Lyrics3v1 extends AbstractLyrics3 {
     /**
      * Creates a new Lyrics3v1 object.
      */
-    public Lyrics3v1(final RandomAccessFile file) throws TagNotFoundException, java.io.IOException {
-        this.read(file);
+    public Lyrics3v1(final RandomAccessFile file, AbstractID3 parent) throws TagNotFoundException, java.io.IOException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "Lyrics3v1.00";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("Lyrics3v1.00");
     }
 
     public void setLyric(final String lyric) {
@@ -126,7 +129,7 @@ public class Lyrics3v1 extends AbstractLyrics3 {
         return super.equals(obj);
     }
 
-    public Iterator iterator() {
+    public Iterator<?> iterator() {
         // todo Implement this org.farng.mp3.AbstractMP3Tag abstract method
         throw new java.lang.UnsupportedOperationException("Method iterator() not yet implemented.");
     }
@@ -144,7 +147,8 @@ public class Lyrics3v1 extends AbstractLyrics3 {
         }
     }
 
-    public void read(final RandomAccessFile file) throws TagNotFoundException, IOException {
+    // dbeswick fix
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws TagNotFoundException, IOException {
         final byte[] buffer = new byte[5100 + 9 + 11];
         final String lyricBuffer;
         if (seek(file) == false) {
@@ -212,7 +216,8 @@ public class Lyrics3v1 extends AbstractLyrics3 {
         }
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    // dbeswick fix
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         String str;
         int offset;
         final byte[] buffer;

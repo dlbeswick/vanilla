@@ -2,6 +2,8 @@ package org.farng.mp3.id3;
 
 import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.TagOptionSingleton;
 import org.farng.mp3.TagUtility;
@@ -70,28 +72,28 @@ public class ID3v1_1 extends ID3v1 {
                 id3tag = new ID3v2_4(mp3tag);
                 ID3v2_4Frame frame;
                 String text;
-                if (id3tag.hasFrame("TIT2")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TIT2");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TIT2"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TIT2"));
                     text = ((FrameBodyTIT2) frame.getBody()).getText();
                     this.title = TagUtility.truncate(text, 30);
                 }
-                if (id3tag.hasFrame("TPE1")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TPE1");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TPE1"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TPE1"));
                     text = ((FrameBodyTPE1) frame.getBody()).getText();
                     this.artist = TagUtility.truncate(text, 30);
                 }
-                if (id3tag.hasFrame("TALB")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TALB");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TALB"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TALB"));
                     text = ((FrameBodyTALB) frame.getBody()).getText();
                     this.album = TagUtility.truncate(text, 30);
                 }
-                if (id3tag.hasFrame("TDRC")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TDRC");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TDRC"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TDRC"));
                     text = ((FrameBodyTDRC) frame.getBody()).getText();
                     this.year = TagUtility.truncate(text, 4);
                 }
-                if (id3tag.hasFrameOfType("COMM")) {
-                    final Iterator iterator = id3tag.getFrameOfType("COMM");
+                if (id3tag.hasFrameOfType(TagFrameIdentifier.get("COMM"))) {
+                    final Iterator<?> iterator = id3tag.getFrameOfType(TagFrameIdentifier.get("COMM"));
                     text = "";
                     while (iterator.hasNext()) {
                         frame = (ID3v2_4Frame) iterator.next();
@@ -99,8 +101,8 @@ public class ID3v1_1 extends ID3v1 {
                     }
                     this.comment = TagUtility.truncate(text, 28);
                 }
-                if (id3tag.hasFrame("TCON")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TCON");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TCON"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TCON"));
                     text = ((FrameBodyTCON) frame.getBody()).getText();
                     try {
                         this.genre = (byte) TagUtility.findNumber(text);
@@ -108,8 +110,8 @@ public class ID3v1_1 extends ID3v1 {
                         this.genre = 0;
                     }
                 }
-                if (id3tag.hasFrame("TRCK")) {
-                    frame = (ID3v2_4Frame) id3tag.getFrame("TRCK");
+                if (id3tag.hasFrame(TagFrameIdentifier.get("TRCK"))) {
+                    frame = (ID3v2_4Frame) id3tag.getFrame(TagFrameIdentifier.get("TRCK"));
                     text = ((FrameBodyTRCK) frame.getBody()).getText();
                     try {
                         this.track = (byte) TagUtility.findNumber(text);
@@ -136,8 +138,8 @@ public class ID3v1_1 extends ID3v1 {
         return this.comment;
     }
 
-    public String getIdentifier() {
-        return "ID3v1_1.10";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("ID3v1_1.10");
     }
 
     public void setTrack(final byte track) {
@@ -281,6 +283,10 @@ public class ID3v1_1 extends ID3v1 {
     }
 
     public void write(final RandomAccessFile file) throws IOException {
+    	write(file, this);
+    }
+
+   	public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final byte[] buffer = new byte[128];
         int i;
         int offset = 3;

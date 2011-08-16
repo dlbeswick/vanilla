@@ -49,7 +49,7 @@ public abstract class AbstractFilenameComposite {
      *
      * @return an iterator through each <code>FilenameToken</code> in this composite
      */
-    public abstract Iterator iterator();
+    public abstract Iterator<?> iterator();
 
     /**
      * Match all elements of this composite against the keywords for this class type found in
@@ -58,7 +58,7 @@ public abstract class AbstractFilenameComposite {
      *
      * @param id3v2FrameBodyClass Class of keywords to match against.
      */
-    public abstract void matchAgainstKeyword(Class id3v2FrameBodyClass);
+    public abstract void matchAgainstKeyword(Class<?> id3v2FrameBodyClass);
 
     /**
      * Match all elements of this composite against the given tag. If any element of <code>matchTag</code> matches any

@@ -19,7 +19,6 @@ public abstract class AbstractMP3Object extends java.lang.Object {
      */
     public AbstractMP3Object() {
         this.value = null;
-        this.identifier = "";
     }
 
     /**
@@ -27,7 +26,7 @@ public abstract class AbstractMP3Object extends java.lang.Object {
      */
     public AbstractMP3Object(final AbstractMP3Object copyObject) {
         // no copy constructor in super class
-        this.identifier = new String(copyObject.identifier);
+        this.identifier = copyObject.identifier;
         if (copyObject.value == null) {
             this.value = null;
         } else if (copyObject.value instanceof String) {
@@ -94,7 +93,7 @@ public abstract class AbstractMP3Object extends java.lang.Object {
     public abstract int getSize();
 
     public void readByteArray(final byte[] arr, final int offset) {
-        readString(new String(arr), offset);
+		readString(new String(arr), offset);
     }
 
     public void readString(final String str, final int offset) {

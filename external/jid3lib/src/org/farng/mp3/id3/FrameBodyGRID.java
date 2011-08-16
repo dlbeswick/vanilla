@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectNumberFixedLength;
 import org.farng.mp3.object.ObjectStringNullTerminated;
@@ -67,8 +69,8 @@ public class FrameBodyGRID extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyGRID object.
      */
-    public FrameBodyGRID(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyGRID(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public void setGroupSymbol(final byte textEncoding) {
@@ -82,8 +84,13 @@ public class FrameBodyGRID extends AbstractID3v2FrameBody {
         return 0;
     }
 
-    public String getIdentifier() {
-        return "GRID" + ((char) 0) + getOwner() + ((char) 0) + getGroupSymbol();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("GRID");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getOwner() + ((char) 0) + getGroupSymbol();
     }
 
     public void setOwner(final String owner) {

@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -38,11 +40,12 @@ public class FrameBodyTSOA extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTSOA object.
      */
-    public FrameBodyTSOA(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTSOA(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TSOA";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TSOA");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

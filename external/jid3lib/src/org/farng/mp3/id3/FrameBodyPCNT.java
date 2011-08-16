@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectNumberVariableLength;
 
 import java.io.IOException;
@@ -50,12 +52,13 @@ public class FrameBodyPCNT extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyPCNT object.
      */
-    public FrameBodyPCNT(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyPCNT(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "PCNT";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("PCNT");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     protected void setupObjectList() {

@@ -5,9 +5,9 @@ import java.util.Iterator;
 
 public interface ObjectHashMapInterface {
 
-    public HashMap getIdToString();
+    public HashMap<?, ?> getIdToString();
 
-    public HashMap getStringToId();
+    public HashMap<?, ?> getStringToId();
 
-    public Iterator iterator();
+    public Iterator<?> iterator();
 }

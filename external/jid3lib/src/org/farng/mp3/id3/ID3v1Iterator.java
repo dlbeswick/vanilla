@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * @author Eric Farng
  * @version $Revision: 1.4 $
  */
-public class ID3v1Iterator implements Iterator {
+public class ID3v1Iterator implements Iterator<Object> {
 
     private static final int TITLE = 1;
     private static final int ARTIST = 2;

@@ -18,33 +18,33 @@ import java.util.Map;
  */
 public class TagOptionSingleton {
 
-    private static final Map tagOptionTable = new HashMap();
+    private static final Map<Object, TagOptionSingleton> tagOptionTable = new HashMap<Object, TagOptionSingleton>();
     private static final String DEFAULT = "default";
     private static Object defaultOptions = TagOptionSingleton.DEFAULT;
-    private Map keywordMap = new HashMap();
+    private Map<Class<?>, LinkedList<String>> keywordMap = new HashMap<Class<?>, LinkedList<String>>();
     /**
      * Map of lyric ID's to Boolean objects if we should or should not save the specific Kyrics3 field. Defaults to
      * true.
      */
-    private Map lyrics3SaveFieldMap = new HashMap();
+    private Map<TagIdentifier, Boolean> lyrics3SaveFieldMap = new HashMap<TagIdentifier, Boolean>();
     /**
      * parenthesis map stuff
      */
-    private Map parenthesisMap = new HashMap();
+    private Map<String, String> parenthesisMap = new HashMap<String, String>();
     /**
      * <code>HashMap</code> listing words to be replaced if found
      */
-    private Map replaceWordMap = new HashMap();
-    private List endWordDelimiterList = new LinkedList();
+    private Map<String, String> replaceWordMap = new HashMap<String, String>();
+    private List<String> endWordDelimiterList = new LinkedList<String>();
     /**
      * delimiters within a file name
      */
-    private List filenameDelimiterList = new LinkedList();
-    private List startWordDelimiterList = new LinkedList();
+    private List<String> filenameDelimiterList = new LinkedList<String>();
+    private List<String> startWordDelimiterList = new LinkedList<String>();
     /**
      * words to always set the case as upper or lower case
      */
-    private List upperLowerCaseWordList = new LinkedList();
+    private List<String> upperLowerCaseWordList = new LinkedList<String>();
     /**
      * default language for any ID3v2 tags frameswhich require it. This string is in the [ISO-639-2] ISO/FDIS 639-2
      * definition
@@ -221,11 +221,11 @@ public class TagOptionSingleton {
         return defaultOptions;
     }
 
-    public Iterator getEndWordDelimiterIterator() {
+    public Iterator<String> getEndWordDelimiterIterator() {
         return this.endWordDelimiterList.iterator();
     }
 
-    public Iterator getFilenameDelimiterIterator() {
+    public Iterator<String> getFilenameDelimiterIterator() {
         return this.filenameDelimiterList.iterator();
     }
 
@@ -383,12 +383,12 @@ public class TagOptionSingleton {
         this.id3v2SaveExtendedHeader = id3v2SaveExtendedHeader;
     }
 
-    public Iterator getKeywordIterator() {
+    public Iterator<Class<?>> getKeywordIterator() {
         return this.keywordMap.keySet().iterator();
     }
 
-    public Iterator getKeywordListIterator(final Class id3v2_4FrameBody) {
-        return ((LinkedList) this.keywordMap.get(id3v2_4FrameBody)).iterator();
+    public Iterator<String> getKeywordListIterator(final Class<?> id3v2_4FrameBody) {
+        return this.keywordMap.get(id3v2_4FrameBody).iterator();
     }
 
     /**
@@ -442,7 +442,7 @@ public class TagOptionSingleton {
      * @param id   Lyrics3 id string
      * @param save true if you want to save this specific Lyrics3 field.
      */
-    public void setLyrics3SaveField(final String id, final boolean save) {
+    public void setLyrics3SaveField(final TagIdentifier id, final boolean save) {
         this.lyrics3SaveFieldMap.put(id, new Boolean(save));
     }
 
@@ -453,11 +453,11 @@ public class TagOptionSingleton {
      *
      * @return true if we should save the Lyrics3 field.
      */
-    public boolean getLyrics3SaveField(final String id) {
+    public boolean getLyrics3SaveField(final TagIdentifier id) {
         return ((Boolean) this.lyrics3SaveFieldMap.get(id)).booleanValue();
     }
 
-    public Map getLyrics3SaveFieldMap() {
+    public Map<TagIdentifier, Boolean> getLyrics3SaveFieldMap() {
         return this.lyrics3SaveFieldMap;
     }
 
@@ -487,7 +487,7 @@ public class TagOptionSingleton {
         return this.numberMP3SyncFrame;
     }
 
-    public Iterator getOldReplaceWordIterator() {
+    public Iterator<String> getOldReplaceWordIterator() {
         return this.replaceWordMap.keySet().iterator();
     }
 
@@ -495,7 +495,7 @@ public class TagOptionSingleton {
         return this.parenthesisMap.containsKey(open);
     }
 
-    public Iterator getOpenParenthesisIterator() {
+    public Iterator<String> getOpenParenthesisIterator() {
         return this.parenthesisMap.keySet().iterator();
     }
 
@@ -528,7 +528,7 @@ public class TagOptionSingleton {
         return this.playCounterSize;
     }
 
-    public Iterator getStartWordDelimiterIterator() {
+    public Iterator<String> getStartWordDelimiterIterator() {
         return this.startWordDelimiterList.iterator();
     }
 
@@ -591,11 +591,11 @@ public class TagOptionSingleton {
     }
 
     public void setToDefault() {
-        this.keywordMap = new HashMap();
+        this.keywordMap = new HashMap<Class<?>, LinkedList<String>>();
         this.compositeMatchOverwrite = false;
         this.defaultSaveMode = TagConstant.MP3_FILE_SAVE_WRITE;
-        this.endWordDelimiterList = new LinkedList();
-        this.filenameDelimiterList = new LinkedList();
+        this.endWordDelimiterList = new LinkedList<String>();
+        this.filenameDelimiterList = new LinkedList<String>();
         this.filenameTagSave = false;
         this.id3v1Save = true;
         this.id3v1SaveAlbum = true;
@@ -617,24 +617,24 @@ public class TagOptionSingleton {
         this.lyrics3KeepEmptyFieldIfRead = false;
         this.lyrics3Save = true;
         this.lyrics3SaveEmptyField = false;
-        this.lyrics3SaveFieldMap = new HashMap();
+        this.lyrics3SaveFieldMap = new HashMap<TagIdentifier, Boolean>();
         this.numberMP3SyncFrame = 5;
-        this.parenthesisMap = new HashMap();
+        this.parenthesisMap = new HashMap<String, String>();
         this.playCounterSize = 4;
-        this.replaceWordMap = new HashMap();
-        this.startWordDelimiterList = new LinkedList();
+        this.replaceWordMap = new HashMap<String, String>();
+        this.startWordDelimiterList = new LinkedList<String>();
         this.textEncoding = 0;
         this.timeStampFormat = 2;
-        this.upperLowerCaseWordList = new LinkedList();
+        this.upperLowerCaseWordList = new LinkedList<String>();
 
         /**
          * default all lyrics3 fields to save. id3v1 fields are individual
          * settings. id3v2 fields are always looked at to save.
          */
-        Iterator iterator = TagConstant.lyrics3v2FieldIdToString.keySet().iterator();
-        String fieldId;
+        Iterator<TagIdentifier> iterator = TagConstant.lyrics3v2FieldIdToString.keySet().iterator();
+        TagIdentifier fieldId;
         while (iterator.hasNext()) {
-            fieldId = (String) iterator.next();
+            fieldId = iterator.next();
             this.lyrics3SaveFieldMap.put(fieldId, new Boolean(true));
         }
         try {
@@ -674,9 +674,9 @@ public class TagOptionSingleton {
             addKeyword(FrameBodyTIPL.class, "ftng.");
             addKeyword(FrameBodyTIPL.class, "ft.");
             addKeyword(FrameBodyTIPL.class, "ft");
-            iterator = TagConstant.genreStringToId.keySet().iterator();
-            while (iterator.hasNext()) {
-                addKeyword(FrameBodyCOMM.class, (String) iterator.next());
+            Iterator<String> iteratorGenre = TagConstant.genreStringToId.keySet().iterator();
+            while (iteratorGenre.hasNext()) {
+                addKeyword(FrameBodyCOMM.class, iteratorGenre.next());
             }
         } catch (TagException ex) {
             // this shouldn't happen. if it does, we should fix it right away.
@@ -728,9 +728,9 @@ public class TagOptionSingleton {
         addFilenameDelimiter(";");
         addFilenameDelimiter("|");
         addFilenameDelimiter(":");
-        iterator = this.getKeywordListIterator(FrameBodyTIPL.class);
-        while (iterator.hasNext()) {
-            addStartWordDelimiter((String) iterator.next());
+        Iterator<String> iteratorKeywordList = this.getKeywordListIterator(FrameBodyTIPL.class);
+        while (iteratorKeywordList.hasNext()) {
+            addStartWordDelimiter(iteratorKeywordList.next());
         }
         addParenthesis("(", ")");
         addParenthesis("[", "]");
@@ -738,7 +738,7 @@ public class TagOptionSingleton {
         addParenthesis("<", ">");
     }
 
-    public Iterator getUpperLowerCaseWordListIterator() {
+    public Iterator<String> getUpperLowerCaseWordListIterator() {
         return this.upperLowerCaseWordList.iterator();
     }
 
@@ -750,17 +750,17 @@ public class TagOptionSingleton {
         this.filenameDelimiterList.add(delimiter);
     }
 
-    public void addKeyword(final Class id3v2FrameBodyClass, final String keyword) throws TagException {
+    public void addKeyword(final Class<?> id3v2FrameBodyClass, final String keyword) throws TagException {
         if (AbstractID3v2FrameBody.class.isAssignableFrom(id3v2FrameBodyClass) == false) {
             throw new TagException("Invalid class type. Must be AbstractId3v2FrameBody " + id3v2FrameBodyClass);
         }
         if ((keyword != null) && (keyword.length() > 0)) {
-            final LinkedList keywordList;
+            final LinkedList<String> keywordList;
             if (this.keywordMap.containsKey(id3v2FrameBodyClass) == false) {
-                keywordList = new LinkedList();
+                keywordList = new LinkedList<String>();
                 this.keywordMap.put(id3v2FrameBodyClass, keywordList);
             } else {
-                keywordList = (LinkedList) this.keywordMap.get(id3v2FrameBodyClass);
+                keywordList = (LinkedList<String>) this.keywordMap.get(id3v2FrameBodyClass);
             }
             keywordList.add(keyword);
         }

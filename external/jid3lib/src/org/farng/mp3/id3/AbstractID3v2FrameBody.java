@@ -32,10 +32,11 @@ public abstract class AbstractID3v2FrameBody extends AbstractMP3FragmentBody {
         return obj instanceof AbstractID3v2FrameBody && super.equals(obj);
     }
 
-    protected int readHeader(final RandomAccessFile file) throws IOException, InvalidTagException {
+    // "parent" is the AbstractID3-derived instance making use of this frame body.
+    protected int readHeader(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         final int size;
         final byte[] buffer = new byte[3];
-        if (has6ByteHeader()) {
+        if (has6ByteHeader(parent)) {
             // read the 3 byte size
             file.read(buffer, 0, 3);
             size = (int) (buffer[0] * Math.pow(2, 16) + buffer[1] * Math.pow(2, 8) + buffer[2]);
@@ -55,9 +56,10 @@ public abstract class AbstractID3v2FrameBody extends AbstractMP3FragmentBody {
         return size;
     }
 
-    protected void writeHeader(final RandomAccessFile file, final int size) throws IOException {
+    // "parent" is the AbstractID3-derived instance making use of this frame body.
+    protected void writeHeader(final RandomAccessFile file, final int size, AbstractID3 parent) throws IOException {
         final byte[] buffer = new byte[3];
-        if (has6ByteHeader()) {
+        if (has6ByteHeader(parent)) {
             // write the 3 byte size;
             buffer[0] = (byte) ((size & 0x00FF0000) >> 16);
             buffer[1] = (byte) ((size & 0x0000FF00) >> 8);

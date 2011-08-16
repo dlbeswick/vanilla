@@ -15,6 +15,11 @@ import java.io.ObjectOutputStream;
 public class TagNotFoundException extends TagException {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4912016924388869357L;
+
+	/**
      * Creates a new TagNotFoundException object.
      */
     public TagNotFoundException() {

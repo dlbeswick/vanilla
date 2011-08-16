@@ -41,9 +41,9 @@ public abstract class AbstractFrameBodyTextInformation extends AbstractID3v2Fram
     /**
      * Creates a new FrameBodyTextInformation object.
      */
-    protected AbstractFrameBodyTextInformation(final RandomAccessFile file) throws IOException, InvalidTagException {
+    protected AbstractFrameBodyTextInformation(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         super();
-        read(file);
+        read(file, parent);
     }
 
     public String getBriefDescription() {

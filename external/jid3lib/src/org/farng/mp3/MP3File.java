@@ -279,23 +279,23 @@ public class MP3File {
             // it's ok to be null
         }
         try {
-            lyrics3tag = new Lyrics3v2(newFile);
+            lyrics3tag = new Lyrics3v2(newFile, null);
         } catch (TagNotFoundException ex) {
             // maybe a different version
         }
         try {
             if (lyrics3tag == null) {
-                lyrics3tag = new Lyrics3v1(newFile);
+                lyrics3tag = new Lyrics3v1(newFile, null);
             }
         } catch (TagNotFoundException ex) {
             //it's ok to be null
         }
         newFile.close();
-        try {
+        /*try {
             filenameTag = FilenameTagBuilder.createFilenameTagFromMP3File(this);
         } catch (Exception ex) {
             throw new TagException("Unable to create FilenameTag", ex);
-        }
+        }*/
     }
 
     public int getBitRate() {
@@ -369,10 +369,10 @@ public class MP3File {
      *         is not guaranteed for future versions of this library.
      */
     //todo this method is very inefficient.
-    public List getFrameAcrossTags(final String identifier) {
+    public List<AbstractID3v2Frame> getFrameAcrossTags(final TagIdentifier identifier) {
         if (identifier != null && identifier.length() > 0) {
-            final List list = new ArrayList(32);
-            Iterator iterator;
+            final List<AbstractID3v2Frame> list = new ArrayList<AbstractID3v2Frame>(32);
+            Iterator<AbstractID3v2Frame> iterator;
             if (id3v1tag != null) {
                 final ID3v2_4 id3v1 = new ID3v2_4(id3v1tag);
                 if (id3v1.hasFrameOfType(identifier)) {
@@ -584,9 +584,9 @@ public class MP3File {
      *
      * @return a HashSet of unsynchronized fragments
      */
-    public Set getUnsynchronizedFragments() {
+    public Set<TagIdentifier> getUnsynchronizedFragments() {
         final ID3v2_4 total = new ID3v2_4(id3v2tag);
-        final Set set = new HashSet(32);
+        final Set<TagIdentifier> set = new HashSet<TagIdentifier>(32);
         total.append(id3v1tag);
         total.append(lyrics3tag);
         total.append(filenameTag);
@@ -595,10 +595,10 @@ public class MP3File {
         final ID3v2_4 lyrics3 = new ID3v2_4(lyrics3tag);
         final ID3v2_4 filename = new ID3v2_4(filenameTag);
         final AbstractID3v2 id3v2 = id3v2tag;
-        final Iterator iterator = total.iterator();
+        final Iterator<?> iterator = total.iterator();
         while (iterator.hasNext()) {
             final AbstractID3v2Frame frame = (AbstractID3v2Frame) iterator.next();
-            final String identifier = frame.getIdentifier();
+            final TagIdentifier identifier = frame.getIdentifier();
             if (id3v2 != null) {
                 if (id3v2.hasFrame(identifier)) {
                     if (!id3v2.getFrame(identifier).isSubsetOf(frame)) {

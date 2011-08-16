@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringDate;
@@ -113,12 +115,18 @@ public class FrameBodyCOMR extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyCOMR object.
      */
-    public FrameBodyCOMR(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyCOMR(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        String str = "COMR";
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("COMR");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        String str = IDENTIFIER.toString();
+        @SuppressWarnings("rawtypes")
         final java.util.Iterator iterator = getObjectListIterator();
         while (iterator.hasNext()) {
             str += (((char) 0) + getOwner());

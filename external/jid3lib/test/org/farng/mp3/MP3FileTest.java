@@ -246,11 +246,11 @@ public class MP3FileTest extends TestCase {
         ID3v1 id3v1 = mp3file.getID3v1Tag();
         AbstractLyrics3 lyrics3 = mp3file.getLyrics3Tag();
         FilenameTag filename = mp3file.getFilenameTag();
-        AbstractID3v2Frame frame = id3v2.getFrame("TIT2");
-        assertEquals(2, mp3file.getFrameAcrossTags("TIT2").size());
+        AbstractID3v2Frame frame = id3v2.getFrame(TagFrameIdentifier.get("TIT2"));
+        assertEquals(2, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         assertNull(lyrics3);
         assertTrue(filename != null);
-        assertFalse(filename.hasFrame("TIT2"));
+        assertFalse(filename.hasFrame(TagFrameIdentifier.get("TIT2")));
         lyrics3 = new Lyrics3v2();
         try {
             ((Lyrics3v2) lyrics3).setField(new Lyrics3v2Field(frame));
@@ -258,24 +258,24 @@ public class MP3FileTest extends TestCase {
             fail(ex.getMessage());
         }
         mp3file.setLyrics3Tag(lyrics3);
-        assertEquals(3, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(3, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         filename.setFrame(frame);
-        assertEquals(4, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(4, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         mp3file.setFilenameTag(null);
-        assertEquals(3, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(3, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         mp3file.setID3v2Tag(null);
-        assertEquals(2, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(2, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         mp3file.setID3v1Tag(null);
-        assertEquals(1, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(1, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
         mp3file.setLyrics3Tag(null);
-        assertEquals(0, mp3file.getFrameAcrossTags("TIT2").size());
+        assertEquals(0, mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2")).size());
 
         // test nulls
         assertNull(mp3file.getFrameAcrossTags(null));
-        assertNull(mp3file.getFrameAcrossTags(""));
+        assertNull(mp3file.getFrameAcrossTags(TagFrameIdentifier.EMPTY));
 
         // test all different fields
-        List frameList;
+        List<?> frameList;
         final String testString = "Test String";
         mp3file = new MP3File();
         frame = new ID3v2_4Frame(new FrameBodyTIT2((byte) 0, testString));
@@ -298,14 +298,14 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(0, frameList.size());
         mp3file = new MP3File();
         mp3file.setID3v1Tag(id3v1);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(1, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -315,7 +315,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(1, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -325,7 +325,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(1, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -335,7 +335,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(1, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -345,7 +345,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -355,7 +355,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -365,7 +365,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -375,7 +375,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -385,7 +385,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -395,7 +395,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(2, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -405,7 +405,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(null);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -415,7 +415,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -425,7 +425,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -435,7 +435,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -448,7 +448,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TIT2");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TIT2"));
         assertEquals(4, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -473,7 +473,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TPE1");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TPE1"));
         assertEquals(4, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -498,7 +498,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TALB");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TALB"));
         assertEquals(4, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -524,7 +524,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TDRC");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TDRC"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -549,7 +549,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("COMM");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("COMM"));
         assertEquals(4, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -575,7 +575,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TCON");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TCON"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -601,7 +601,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TRCK");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TRCK"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -626,7 +626,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("SYLT");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("SYLT"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -650,7 +650,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("USLT");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("USLT"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -674,7 +674,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.setFilenameTag(filename);
-        frameList = mp3file.getFrameAcrossTags("TCOM");
+        frameList = mp3file.getFrameAcrossTags(TagFrameIdentifier.get("TCOM"));
         assertEquals(3, frameList.size());
         for (int i = 0; i < frameList.size(); i++) {
             assertEquals(frame, frameList.get(i));
@@ -959,7 +959,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v2
         mp3file.setID3v1Tag(null);
@@ -975,7 +975,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // lyrics3
         mp3file.setID3v1Tag(null);
@@ -991,14 +991,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // filename tag
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1022,7 +1022,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & id3v2
         mp3file.setID3v1Tag(id3v1);
@@ -1038,7 +1038,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & lyrics3
         mp3file.setID3v1Tag(id3v1);
@@ -1054,14 +1054,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & filename
         mp3file.setID3v1Tag(id3v1);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(null);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1083,7 +1083,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v2 & lyrics3
         mp3file.setID3v1Tag(null);
@@ -1099,14 +1099,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v2 & filename
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1128,14 +1128,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // lyrics3 & filename
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1158,7 +1158,7 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & id3v2 & lyrics3
         mp3file.setID3v1Tag(id3v1);
@@ -1174,14 +1174,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & id3v2 & filename
         mp3file.setID3v1Tag(id3v1);
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(null);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1203,14 +1203,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & lyrics3 & filename
         mp3file.setID3v1Tag(id3v1);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1232,14 +1232,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v2 & lyrics3 & filename
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1261,14 +1261,14 @@ public class MP3FileTest extends TestCase {
         tearDown();
         setUp();
         mp3file = this.testMusicArray[1];
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(albumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(albumTitle);
 
         // id3v1 & id3v2 & lyrics3 & filename
         mp3file.setID3v1Tag(id3v1);
         mp3file.setID3v2Tag(id3v2);
         mp3file.setLyrics3Tag(lyrics3);
         mp3file.getFilenameTag().setId3tag(filenameId3);
-        ((FrameBodyTALB) filenameId3.getFrame("TALB").getBody()).setText(newAlbumTitle);
+        ((FrameBodyTALB) filenameId3.getFrame(TagFrameIdentifier.get("TALB")).getBody()).setText(newAlbumTitle);
         mp3file.getFilenameTag().setId3tag(filenameId3);
         try {
             mp3file.save();
@@ -1346,7 +1346,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setFilenameTag(null);
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         assertNull(mp3file.getLyrics3Tag());
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(null);
@@ -1356,7 +1356,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
         assertNull(mp3file.getID3v2Tag());
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(null);
@@ -1366,14 +1366,14 @@ public class MP3FileTest extends TestCase {
         assertNull(mp3file.getID3v1Tag());
         assertNull(mp3file.getID3v2Tag());
         assertNull(mp3file.getLyrics3Tag());
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(null);
         mp3file.setFilenameTag(null);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         assertNull(mp3file.getLyrics3Tag());
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(new ID3v1_1());
@@ -1383,7 +1383,7 @@ public class MP3FileTest extends TestCase {
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
         assertNull(mp3file.getID3v2Tag());
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(null);
@@ -1393,15 +1393,15 @@ public class MP3FileTest extends TestCase {
         mp3file.getID3v1Tag().getAlbum().equals(testString);
         assertNull(mp3file.getID3v2Tag());
         assertNull(mp3file.getLyrics3Tag());
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
         mp3file.setFilenameTag(null);
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(new ID3v2_4());
@@ -1409,9 +1409,9 @@ public class MP3FileTest extends TestCase {
         mp3file.setFilenameTag(FilenameTagBuilder.createEmptyFilenameTag());
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         assertNull(mp3file.getLyrics3Tag());
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1419,16 +1419,16 @@ public class MP3FileTest extends TestCase {
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
         assertNull(mp3file.getID3v2Tag());
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
         mp3file.setFilenameTag(null);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
         assertNull(mp3file.getFilenameTag());
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
@@ -1436,9 +1436,9 @@ public class MP3FileTest extends TestCase {
         mp3file.setFilenameTag(FilenameTagBuilder.createEmptyFilenameTag());
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         assertNull(mp3file.getLyrics3Tag());
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(null);
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1446,17 +1446,17 @@ public class MP3FileTest extends TestCase {
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
         assertNull(mp3file.getID3v2Tag());
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(null);
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
         mp3file.setFilenameTag(FilenameTagBuilder.createEmptyFilenameTag());
         mp3file.setFrameAcrossTags(frame);
         assertNull(mp3file.getID3v1Tag());
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
 
         // test all
         mp3file.setID3v1Tag(new ID3v1_1());
@@ -1468,9 +1468,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getTitle().equals(testString);
-        ((FrameBodyTIT2) mp3file.getID3v2Tag().getFrame("TIT2").getBody()).getText().equals(testString);
-        ((FieldBodyETT) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("ETT").getBody()).getTitle().equals(testString);
-        ((FrameBodyTIT2) mp3file.getFilenameTag().getFrame("TIT2").getBody()).getText().equals(testString);
+        ((FrameBodyTIT2) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TIT2")).getBody()).getText().equals(testString);
+        ((FieldBodyETT) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("ETT")).getBody()).getTitle().equals(testString);
+        ((FrameBodyTIT2) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TIT2")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1480,9 +1480,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getArtist().equals(testString);
-        ((FrameBodyTPE1) mp3file.getID3v2Tag().getFrame("TPE1").getBody()).getText().equals(testString);
-        ((FieldBodyEAR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAR").getBody()).getArtist().equals(testString);
-        ((FrameBodyTPE1) mp3file.getFilenameTag().getFrame("TPE1").getBody()).getText().equals(testString);
+        ((FrameBodyTPE1) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TPE1")).getBody()).getText().equals(testString);
+        ((FieldBodyEAR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAR")).getBody()).getArtist().equals(testString);
+        ((FrameBodyTPE1) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TPE1")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1492,9 +1492,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame("TALB").getBody()).getText().equals(testString);
-        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("EAL").getBody()).getAlbum().equals(testString);
-        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame("TALB").getBody()).getText().equals(testString);
+        ((FrameBodyTALB) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
+        ((FieldBodyEAL) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("EAL")).getBody()).getAlbum().equals(testString);
+        ((FrameBodyTALB) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TALB")).getBody()).getText().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1504,9 +1504,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getYear().equals("2003");
-        ((FrameBodyTDRC) mp3file.getID3v2Tag().getFrame("TDRC").getBody()).getText().equals("2003");
+        ((FrameBodyTDRC) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TDRC")).getBody()).getText().equals(TagFrameIdentifier.get("2003"));
         assertEquals(0, ((Lyrics3v2) mp3file.getLyrics3Tag()).getFieldCount());
-        ((FrameBodyTDRC) mp3file.getFilenameTag().getFrame("TDRC").getBody()).getText().equals("2003");
+        ((FrameBodyTDRC) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TDRC")).getBody()).getText().equals(TagFrameIdentifier.get("2003"));
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1516,11 +1516,11 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getComment().equals(testString);
-        ((FrameBodyCOMM) ((ID3v2_4Frame) mp3file.getID3v2Tag().getFrameOfType("COMM").next()).getBody()).getText()
+        ((FrameBodyCOMM) ((ID3v2_4Frame) mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("COMM")).next()).getBody()).getText()
                 .equals(testString);
-        ((FieldBodyINF) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("INF").getBody()).getAdditionalInformation()
+        ((FieldBodyINF) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("INF")).getBody()).getAdditionalInformation()
                 .equals(testString);
-        ((FrameBodyCOMM) ((ID3v2_4Frame) mp3file.getFilenameTag().getFrameOfType("COMM").next()).getBody()).getText()
+        ((FrameBodyCOMM) ((ID3v2_4Frame) mp3file.getFilenameTag().getFrameOfType(TagFrameIdentifier.get("COMM")).next()).getBody()).getText()
                 .equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
@@ -1531,9 +1531,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         assertEquals(42, mp3file.getID3v1Tag().getGenre());
-        ((FrameBodyTCON) mp3file.getID3v2Tag().getFrame("TCON").getBody()).getText().equals("42");
+        ((FrameBodyTCON) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TCON")).getBody()).getText().equals("42");
         assertEquals(0, ((Lyrics3v2) mp3file.getLyrics3Tag()).getFieldCount());
-        ((FrameBodyTCON) mp3file.getFilenameTag().getFrame("TCON").getBody()).getText().equals("42");
+        ((FrameBodyTCON) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TCON")).getBody()).getText().equals("42");
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1543,9 +1543,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         assertEquals(42, ((ID3v1_1) mp3file.getID3v1Tag()).getTrack());
-        ((FrameBodyTRCK) mp3file.getID3v2Tag().getFrame("TRCK").getBody()).getText().equals("42");
+        ((FrameBodyTRCK) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TRCK")).getBody()).getText().equals("42");
         assertEquals(0, ((Lyrics3v2) mp3file.getLyrics3Tag()).getFieldCount());
-        ((FrameBodyTRCK) mp3file.getFilenameTag().getFrame("TRCK").getBody()).getText().equals("42");
+        ((FrameBodyTRCK) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TRCK")).getBody()).getText().equals("42");
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1555,9 +1555,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         assertEquals(0, (new ID3v2_4(mp3file.getID3v1Tag())).getFrameCount());
-        ((FrameBodySYLT) mp3file.getID3v2Tag().getFrame("SYLT").getBody()).getLyric().equals(testString);
-        ((FieldBodyLYR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("LYR").getBody()).getLyric().equals(testString);
-        ((FrameBodySYLT) mp3file.getFilenameTag().getFrame("SYLT").getBody()).getLyric().equals(testString);
+        ((FrameBodySYLT) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("SYLT")).getBody()).getLyric().equals(testString);
+        ((FieldBodyLYR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("LYR")).getBody()).getLyric().equals(testString);
+        ((FrameBodySYLT) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("SYLT")).getBody()).getLyric().equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
         mp3file.setLyrics3Tag(new Lyrics3v2());
@@ -1567,10 +1567,10 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         assertEquals(0, (new ID3v2_4(mp3file.getID3v1Tag())).getFrameCount());
-        ((FrameBodyUSLT) ((ID3v2_4Frame) mp3file.getID3v2Tag().getFrameOfType("USLT").next()).getBody()).getLyric()
+        ((FrameBodyUSLT) ((ID3v2_4Frame) mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("USLT")).next()).getBody()).getLyric()
                 .equals(testString);
-        ((FieldBodyLYR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("LYR").getBody()).getLyric().equals(testString);
-        ((FrameBodyUSLT) ((ID3v2_4Frame) mp3file.getFilenameTag().getFrameOfType("USLT").next()).getBody()).getLyric()
+        ((FieldBodyLYR) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("LYR")).getBody()).getLyric().equals(testString);
+        ((FrameBodyUSLT) ((ID3v2_4Frame) mp3file.getFilenameTag().getFrameOfType(TagFrameIdentifier.get("USLT")).next()).getBody()).getLyric()
                 .equals(testString);
         mp3file.setID3v1Tag(new ID3v1_1());
         mp3file.setID3v2Tag(new ID3v2_4());
@@ -1581,9 +1581,9 @@ public class MP3FileTest extends TestCase {
         frame.setBody(frameBody);
         mp3file.setFrameAcrossTags(frame);
         mp3file.getID3v1Tag().getComment().equals(testString);
-        ((FrameBodyTCOM) mp3file.getID3v2Tag().getFrame("TCOM").getBody()).getText().equals(testString);
-        ((FieldBodyAUT) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField("AUT").getBody()).getAuthor().equals(testString);
-        ((FrameBodyTCOM) mp3file.getFilenameTag().getFrame("TCOM").getBody()).getText().equals(testString);
+        ((FrameBodyTCOM) mp3file.getID3v2Tag().getFrame(TagFrameIdentifier.get("TCOM")).getBody()).getText().equals(testString);
+        ((FieldBodyAUT) ((Lyrics3v2) mp3file.getLyrics3Tag()).getField(TagFrameIdentifier.get("AUT")).getBody()).getAuthor().equals(testString);
+        ((FrameBodyTCOM) mp3file.getFilenameTag().getFrame(TagFrameIdentifier.get("TCOM")).getBody()).getText().equals(testString);
     }
 
     /**

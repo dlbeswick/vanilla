@@ -3,6 +3,7 @@ package org.farng.mp3.lyrics3;
 import org.farng.mp3.AbstractMP3FragmentBody;
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagOptionSingleton;
+import org.farng.mp3.id3.AbstractID3;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -29,7 +30,8 @@ public abstract class AbstractLyrics3v2FieldBody extends AbstractMP3FragmentBody
         super(copyObject);
     }
 
-    protected int readHeader(final RandomAccessFile file) throws InvalidTagException, IOException {
+    // dbeswick fix
+    protected int readHeader(final RandomAccessFile file, AbstractID3 parent) throws InvalidTagException, IOException {
         final int size;
         final byte[] buffer = new byte[5];
 
@@ -42,7 +44,8 @@ public abstract class AbstractLyrics3v2FieldBody extends AbstractMP3FragmentBody
         return size;
     }
 
-    protected void writeHeader(final RandomAccessFile file, final int size) throws IOException {
+    // dbeswick fix
+    protected void writeHeader(final RandomAccessFile file, final int size, AbstractID3 parent) throws IOException {
         final String str;
         int offset = 0;
         final byte[] buffer = new byte[5];

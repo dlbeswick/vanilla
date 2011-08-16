@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectNumberFixedLength;
 import org.farng.mp3.object.ObjectStringNullTerminated;
@@ -64,12 +66,17 @@ public class FrameBodyENCR extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyENCR object.
      */
-    public FrameBodyENCR(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyENCR(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "ENCR" + ((char) 0) + getOwner();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("ENCR");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + ((char) 0) + getOwner();
     }
 
     public void setOwner(final String owner) {

@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 /**
  * &nbsp;&nbsp; The 'Content type', which ID3v1 was stored as a one byte numeric<br>
@@ -44,11 +46,12 @@ public class FrameBodyTCON extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTCON object.
      */
-    public FrameBodyTCON(final java.io.RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTCON(final java.io.RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TCON";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TCON");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

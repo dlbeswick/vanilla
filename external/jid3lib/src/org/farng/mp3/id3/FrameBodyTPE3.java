@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -36,11 +38,12 @@ public class FrameBodyTPE3 extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTPE3 object.
      */
-    public FrameBodyTPE3(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTPE3(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TPE3";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TPE3");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

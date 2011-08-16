@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.object.ObjectByteArraySizeTerminated;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringNullTerminated;
@@ -110,9 +112,9 @@ public class FrameBodyAPIC extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyAPIC object.
      */
-    public FrameBodyAPIC(final RandomAccessFile file) throws IOException, InvalidTagException {
+    public FrameBodyAPIC(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         super();
-        read(file);
+        read(file, parent);
     }
 
     public void setDescription(final String description) {
@@ -123,8 +125,13 @@ public class FrameBodyAPIC extends AbstractID3v2FrameBody {
         return (String) getObject("Description");
     }
 
-    public String getIdentifier() {
-        return "APIC" + (char) 0 + getDescription();
+    static protected TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("APIC");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public String getClassIdentifier() {
+        return IDENTIFIER.toString() + (char) 0 + getDescription();
     }
 
     protected void setupObjectList() {

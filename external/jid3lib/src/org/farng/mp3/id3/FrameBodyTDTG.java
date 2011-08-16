@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringDateTime;
 
@@ -42,12 +44,13 @@ public class FrameBodyTDTG extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTDTG object.
      */
-    public FrameBodyTDTG(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTDTG(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TDTG";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TDTG");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public void setText(final String text) {

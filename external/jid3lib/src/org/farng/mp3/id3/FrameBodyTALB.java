@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -39,11 +41,12 @@ public class FrameBodyTALB extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTALB object.
      */
-    public FrameBodyTALB(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTALB(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TALB";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TALB");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

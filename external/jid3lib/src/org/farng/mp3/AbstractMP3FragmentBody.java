@@ -1,8 +1,6 @@
 package org.farng.mp3;
 
-import org.farng.mp3.id3.ID3v2_2;
-import org.farng.mp3.id3.ID3v2_3;
-import org.farng.mp3.id3.ID3v2_4;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.object.AbstractMP3Object;
 
 import java.io.IOException;
@@ -27,7 +25,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
     /**
      * list of <code>MP3Object</code>
      */
-    private List objectList = new ArrayList(AbstractMP3FragmentBody.SIZE_OBJECT_LIST);
+    private List<AbstractMP3Object> objectList = new ArrayList<AbstractMP3Object>(AbstractMP3FragmentBody.SIZE_OBJECT_LIST);
 
     /**
      * Creates a new MP3FragmentBody object.
@@ -42,7 +40,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      */
     protected AbstractMP3FragmentBody(final AbstractMP3FragmentBody copyObject) {
         super(copyObject);
-        final Iterator iterator = copyObject.iterator();
+        final Iterator<AbstractMP3Object> iterator = copyObject.iterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object oldObject = (AbstractMP3Object) iterator.next();
             final AbstractMP3Object newObject = (AbstractMP3Object) TagUtility.copyObject(oldObject);
@@ -57,7 +55,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      */
     public String getBriefDescription() {
         final StringBuffer stringBuffer = new StringBuffer(AbstractMP3FragmentBody.SIZE_BRIEF_DESCRIPTION);
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object object = (AbstractMP3Object) iterator.next();
             final String objectToString = object.toString();
@@ -80,7 +78,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      */
     public String getDescription() {
         final StringBuffer stringBuffer = new StringBuffer(AbstractMP3FragmentBody.SIZE_DESCRIPTION);
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object object = (AbstractMP3Object) iterator.next();
             final String identifier = object.getIdentifier();
@@ -94,7 +92,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
         return toString.trim();
     }
 
-    public Iterator getObjectListIterator() {
+    public Iterator<AbstractMP3Object> getObjectListIterator() {
         return objectList.listIterator();
     }
 
@@ -105,7 +103,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      * @param object     new object value
      */
     public void setObject(final String identifier, final Object object) {
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object abstractMP3Object = (AbstractMP3Object) iterator.next();
             final String currentIdentifier = abstractMP3Object.getIdentifier();
@@ -116,6 +114,26 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
     }
 
     /**
+     * Removes all objects of the identifier type.
+     *
+     * @param identifier <code>MP3Object</code> identifier
+     */
+    public void removeObjects(final String identifier) {
+    	ArrayList<AbstractMP3Object> toRemove = new ArrayList<AbstractMP3Object>();
+    	
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
+        while (iterator.hasNext()) {
+            final AbstractMP3Object abstractMP3Object = (AbstractMP3Object) iterator.next();
+            final String currentIdentifier = abstractMP3Object.getIdentifier();
+            if (currentIdentifier.equals(identifier)) {
+            	toRemove.add(abstractMP3Object);
+            }
+        }
+        
+        objectList.removeAll(toRemove);
+    }
+    
+    /**
      * Returns the object of the <code>MP3Object</code> with the specified <code>identifier</code>
      *
      * @param identifier <code>MP3Object</code> identifier
@@ -124,9 +142,9 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      */
     public Object getObject(final String identifier) {
         Object object = null;
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
-            final AbstractMP3Object abstractMP3Object = (AbstractMP3Object) iterator.next();
+            final AbstractMP3Object abstractMP3Object = iterator.next();
             final String currentIdentifier = abstractMP3Object.getIdentifier();
             if (currentIdentifier.equals(identifier)) {
                 object = abstractMP3Object.getValue();
@@ -144,7 +162,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
     public int getSize() {
         //todo get this working 100% of the time
         int size = 0;
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object object = (AbstractMP3Object) iterator.next();
             size += object.getSize();
@@ -167,7 +185,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
         if (!(object instanceof AbstractMP3FragmentBody)) {
             return false;
         }
-        final List superset = ((AbstractMP3FragmentBody) object).objectList;
+        final List<AbstractMP3Object> superset = ((AbstractMP3FragmentBody) object).objectList;
         final int objectListSize = objectList.size();
         for (int i = 0; i < objectListSize; i++) {
             final AbstractMP3Object abstractMP3Object = (AbstractMP3Object) objectList.get(i);
@@ -202,7 +220,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      *
      * @return iterator of the <code>MP3Object</code> object list.
      */
-    public Iterator iterator() {
+    public Iterator<AbstractMP3Object> iterator() {
         return objectList.iterator();
     }
 
@@ -219,11 +237,11 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      * @throws IOException         on any I/O error
      * @throws InvalidTagException if there is any error in the data format.
      */
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
-        final int size = readHeader(file);
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        final int size = readHeader(file, parent);
         final byte[] buffer = new byte[size];
         file.read(buffer);
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         int offset = 0;
         while (iterator.hasNext()) {
             // sanjay@revasoft.com start bug fix
@@ -246,10 +264,10 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      */
     public String toString() {
         final StringBuffer stringBuffer = new StringBuffer(AbstractMP3FragmentBody.SIZE_DESCRIPTION);
-        final String thisIdentifier = getIdentifier();
+        final TagIdentifier thisIdentifier = getIdentifier();
         stringBuffer.append(thisIdentifier);
         stringBuffer.append(TagConstant.SEPERATOR_LINE);
-        final Iterator iterator = objectList.listIterator();
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object object = (AbstractMP3Object) iterator.next();
             final String objectIdentifier = object.getIdentifier();
@@ -269,10 +287,10 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      *
      * @throws IOException on any I/O error
      */
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final int size = getSize();
-        writeHeader(file, size);
-        final Iterator iterator = objectList.listIterator();
+        writeHeader(file, size, parent);
+        final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
             final AbstractMP3Object object = (AbstractMP3Object) iterator.next();
             final byte[] buffer = object.writeByteArray();
@@ -284,13 +302,14 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      * Reads the header for the fragment body. The header contains things such as the length.
      *
      * @param file file to read the header from.
+     * @param parent the AbstractID3-derived instance making use of this frame body.
      *
      * @return size of body in bytes as stated in the header.
      *
      * @throws IOException         on any I/O error
      * @throws InvalidTagException if there is any error in the data format.
      */
-    protected abstract int readHeader(RandomAccessFile file) throws IOException, InvalidTagException;
+    protected abstract int readHeader(RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException;
 
     /**
      * Create the order of <code>MP3Object</code> objects that this body expects. This method needs to be overwritten.
@@ -305,10 +324,12 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
      *
      * @throws IOException on any I/O error
      */
-    protected abstract void writeHeader(RandomAccessFile file, int size) throws IOException;
+    protected abstract void writeHeader(RandomAccessFile file, int size, AbstractID3 parent) throws IOException;
 
-    protected static boolean has6ByteHeader() {
-        final Exception exception = new Exception();
+    // "parent" should be the AbstractID3-derived instance 
+    protected static boolean has6ByteHeader(AbstractID3 parent) {
+    	// dbeswick: original code was expensive on android.
+        /*final Exception exception = new Exception();
         final StackTraceElement[] stackArray = exception.getStackTrace();
         final String id3v2_2name = ID3v2_2.class.getName();
         final String id3v2_3name = ID3v2_3.class.getName();
@@ -331,6 +352,8 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
         if (!withinTag) {
             throw new UnsupportedOperationException("FragmentBody not called within ID3v2 tag.");
         }
-        return has6ByteHeader;
+        return has6ByteHeader;*/
+    	
+    	return parent.tit2FrameHas6ByteHeader();
     }
 }

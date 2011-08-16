@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectNumberFixedLength;
 
 import java.io.IOException;
@@ -45,14 +47,15 @@ public class FrameBodySEEK extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodySEEK object.
      */
-    public FrameBodySEEK(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodySEEK(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "SEEK";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("SEEK");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
-
+    
     protected void setupObjectList() {
         appendToObjectList(new ObjectNumberFixedLength("Minimum Offset to Next Tag", 4));
     }

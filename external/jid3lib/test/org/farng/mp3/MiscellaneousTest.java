@@ -134,7 +134,7 @@ public class MiscellaneousTest extends TestCase {
         FrameBodyWCOP wcopFrameBody = null;
         tag = new ID3v2_4(mp3file.getID3v2Tag());
         System.err.println("The tag is: " + tag);
-        wcopFrame = new ID3v2_4Frame(tag.getFrame("WCOP"));
+        wcopFrame = new ID3v2_4Frame(tag.getFrame(TagFrameIdentifier.get("WCOP")));
         wcopFrameBody = new FrameBodyWCOP("http://creativecommons.org");
         wcopFrameBody.setUrlLink("http://creativecommons.org");
         wcopFrame.setBody(wcopFrameBody);
@@ -149,7 +149,7 @@ public class MiscellaneousTest extends TestCase {
         System.err.println("The tag is: " + tag);
 
         // run again
-        wcopFrame = new ID3v2_4Frame(tag.getFrame("WCOP"));
+        wcopFrame = new ID3v2_4Frame(tag.getFrame(TagFrameIdentifier.get("WCOP")));
         wcopFrameBody = new FrameBodyWCOP("http://creativecommons.org");
         wcopFrameBody.setUrlLink("http://creativecommons.org");
         wcopFrame.setBody(wcopFrameBody);

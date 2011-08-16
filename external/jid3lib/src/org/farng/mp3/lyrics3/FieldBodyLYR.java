@@ -2,6 +2,8 @@ package org.farng.mp3.lyrics3;
 
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagOptionSingleton;
 import org.farng.mp3.id3.FrameBodySYLT;
 import org.farng.mp3.id3.FrameBodyUSLT;
@@ -24,7 +26,7 @@ import java.util.Iterator;
  */
 public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
 
-    private ArrayList lines = new ArrayList();
+    private ArrayList<AbstractMP3Object> lines = new ArrayList<AbstractMP3Object>();
 
     /**
      * Creates a new FieldBodyLYR object.
@@ -75,12 +77,13 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
         this.read(file);
     }
 
-    public String getIdentifier() {
-        return "LYR";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("LYR");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public void setLyric(final String str) {
-        readString(str);
+    	readString(str);
     }
 
     public String getLyric() {
@@ -101,7 +104,7 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
         if ((object instanceof FieldBodyLYR) == false) {
             return false;
         }
-        final ArrayList superset = ((FieldBodyLYR) object).lines;
+        final ArrayList<AbstractMP3Object> superset = ((FieldBodyLYR) object).lines;
         for (int i = 0; i < this.lines.size(); i++) {
             if (superset.contains(this.lines.get(i)) == false) {
                 return false;
@@ -112,11 +115,11 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
 
     public void addLyric(final FrameBodySYLT sync) {
         // SYLT frames are made of individual lines
-        final Iterator iterator = sync.iterator();
+        final Iterator<?> iterator = sync.iterator();
         ObjectLyrics3Line newLine;
         ObjectID3v2LyricLine currentLine;
         ObjectLyrics3TimeStamp timeStamp;
-        final HashMap lineMap = new HashMap();
+        final HashMap<String, ObjectLyrics3Line> lineMap = new HashMap<String, ObjectLyrics3Line>();
         while (iterator.hasNext()) {
             currentLine = (ObjectID3v2LyricLine) iterator.next();
 
@@ -170,7 +173,7 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
         return present;
     }
 
-    public Iterator iterator() {
+    public Iterator<AbstractMP3Object> iterator() {
         return this.lines.iterator();
     }
 
@@ -235,7 +238,14 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
         String token;
         int offset = 0;
         int delim = lineString.indexOf(TagConstant.SEPERATOR_LINE);
-        this.lines = new ArrayList();
+        this.lines = new ArrayList<AbstractMP3Object>();
+        // dbeswick: it looked like this method intended to replace any existing lyrics with the lyrics in lineString,
+        // but instead the calls to "appendToObjectList" resulted in objectList just getting bigger without being
+        // cleared. This would later cause tests to fail when the lyric line was not copied properly if setLyrics was 
+        // called multiple times on a Lyrics3v2 instance (the source lyric would have an objectList with multiple lines,
+        // but the copy of the instance would have only one entry in the objectList.) Existing lyrics are removed from
+        // the objectList before proceeding.
+        removeObjects("Lyric Line");
         ObjectLyrics3Line line;
         while (delim >= 0) {
             token = lineString.substring(offset, delim);
@@ -251,7 +261,7 @@ public class FieldBodyLYR extends AbstractLyrics3v2FieldBody {
             line = new ObjectLyrics3Line("Lyric Line");
             line.setLyric(token);
             this.lines.add(line);
-            appendToObjectList(line);
+           	appendToObjectList(line);
         }
     }
 

@@ -3,6 +3,9 @@ package org.farng.mp3.lyrics3;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
+
 /**
  * This is used if the field identifier is not recognized. the contents of the frame are read as a byte stream and kept
  * so they can be saved when the file is written again
@@ -43,8 +46,9 @@ public class FieldBodyUnsupported extends AbstractLyrics3v2FieldBody {
         this.read(file);
     }
 
-    public String getIdentifier() {
-        return "ZZZ";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("ZZZ");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public boolean isSubsetOf(final Object object) {

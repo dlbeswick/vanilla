@@ -4,7 +4,9 @@ import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.TagConstant;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 
 import java.io.IOException;
@@ -129,7 +131,7 @@ public class ID3v2_2 extends AbstractID3v2 {
             this.compression = convertedTag.compression;
             this.unsynchronization = convertedTag.unsynchronization;
             final AbstractID3v2 id3tag = convertedTag;
-            final Iterator iterator = id3tag.getFrameIterator();
+            final Iterator<?> iterator = id3tag.getFrameIterator();
             AbstractID3v2Frame frame;
             ID3v2_2Frame newFrame;
             while (iterator.hasNext()) {
@@ -144,16 +146,16 @@ public class ID3v2_2 extends AbstractID3v2 {
      * Creates a new ID3v2_2 object.
      */
     public ID3v2_2(final RandomAccessFile file) throws TagException, IOException {
-        this.read(file);
+        this.read(file, this);
     }
 
-    public String getIdentifier() {
-        return "ID3v2_2.20";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("ID3v2_2.20");
     }
 
     public int getSize() {
         int size = 3 + 2 + 1 + 4;
-        final Iterator iterator = getFrameIterator();
+        final Iterator<?> iterator = getFrameIterator();
         ID3v2_2Frame frame;
         while (iterator.hasNext()) {
             frame = (ID3v2_2Frame) iterator.next();
@@ -192,7 +194,10 @@ public class ID3v2_2 extends AbstractID3v2 {
         super.overwrite(tag);
     }
 
-    public void read(final RandomAccessFile file) throws TagException, IOException {
+    // fix interface, parent is always 'this'
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws TagException, IOException {
+    	parent = this;
+    	
         final int size;
         ID3v2_2Frame next;
         final byte[] buffer = new byte[4];
@@ -213,30 +218,30 @@ public class ID3v2_2 extends AbstractID3v2 {
         // read the size
         file.read(buffer, 0, 4);
         size = byteArrayToSize(buffer);
-        this.clearFrameMap();
+        clearFrameMap();
         final long filePointer = file.getFilePointer();
 
         // read all frames
-        this.setFileReadBytes(size);
+        setFileReadBytes(size);
         resetPaddingCounter();
         while ((file.getFilePointer() - filePointer) <= size) {
             try {
-                next = new ID3v2_2Frame(file);
-                final String id = next.getIdentifier();
-                if (this.hasFrame(id)) {
-                    this.appendDuplicateFrameId(id + "; ");
-                    this.incrementDuplicateBytes(getFrame(id).getSize());
+                next = new ID3v2_2Frame(file, this);
+                final org.farng.mp3.TagIdentifier id = next.getIdentifier();
+                if (hasFrame(id)) {
+                    appendDuplicateFrameId(id + "; ");
+                    incrementDuplicateBytes(getFrame(id).getSize());
                 }
-                this.setFrame(next);
+                setFrame(next);
             } catch (InvalidTagException ex) {
                 if (ex.getMessage().equals("Found empty frame")) {
-                    this.incrementEmptyFrameBytes(10);
+                    incrementEmptyFrameBytes(10);
                 } else {
-                    this.incrementInvalidFrameBytes();
+                    incrementInvalidFrameBytes();
                 }
             }
         }
-        this.setPaddingSize(getPaddingCounter());
+        setPaddingSize(getPaddingCounter());
 
         /**
          * int newSize = this.getSize(); if ((this.padding + newSize - 10) !=
@@ -268,7 +273,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public String toString() {
-        final Iterator iterator = this.getFrameIterator();
+        final Iterator<?> iterator = this.getFrameIterator();
         ID3v2_2Frame frame;
         String str = getIdentifier() + " - " + this.getSize() + " bytes\n";
         str += ("compression        = " + this.compression + "\n");
@@ -288,10 +293,13 @@ public class ID3v2_2 extends AbstractID3v2 {
         super.write(tag);
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    // fix interface, parent is always 'this'
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+    	parent = this;
+    	
         final String str;
         ID3v2_2Frame frame;
-        final Iterator iterator;
+        final Iterator<?> iterator;
         final byte[] buffer = new byte[6];
         final MP3File mp3 = new MP3File();
         mp3.seekMP3Frame(file);
@@ -320,13 +328,13 @@ public class ID3v2_2 extends AbstractID3v2 {
         iterator = this.getFrameIterator();
         while (iterator.hasNext()) {
             frame = (ID3v2_2Frame) iterator.next();
-            frame.write(file);
+            frame.write(file, this);
         }
     }
 
     public String getSongTitle() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TIT2");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TIT2"));
         if (frame != null) {
             FrameBodyTIT2 body = (FrameBodyTIT2) frame.getBody();
             text = body.getText();
@@ -336,7 +344,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getLeadArtist() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TPE1");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TPE1"));
         if (frame != null) {
             FrameBodyTPE1 body = (FrameBodyTPE1) frame.getBody();
             text = body.getText();
@@ -346,7 +354,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getAlbumTitle() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TALB");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TALB"));
         if (frame != null) {
             FrameBodyTALB body = (FrameBodyTALB) frame.getBody();
             text = body.getText();
@@ -356,7 +364,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getYearReleased() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TYER");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TYER"));
         if (frame != null) {
             FrameBodyTYER body = (FrameBodyTYER) frame.getBody();
             text = body.getText();
@@ -366,7 +374,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getSongComment() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("COMM" + ((char) 0) + "eng" + ((char) 0) + "");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("COMM"));
         if (frame != null) {
             FrameBodyCOMM body = (FrameBodyCOMM) frame.getBody();
             text = body.getText();
@@ -376,7 +384,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getSongGenre() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TCON");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TCON"));
         if (frame != null) {
             FrameBodyTCON body = (FrameBodyTCON) frame.getBody();
             text = body.getText();
@@ -386,7 +394,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getTrackNumberOnAlbum() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TRCK");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TRCK"));
         if (frame != null) {
             FrameBodyTRCK body = (FrameBodyTRCK) frame.getBody();
             text = body.getText();
@@ -396,13 +404,13 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getSongLyric() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("SYLT");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("SYLT"));
         if (frame != null) {
             FrameBodySYLT body = (FrameBodySYLT) frame.getBody();
             text = body.getLyric();
         }
         if (text == "") {
-            frame = getFrame("USLT" + ((char) 0) + "eng" + ((char) 0) + "");
+            frame = getFrame(TagFrameIdentifier.get("USLT"));
             if (frame != null) {
                 FrameBodyUSLT body = (FrameBodyUSLT) frame.getBody();
                 text = body.getLyric();
@@ -413,7 +421,7 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public String getAuthorComposer() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame("TCOM");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TCOM"));
         if (frame != null) {
             FrameBodyTCOM body = (FrameBodyTCOM) frame.getBody();
             text = body.getText();
@@ -422,7 +430,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setSongTitle(String songTitle) {
-        AbstractID3v2Frame field = getFrame("TIT2");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TIT2"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTIT2((byte) 0, songTitle.trim()));
             setFrame(field);
@@ -432,7 +440,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setLeadArtist(String leadArtist) {
-        AbstractID3v2Frame field = getFrame("TPE1");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TPE1"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTPE1((byte) 0, leadArtist.trim()));
             setFrame(field);
@@ -442,7 +450,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setAlbumTitle(String albumTitle) {
-        AbstractID3v2Frame field = getFrame("TALB");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TALB"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTALB((byte) 0, albumTitle.trim()));
             setFrame(field);
@@ -452,7 +460,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setYearReleased(String yearReleased) {
-        AbstractID3v2Frame field = getFrame("TYER");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TYER"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTYER((byte) 0, yearReleased.trim()));
             setFrame(field);
@@ -462,7 +470,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setSongComment(String songComment) {
-        AbstractID3v2Frame field = getFrame("COMM");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("COMM"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyCOMM((byte) 0, "eng", "", songComment.trim()));
             setFrame(field);
@@ -472,7 +480,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setSongGenre(String songGenre) {
-        AbstractID3v2Frame field = getFrame("TCON");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TCON"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTCON((byte) 0, songGenre.trim()));
             setFrame(field);
@@ -482,7 +490,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setTrackNumberOnAlbum(String trackNumberOnAlbum) {
-        AbstractID3v2Frame field = getFrame("TRCK");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TRCK"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTRCK((byte) 0, trackNumberOnAlbum.trim()));
             setFrame(field);
@@ -492,7 +500,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setSongLyric(String songLyrics) {
-        AbstractID3v2Frame field = getFrame("USLT");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("USLT"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyUSLT((byte) 0, "ENG", "", songLyrics.trim()));
             setFrame(field);
@@ -502,12 +510,16 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public void setAuthorComposer(String authorComposer) {
-        AbstractID3v2Frame field = getFrame("TCOM");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TCOM"));
         if (field == null) {
             field = new ID3v2_2Frame(new FrameBodyTCOM((byte) 0, authorComposer.trim()));
             setFrame(field);
         } else {
             ((FrameBodyTCOM) field.getBody()).setText(authorComposer.trim());
         }
+    }
+    
+    public boolean tit2FrameHas6ByteHeader() {
+    	return true;
     }
 }

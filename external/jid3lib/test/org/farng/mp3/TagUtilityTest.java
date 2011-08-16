@@ -264,7 +264,7 @@ public class TagUtilityTest extends TestCase {
         }
 
         // test tag option parenthesis
-        Iterator iterator = option.getOpenParenthesisIterator();
+        Iterator<?> iterator = option.getOpenParenthesisIterator();
         String open = null;
         String close = null;
         while (iterator.hasNext()) {
@@ -426,13 +426,13 @@ public class TagUtilityTest extends TestCase {
         } catch (NullPointerException ex) {
             //correct behavior
         }
-        assertFalse(TagUtility.isID3v2_2FrameIdentifier(""));
-        assertFalse(TagUtility.isID3v2_2FrameIdentifier("123"));
-        assertFalse(TagUtility.isID3v2_2FrameIdentifier("EQUA"));
-        assertTrue(TagUtility.isID3v2_2FrameIdentifier("EQU2"));
-        assertFalse(TagUtility.isID3v2_2FrameIdentifier("IND"));
-        assertTrue(TagUtility.isID3v2_2FrameIdentifier("MLL2"));
-        assertTrue(TagUtility.isID3v2_2FrameIdentifier("MLL"));
+        assertFalse(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.EMPTY));
+        assertFalse(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("123")));
+        assertFalse(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("EQUA")));
+        assertTrue(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("EQU2")));
+        assertFalse(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("IND")));
+        assertTrue(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("MLL2")));
+        assertTrue(TagUtility.isID3v2_2FrameIdentifier(TagFrameIdentifier.get("MLL")));
     }
 
     /**
@@ -446,12 +446,12 @@ public class TagUtilityTest extends TestCase {
         } catch (NullPointerException ex) {
             //correct behavior
         }
-        assertFalse(TagUtility.isID3v2_3FrameIdentifier(""));
-        assertFalse(TagUtility.isID3v2_3FrameIdentifier("1234"));
-        assertTrue(TagUtility.isID3v2_3FrameIdentifier("EQUA"));
-        assertFalse(TagUtility.isID3v2_3FrameIdentifier("EQU2"));
-        assertFalse(TagUtility.isID3v2_3FrameIdentifier("IND"));
-        assertFalse(TagUtility.isID3v2_3FrameIdentifier("MLL"));
+        assertFalse(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.EMPTY));
+        assertFalse(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.get("1234")));
+        assertTrue(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.get("EQUA")));
+        assertFalse(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.get("EQU2")));
+        assertFalse(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.get("IND")));
+        assertFalse(TagUtility.isID3v2_3FrameIdentifier(TagFrameIdentifier.get("MLL")));
     }
 
     /**
@@ -465,12 +465,12 @@ public class TagUtilityTest extends TestCase {
         } catch (NullPointerException ex) {
             //correct behavior
         }
-        assertFalse(TagUtility.isID3v2_4FrameIdentifier(""));
-        assertFalse(TagUtility.isID3v2_4FrameIdentifier("123"));
-        assertTrue(TagUtility.isID3v2_4FrameIdentifier("EQU2"));
-        assertFalse(TagUtility.isID3v2_4FrameIdentifier("EQUA"));
-        assertFalse(TagUtility.isID3v2_4FrameIdentifier("IND"));
-        assertFalse(TagUtility.isID3v2_4FrameIdentifier("MLL"));
+        assertFalse(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("")));
+        assertFalse(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("123")));
+        assertTrue(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("EQU2")));
+        assertFalse(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("EQUA")));
+        assertFalse(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("IND")));
+        assertFalse(TagUtility.isID3v2_4FrameIdentifier(TagFrameIdentifier.get("MLL")));
     }
 
     /**

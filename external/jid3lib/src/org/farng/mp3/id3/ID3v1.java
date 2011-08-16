@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.AbstractMP3Tag;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.TagOptionSingleton;
 import org.farng.mp3.TagUtility;
@@ -94,11 +96,16 @@ public class ID3v1 extends AbstractID3v1 {
 
     /**
      * Creates a new ID3v1 object.
+     * "parent" is the AbstractID3-derived instance making use of this frame.
      */
     public ID3v1(final RandomAccessFile file) throws TagNotFoundException, IOException {
-        this.read(file);
+        this.read(file, this);
     }
 
+    public boolean tit2FrameHas6ByteHeader() {
+    	return false;
+    }
+    
     public void setAlbum(final String album) {
         this.album = TagUtility.truncate(album, 30);
     }
@@ -137,7 +144,7 @@ public class ID3v1 extends AbstractID3v1 {
         // look for id3v1_1 tag
         if (id3v1tag.seek(file) == true) {
             try {
-                id3v1tag.read(file);
+                id3v1tag.read(file, this);
                 id3v1tag.delete(file);
             } catch (TagNotFoundException ex) {
                 id3v1tag = null;
@@ -162,8 +169,8 @@ public class ID3v1 extends AbstractID3v1 {
         return id3v1tag;
     }
 
-    public String getIdentifier() {
-        return "ID3v1.00";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("ID3v1.00");
     }
 
     public int getSize() {
@@ -255,7 +262,7 @@ public class ID3v1 extends AbstractID3v1 {
         return super.equals(obj);
     }
 
-    public Iterator iterator() {
+    public Iterator<?> iterator() {
         return new ID3v1Iterator(this);
     }
 
@@ -285,6 +292,10 @@ public class ID3v1 extends AbstractID3v1 {
     }
 
     public void read(final RandomAccessFile file) throws TagNotFoundException, IOException {
+    	read(file, this);
+    }
+    
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws TagNotFoundException, IOException {
         final byte[] buffer = new byte[30];
         if (seek(file) == false) {
             throw new TagNotFoundException("ID3v1 tag not found");
@@ -345,6 +356,10 @@ public class ID3v1 extends AbstractID3v1 {
     }
 
     public void write(final RandomAccessFile file) throws IOException {
+    	write(file, this);
+    }
+    
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final byte[] buffer = new byte[128];
         int i;
         int offset = 3;

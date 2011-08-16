@@ -1,5 +1,7 @@
 package org.farng.mp3.id3;
 
+import org.farng.mp3.TagIdentifier;
+
 /**
  * <h3>4.11.&nbsp;&nbsp; Relative volume adjustment (2)</h3>
  * <p/>
@@ -73,7 +75,7 @@ public class FrameBodyRVA2 extends AbstractID3v2FrameBody {
         throw new UnsupportedOperationException("This frame has not been implemented.");
     }
 
-    public String getIdentifier() {
+    public TagIdentifier getIdentifier() {
         throw new UnsupportedOperationException("This frame has not been implemented.");
     }
 }

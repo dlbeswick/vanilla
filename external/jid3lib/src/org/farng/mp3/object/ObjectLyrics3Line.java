@@ -12,7 +12,7 @@ import java.util.LinkedList;
  */
 public class ObjectLyrics3Line extends AbstractMP3Object {
 
-    private LinkedList timeStamp = new LinkedList();
+    private LinkedList<ObjectLyrics3TimeStamp> timeStamp = new LinkedList<ObjectLyrics3TimeStamp>();
     private String lyric = "";
 
     /**
@@ -60,7 +60,7 @@ public class ObjectLyrics3Line extends AbstractMP3Object {
         this.timeStamp.add(time);
     }
 
-    public Iterator getTimeStamp() {
+    public Iterator<ObjectLyrics3TimeStamp> getTimeStamp() {
         return this.timeStamp.iterator();
     }
 
@@ -109,7 +109,7 @@ public class ObjectLyrics3Line extends AbstractMP3Object {
         }
         int delim;
         ObjectLyrics3TimeStamp time;
-        this.timeStamp = new LinkedList();
+        this.timeStamp = new LinkedList<ObjectLyrics3TimeStamp>();
         delim = lineString.indexOf("[", offset);
         while (delim >= 0) {
             offset = lineString.indexOf("]", delim) + 1;

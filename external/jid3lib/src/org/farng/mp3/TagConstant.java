@@ -267,480 +267,514 @@ public class TagConstant {
     /**
      * <code>HashMap</code> translating the three letter ID into a human understandable string
      */
-    public static final HashMap id3v2_2FrameIdToString = new HashMap();
+    public static final HashMap<TagIdentifier, String> id3v2_2FrameIdToString = new HashMap<TagIdentifier, String>();
     /**
      * <code>HashMap</code> translating the four letter ID into a human understandable string
      */
-    public static final HashMap id3v2_3FrameIdToString = new HashMap();
+    public static final HashMap<TagIdentifier, String> id3v2_3FrameIdToString = new HashMap<TagIdentifier, String>();
     /**
      * <code>HashMap</code> translating the four letter ID into a human understandable string
      */
-    public static final HashMap id3v2_4FrameIdToString = new HashMap();
+    public static final HashMap<TagIdentifier, String> id3v2_4FrameIdToString = new HashMap<TagIdentifier, String>();
     /**
      * <code>HashMap</code> translating the predefined string into the three letter ID
      */
-    public static final HashMap id3v2_2FrameStringToId = new HashMap();
+    public static final HashMap<String, TagIdentifier> id3v2_2FrameStringToId = new HashMap<String, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the predefined string into the four letter ID
      */
-    public static final HashMap id3v2_3FrameStringToId = new HashMap();
+    public static final HashMap<String, TagIdentifier> id3v2_3FrameStringToId = new HashMap<String, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the predefined string into the four letter ID
      */
-    public static final HashMap id3v2_4FrameStringToId = new HashMap();
+    public static final HashMap<String, TagIdentifier> id3v2_4FrameStringToId = new HashMap<String, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the predefined string into the three letter ID
      */
-    public static final HashMap lyrics3v2FieldIdToString = new HashMap();
+    public static final HashMap<TagIdentifier, String> lyrics3v2FieldIdToString = new HashMap<TagIdentifier, String>();
     /**
      * <code>HashMap</code> translating the predefined string into the three letter ID
      */
-    public static final HashMap lyrics3v2FieldStringToId = new HashMap();
+    public static final HashMap<String, TagIdentifier> lyrics3v2FieldStringToId = new HashMap<String, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the three letter ID3v2.2 ID to the corresponding ID3v2.4 ID
      */
-    public static final HashMap id3v2_3ToId3v2_4 = new HashMap();
+    public static final HashMap<TagIdentifier, TagIdentifier> id3v2_3ToId3v2_4 = new HashMap<TagIdentifier, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the three letter ID3v2.2 ID to the corresponding ID3v2.3 ID
      */
-    public static final HashMap id3v2_2ToId3v2_3 = new HashMap();
+    public static final HashMap<TagIdentifier, TagIdentifier> id3v2_2ToId3v2_3 = new HashMap<TagIdentifier, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the three letter ID3v2.2 ID to the corresponding ID3v2.4 ID
      */
-    public static final HashMap id3v2_4ToId3v2_3 = new HashMap();
+    public static final HashMap<TagIdentifier, TagIdentifier> id3v2_4ToId3v2_3 = new HashMap<TagIdentifier, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the three letter ID3v2.2 ID to the corresponding ID3v2.3 ID
      */
-    public static final HashMap id3v2_3ToId3v2_2 = new HashMap();
+    public static final HashMap<TagIdentifier, TagIdentifier> id3v2_3ToId3v2_2 = new HashMap<TagIdentifier, TagIdentifier>();
     /**
      * <code>HashMap</code> translating the ID3v1 genre bit into a human readable string
      */
-    public static final HashMap genreIdToString = new HashMap();
+    public static final HashMap<Long, String> genreIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating the predefined genre string into the ID3v1 genre bit
      */
-    public static final HashMap genreStringToId = new HashMap();
+    public static final HashMap<String, Long> genreStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating the language ID to a human readable string. [ISO-639-2] ISO/FDIS 639-2
      */
-    public static final HashMap languageIdToString = new HashMap();
+    public static final HashMap<String, String> languageIdToString = new HashMap<String, String>();
     /**
      * <code>HashMap</code> translating the predefined language string into the ID. [ISO-639-2] ISO/FDIS 639-2
      */
-    public static final HashMap languageStringToId = new HashMap();
+    public static final HashMap<String, String> languageStringToId = new HashMap<String, String>();
     /**
      * <code>HashMap</code> translating the bitrate read in from the MP3 Header into a base-10 integer
      */
-    public static final HashMap bitrate = new HashMap();
+    public static final HashMap<Long, Long> bitrate = new HashMap<Long, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap textEncodingIdToString = new HashMap();
+    public static final HashMap<Long, String> textEncodingIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap textEncodingStringToId = new HashMap();
+    public static final HashMap<String, Long> textEncodingStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap interpolationMethodIdToString = new HashMap();
+    public static final HashMap<Long, String> interpolationMethodIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap interpolationMethodStringToId = new HashMap();
+    public static final HashMap<String, Long> interpolationMethodStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap pictureTypeIdToString = new HashMap();
+    public static final HashMap<Long, String> pictureTypeIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap pictureTypeStringToId = new HashMap();
+    public static final HashMap<String, Long> pictureTypeStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap timeStampFormatIdToString = new HashMap();
+    public static final HashMap<Long, String> timeStampFormatIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap timeStampFormatStringToId = new HashMap();
+    public static final HashMap<String, Long> timeStampFormatStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap typeOfEventIdToString = new HashMap();
+    public static final HashMap<Long, String> typeOfEventIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap typeOfEventStringToId = new HashMap();
+    public static final HashMap<String, Long> typeOfEventStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap typeOfChannelIdToString = new HashMap();
+    public static final HashMap<Long, String> typeOfChannelIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap typeOfChannelStringToId = new HashMap();
+    public static final HashMap<String, Long> typeOfChannelStringToId = new HashMap<String, Long>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap recievedAsIdToString = new HashMap();
+    public static final HashMap<Long, String> recievedAsIdToString = new HashMap<Long, String>();
     /**
      * <code>HashMap</code> translating table found in ID3 tags
      */
-    public static final HashMap recievedAsStringToId = new HashMap();
+    public static final HashMap<String, Long> recievedAsStringToId = new HashMap<String, Long>();
 
     static {
-        id3v2_2FrameIdToString.put("BUF", "Recommended buffer size");
-        id3v2_2FrameIdToString.put("CNT", "Play counter");
-        id3v2_2FrameIdToString.put("COM", "Comments");
-        id3v2_2FrameIdToString.put("CRA", "Audio encryption");
-        id3v2_2FrameIdToString.put("CRM", "Encrypted meta frame");
-        id3v2_2FrameIdToString.put("ETC", "Event timing codes");
-        id3v2_2FrameIdToString.put("EQU", "Equalization");
-        id3v2_2FrameIdToString.put("GEO", "General encapsulated object");
-        id3v2_2FrameIdToString.put("IPL", "Involved people list");
-        id3v2_2FrameIdToString.put("LNK", "Linked information");
-        id3v2_2FrameIdToString.put("MCI", "Music CD Identifier");
-        id3v2_2FrameIdToString.put("MLL", "MPEG location lookup table");
-        id3v2_2FrameIdToString.put("PIC", "Attached picture");
-        id3v2_2FrameIdToString.put("POP", "Popularimeter");
-        id3v2_2FrameIdToString.put("REV", "Reverb");
-        id3v2_2FrameIdToString.put("RVA", "Relative volume adjustment");
-        id3v2_2FrameIdToString.put("SLT", "Synchronized lyric/text");
-        id3v2_2FrameIdToString.put("STC", "Synced tempo codes");
-        id3v2_2FrameIdToString.put("TAL", "Text: Album/Movie/Show title");
-        id3v2_2FrameIdToString.put("TBP", "Text: BPM (Beats Per Minute)");
-        id3v2_2FrameIdToString.put("TCM", "Text: Composer");
-        id3v2_2FrameIdToString.put("TCO", "Text: Content type");
-        id3v2_2FrameIdToString.put("TCR", "Text: Copyright message");
-        id3v2_2FrameIdToString.put("TDA", "Text: Date");
-        id3v2_2FrameIdToString.put("TDY", "Text: Playlist delay");
-        id3v2_2FrameIdToString.put("TEN", "Text: Encoded by");
-        id3v2_2FrameIdToString.put("TFT", "Text: File type");
-        id3v2_2FrameIdToString.put("TIM", "Text: Time");
-        id3v2_2FrameIdToString.put("TKE", "Text: Initial key");
-        id3v2_2FrameIdToString.put("TLA", "Text: Language(s)");
-        id3v2_2FrameIdToString.put("TLE", "Text: Length");
-        id3v2_2FrameIdToString.put("TMT", "Text: Media type");
-        id3v2_2FrameIdToString.put("TOA", "Text: Original artist(s)/performer(s)");
-        id3v2_2FrameIdToString.put("TOF", "Text: Original filename");
-        id3v2_2FrameIdToString.put("TOL", "Text: Original Lyricist(s)/text writer(s)");
-        id3v2_2FrameIdToString.put("TOR", "Text: Original release year");
-        id3v2_2FrameIdToString.put("TOT", "Text: Original album/Movie/Show title");
-        id3v2_2FrameIdToString.put("TP1", "Text: Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group");
-        id3v2_2FrameIdToString.put("TP2", "Text: Band/Orchestra/Accompaniment");
-        id3v2_2FrameIdToString.put("TP3", "Text: Conductor/Performer refinement");
-        id3v2_2FrameIdToString.put("TP4", "Text: Interpreted, remixed, or otherwise modified by");
-        id3v2_2FrameIdToString.put("TPA", "Text: Part of a set");
-        id3v2_2FrameIdToString.put("TPB", "Text: Publisher");
-        id3v2_2FrameIdToString.put("TRC", "Text: ISRC (International Standard Recording Code)");
-        id3v2_2FrameIdToString.put("TRD", "Text: Recording dates");
-        id3v2_2FrameIdToString.put("TRK", "Text: Track number/Position in set");
-        id3v2_2FrameIdToString.put("TSI", "Text: Size");
-        id3v2_2FrameIdToString.put("TSS", "Text: Software/hardware and settings used for encoding");
-        id3v2_2FrameIdToString.put("TT1", "Text: Content group description");
-        id3v2_2FrameIdToString.put("TT2", "Text: Title/Songname/Content description");
-        id3v2_2FrameIdToString.put("TT3", "Text: Subtitle/Description refinement");
-        id3v2_2FrameIdToString.put("TXT", "Text: Lyricist/text writer");
-        id3v2_2FrameIdToString.put("TXX", "User defined text information frame");
-        id3v2_2FrameIdToString.put("TYE", "Text: Year");
-        id3v2_2FrameIdToString.put("UFI", "Unique file identifier");
-        id3v2_2FrameIdToString.put("ULT", "Unsychronized lyric/text transcription");
-        id3v2_2FrameIdToString.put("WAF", "URL: Official audio file webpage");
-        id3v2_2FrameIdToString.put("WAR", "URL: Official artist/performer webpage");
-        id3v2_2FrameIdToString.put("WAS", "URL: Official audio source webpage");
-        id3v2_2FrameIdToString.put("WCM", "URL: Commercial information");
-        id3v2_2FrameIdToString.put("WCP", "URL: Copyright/Legal information");
-        id3v2_2FrameIdToString.put("WPB", "URL: Publishers official webpage");
-        id3v2_2FrameIdToString.put("WXX", "User defined URL link frame");
-        String key;
-        String value;
-        Iterator iterator = id3v2_2FrameIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) id3v2_2FrameIdToString.get(key);
-            id3v2_2FrameStringToId.put(value, key);
+		id3v2_2FrameIdToString.put(TagFrameIdentifier.get("BUF"), "Recommended buffer size");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("CNT"), "Play counter");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("COM"), "Comments");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("CRA"), "Audio encryption");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("CRM"), "Encrypted meta frame");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("ETC"), "Event timing codes");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("EQU"), "Equalization");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("GEO"), "General encapsulated object");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("IPL"), "Involved people list");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("LNK"), "Linked information");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("MCI"), "Music CD Identifier");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("MLL"), "MPEG location lookup table");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("PIC"), "Attached picture");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("POP"), "Popularimeter");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("REV"), "Reverb");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("RVA"), "Relative volume adjustment");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("SLT"), "Synchronized lyric/text");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("STC"), "Synced tempo codes");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TAL"), "Text: Album/Movie/Show title");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TBP"), "Text: BPM (Beats Per Minute)");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TCM"), "Text: Composer");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TCO"), "Text: Content type");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TCR"), "Text: Copyright message");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TDA"), "Text: Date");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TDY"), "Text: Playlist delay");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TEN"), "Text: Encoded by");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TFT"), "Text: File type");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TIM"), "Text: Time");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TKE"), "Text: Initial key");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TLA"), "Text: Language(s)");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TLE"), "Text: Length");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TMT"), "Text: Media type");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TOA"), "Text: Original artist(s)/performer(s)");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TOF"), "Text: Original filename");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TOL"), "Text: Original Lyricist(s)/text writer(s)");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TOR"), "Text: Original release year");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TOT"), "Text: Original album/Movie/Show title");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TP1"), "Text: Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TP2"), "Text: Band/Orchestra/Accompaniment");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TP3"), "Text: Conductor/Performer refinement");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TP4"), "Text: Interpreted, remixed, or otherwise modified by");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TPA"), "Text: Part of a set");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TPB"), "Text: Publisher");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TRC"), "Text: ISRC (International Standard Recording Code)");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TRD"), "Text: Recording dates");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TRK"), "Text: Track number/Position in set");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TSI"), "Text: Size");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TSS"), "Text: Software/hardware and settings used for encoding");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TT1"), "Text: Content group description");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TT2"), "Text: Title/Songname/Content description");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TT3"), "Text: Subtitle/Description refinement");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TXT"), "Text: Lyricist/text writer");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TXX"), "User defined text information frame");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("TYE"), "Text: Year");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("UFI"), "Unique file identifier");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("ULT"), "Unsychronized lyric/text transcription");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WAF"), "URL: Official audio file webpage");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WAR"), "URL: Official artist/performer webpage");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WAS"), "URL: Official audio source webpage");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WCM"), "URL: Commercial information");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WCP"), "URL: Copyright/Legal information");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WPB"), "URL: Publishers official webpage");
+        id3v2_2FrameIdToString.put(TagFrameIdentifier.get("WXX"), "User defined URL link frame");
+        
+        {
+	        TagIdentifier key;
+	        String value;
+	        Iterator<TagIdentifier> iterator = id3v2_2FrameIdToString.keySet().iterator();
+	        while (iterator.hasNext()) {
+	            key = iterator.next();
+	            value = id3v2_2FrameIdToString.get(key);
+	            id3v2_2FrameStringToId.put(value, key);
+	        }
         }
-        id3v2_3FrameIdToString.put("AENC", "Audio encryption");
-        id3v2_3FrameIdToString.put("APIC", "Attached picture");
-        id3v2_3FrameIdToString.put("COMM", "Comments");
-        id3v2_3FrameIdToString.put("COMR", "Commercial frame");
-        id3v2_3FrameIdToString.put("ENCR", "Encryption method registration");
-        id3v2_3FrameIdToString.put("EQUA", "Equalization");
-        id3v2_3FrameIdToString.put("ETCO", "Event timing codes");
-        id3v2_3FrameIdToString.put("GEOB", "General encapsulated object");
-        id3v2_3FrameIdToString.put("GRID", "Group identification registration");
-        id3v2_3FrameIdToString.put("IPLS", "Involved people list");
-        id3v2_3FrameIdToString.put("LINK", "Linked information");
-        id3v2_3FrameIdToString.put("MCDI", "Music CD identifier");
-        id3v2_3FrameIdToString.put("MLLT", "MPEG location lookup table");
-        id3v2_3FrameIdToString.put("OWNE", "Ownership frame");
-        id3v2_3FrameIdToString.put("PRIV", "Private frame");
-        id3v2_3FrameIdToString.put("PCNT", "Play counter");
-        id3v2_3FrameIdToString.put("POPM", "Popularimeter");
-        id3v2_3FrameIdToString.put("POSS", "Position synchronisation frame");
-        id3v2_3FrameIdToString.put("RBUF", "Recommended buffer size");
-        id3v2_3FrameIdToString.put("RVAD", "Relative volume adjustment");
-        id3v2_3FrameIdToString.put("RVRB", "Reverb");
-        id3v2_3FrameIdToString.put("SYLT", "Synchronized lyric/text");
-        id3v2_3FrameIdToString.put("SYTC", "Synchronized tempo codes");
-        id3v2_3FrameIdToString.put("TALB", "Text: Album/Movie/Show title");
-        id3v2_3FrameIdToString.put("TBPM", "Text: BPM (beats per minute)");
-        id3v2_3FrameIdToString.put("TCOM", "Text: Composer");
-        id3v2_3FrameIdToString.put("TCON", "Text: Content type");
-        id3v2_3FrameIdToString.put("TCOP", "Text: Copyright message");
-        id3v2_3FrameIdToString.put("TDAT", "Text: Date");
-        id3v2_3FrameIdToString.put("TDLY", "Text: Playlist delay");
-        id3v2_3FrameIdToString.put("TENC", "Text: Encoded by");
-        id3v2_3FrameIdToString.put("TEXT", "Text: Lyricist/Text writer");
-        id3v2_3FrameIdToString.put("TFLT", "Text: File type");
-        id3v2_3FrameIdToString.put("TIME", "Text: Time");
-        id3v2_3FrameIdToString.put("TIT1", "Text: Content group description");
-        id3v2_3FrameIdToString.put("TIT2", "Text: Title/songname/content description");
-        id3v2_3FrameIdToString.put("TIT3", "Text: Subtitle/Description refinement");
-        id3v2_3FrameIdToString.put("TKEY", "Text: Initial key");
-        id3v2_3FrameIdToString.put("TLAN", "Text: Language(s)");
-        id3v2_3FrameIdToString.put("TLEN", "Text: Length");
-        id3v2_3FrameIdToString.put("TMED", "Text: Media type");
-        id3v2_3FrameIdToString.put("TOAL", "Text: Original album/movie/show title");
-        id3v2_3FrameIdToString.put("TOFN", "Text: Original filename");
-        id3v2_3FrameIdToString.put("TOLY", "Text: Original lyricist(s)/text writer(s)");
-        id3v2_3FrameIdToString.put("TOPE", "Text: Original artist(s)/performer(s)");
-        id3v2_3FrameIdToString.put("TORY", "Text: Original release year");
-        id3v2_3FrameIdToString.put("TOWN", "Text: File owner/licensee");
-        id3v2_3FrameIdToString.put("TPE1", "Text: Lead performer(s)/Soloist(s)");
-        id3v2_3FrameIdToString.put("TPE2", "Text: Band/orchestra/accompaniment");
-        id3v2_3FrameIdToString.put("TPE3", "Text: Conductor/performer refinement");
-        id3v2_3FrameIdToString.put("TPE4", "Text: Interpreted, remixed, or otherwise modified by");
-        id3v2_3FrameIdToString.put("TPOS", "Text: Part of a set");
-        id3v2_3FrameIdToString.put("TPUB", "Text: Publisher");
-        id3v2_3FrameIdToString.put("TRCK", "Text: Track number/Position in set");
-        id3v2_3FrameIdToString.put("TRDA", "Text: Recording dates");
-        id3v2_3FrameIdToString.put("TRSN", "Text: Internet radio station name");
-        id3v2_3FrameIdToString.put("TRSO", "Text: Internet radio station owner");
-        id3v2_3FrameIdToString.put("TSIZ", "Text: Size");
-        id3v2_3FrameIdToString.put("TSRC", "Text: ISRC (international standard recording code)");
-        id3v2_3FrameIdToString.put("TSSE", "Text: Software/Hardware and settings used for encoding");
-        id3v2_3FrameIdToString.put("TYER", "Text: Year");
-        id3v2_3FrameIdToString.put("TXXX", "User defined text information frame");
-        id3v2_3FrameIdToString.put("UFID", "Unique file identifier");
-        id3v2_3FrameIdToString.put("USER", "Terms of use");
-        id3v2_3FrameIdToString.put("USLT", "Unsychronized lyric/text transcription");
-        id3v2_3FrameIdToString.put("WCOM", "URL: Commercial information");
-        id3v2_3FrameIdToString.put("WCOP", "URL: Copyright/Legal information");
-        id3v2_3FrameIdToString.put("WOAF", "URL: Official audio file webpage");
-        id3v2_3FrameIdToString.put("WOAR", "URL: Official artist/performer webpage");
-        id3v2_3FrameIdToString.put("WOAS", "URL: Official audio source webpage");
-        id3v2_3FrameIdToString.put("WORS", "URL: Official internet radio station homepage");
-        id3v2_3FrameIdToString.put("WPAY", "URL: Payment");
-        id3v2_3FrameIdToString.put("WPUB", "URL: Publishers official webpage");
-        id3v2_3FrameIdToString.put("WXXX", "User defined URL link frame");
-        iterator = id3v2_3FrameIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) id3v2_3FrameIdToString.get(key);
-            id3v2_3FrameStringToId.put(value, key);
+        
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("AENC"), "Audio encryption");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("APIC"), "Attached picture");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("COMM"), "Comments");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("COMR"), "Commercial frame");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("ENCR"), "Encryption method registration");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("EQUA"), "Equalization");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("ETCO"), "Event timing codes");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("GEOB"), "General encapsulated object");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("GRID"), "Group identification registration");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("IPLS"), "Involved people list");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("LINK"), "Linked information");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("MCDI"), "Music CD identifier");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("MLLT"), "MPEG location lookup table");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("OWNE"), "Ownership frame");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("PRIV"), "Private frame");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("PCNT"), "Play counter");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("POPM"), "Popularimeter");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("POSS"), "Position synchronisation frame");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("RBUF"), "Recommended buffer size");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("RVAD"), "Relative volume adjustment");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("RVRB"), "Reverb");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("SYLT"), "Synchronized lyric/text");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("SYTC"), "Synchronized tempo codes");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TALB"), "Text: Album/Movie/Show title");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TBPM"), "Text: BPM (beats per minute)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TCOM"), "Text: Composer");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TCON"), "Text: Content type");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TCOP"), "Text: Copyright message");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TDAT"), "Text: Date");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TDLY"), "Text: Playlist delay");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TENC"), "Text: Encoded by");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TEXT"), "Text: Lyricist/Text writer");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TFLT"), "Text: File type");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TIME"), "Text: Time");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TIT1"), "Text: Content group description");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TIT2"), "Text: Title/songname/content description");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TIT3"), "Text: Subtitle/Description refinement");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TKEY"), "Text: Initial key");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TLAN"), "Text: Language(s)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TLEN"), "Text: Length");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TMED"), "Text: Media type");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TOAL"), "Text: Original album/movie/show title");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TOFN"), "Text: Original filename");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TOLY"), "Text: Original lyricist(s)/text writer(s)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TOPE"), "Text: Original artist(s)/performer(s)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TORY"), "Text: Original release year");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TOWN"), "Text: File owner/licensee");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPE1"), "Text: Lead performer(s)/Soloist(s)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPE2"), "Text: Band/orchestra/accompaniment");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPE3"), "Text: Conductor/performer refinement");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPE4"), "Text: Interpreted, remixed, or otherwise modified by");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPOS"), "Text: Part of a set");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TPUB"), "Text: Publisher");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TRCK"), "Text: Track number/Position in set");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TRDA"), "Text: Recording dates");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TRSN"), "Text: Internet radio station name");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TRSO"), "Text: Internet radio station owner");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TSIZ"), "Text: Size");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TSRC"), "Text: ISRC (international standard recording code)");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TSSE"), "Text: Software/Hardware and settings used for encoding");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TYER"), "Text: Year");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("TXXX"), "User defined text information frame");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("UFID"), "Unique file identifier");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("USER"), "Terms of use");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("USLT"), "Unsychronized lyric/text transcription");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WCOM"), "URL: Commercial information");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WCOP"), "URL: Copyright/Legal information");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WOAF"), "URL: Official audio file webpage");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WOAR"), "URL: Official artist/performer webpage");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WOAS"), "URL: Official audio source webpage");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WORS"), "URL: Official internet radio station homepage");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WPAY"), "URL: Payment");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WPUB"), "URL: Publishers official webpage");
+        id3v2_3FrameIdToString.put(TagFrameIdentifier.get("WXXX"), "User defined URL link frame");
+        
+        {
+	        Iterator<TagIdentifier> iterator = id3v2_3FrameIdToString.keySet().iterator();
+	        TagIdentifier key;
+	        String value;
+	        while (iterator.hasNext()) {
+	            key = iterator.next();
+	            value = id3v2_3FrameIdToString.get(key);
+	            id3v2_3FrameStringToId.put(value, key);
+	        }
         }
-        id3v2_4FrameIdToString.put("AENC", "Audio encryption");
-        id3v2_4FrameIdToString.put("APIC", "Attached picture");
-        id3v2_4FrameIdToString.put("ASPI", "Audio seek point index");
-        id3v2_4FrameIdToString.put("COMM", "Comments");
-        id3v2_4FrameIdToString.put("COMR", "Commercial frame");
-        id3v2_4FrameIdToString.put("ENCR", "Encryption method registration");
-        id3v2_4FrameIdToString.put("EQU2", "Equalisation (2)");
-        id3v2_4FrameIdToString.put("ETCO", "Event timing codes");
-        id3v2_4FrameIdToString.put("GEOB", "General encapsulated object");
-        id3v2_4FrameIdToString.put("GRID", "Group identification registration");
-        id3v2_4FrameIdToString.put("LINK", "Linked information");
-        id3v2_4FrameIdToString.put("MCDI", "Music CD identifier");
-        id3v2_4FrameIdToString.put("MLLT", "MPEG location lookup table");
-        id3v2_4FrameIdToString.put("OWNE", "Ownership frame");
-        id3v2_4FrameIdToString.put("PRIV", "Private frame");
-        id3v2_4FrameIdToString.put("PCNT", "Play counter");
-        id3v2_4FrameIdToString.put("POPM", "Popularimeter");
-        id3v2_4FrameIdToString.put("POSS", "Position synchronisation frame");
-        id3v2_4FrameIdToString.put("RBUF", "Recommended buffer size");
-        id3v2_4FrameIdToString.put("RVA2", "Relative volume adjustment (2)");
-        id3v2_4FrameIdToString.put("RVRB", "Reverb");
-        id3v2_4FrameIdToString.put("SEEK", "Seek frame");
-        id3v2_4FrameIdToString.put("SIGN", "Signature frame");
-        id3v2_4FrameIdToString.put("SYLT", "Synchronised lyric/text");
-        id3v2_4FrameIdToString.put("SYTC", "Synchronised tempo codes");
-        id3v2_4FrameIdToString.put("TALB", "Text: Album/Movie/Show title");
-        id3v2_4FrameIdToString.put("TBPM", "Text: BPM (beats per minute)");
-        id3v2_4FrameIdToString.put("TCOM", "Text: Composer");
-        id3v2_4FrameIdToString.put("TCON", "Text: Content type (genre)");
-        id3v2_4FrameIdToString.put("TCOP", "Text: Copyright message");
-        id3v2_4FrameIdToString.put("TDEN", "Text: Encoding time");
-        id3v2_4FrameIdToString.put("TDLY", "Text: Playlist delay");
-        id3v2_4FrameIdToString.put("TDOR", "Text: Original release time");
-        id3v2_4FrameIdToString.put("TDRC", "Text: Recording time");
-        id3v2_4FrameIdToString.put("TDRL", "Text: Release time");
-        id3v2_4FrameIdToString.put("TDTG", "Text: Tagging time");
-        id3v2_4FrameIdToString.put("TENC", "Text: Encoded by");
-        id3v2_4FrameIdToString.put("TEXT", "Text: Lyricist/Text writer");
-        id3v2_4FrameIdToString.put("TFLT", "Text: File type");
-        id3v2_4FrameIdToString.put("TIPL", "Text: Involved people list");
-        id3v2_4FrameIdToString.put("TIT1", "Text: Content group description");
-        id3v2_4FrameIdToString.put("TIT2", "Text: Title/songname/content description");
-        id3v2_4FrameIdToString.put("TIT3", "Text: Subtitle/Description refinement");
-        id3v2_4FrameIdToString.put("TKEY", "Text: Initial key");
-        id3v2_4FrameIdToString.put("TLAN", "Text: Language(s)");
-        id3v2_4FrameIdToString.put("TLEN", "Text: Length");
-        id3v2_4FrameIdToString.put("TMCL", "Text: Musician credits list");
-        id3v2_4FrameIdToString.put("TMED", "Text: Media type");
-        id3v2_4FrameIdToString.put("TMOO", "Text: Mood");
-        id3v2_4FrameIdToString.put("TOAL", "Text: Original album/movie/show title");
-        id3v2_4FrameIdToString.put("TOFN", "Text: Original filename");
-        id3v2_4FrameIdToString.put("TOLY", "Text: Original lyricist(s)/text writer(s)");
-        id3v2_4FrameIdToString.put("TOPE", "Text: Original artist(s)/performer(s)");
-        id3v2_4FrameIdToString.put("TOWN", "Text: File owner/licensee");
-        id3v2_4FrameIdToString.put("TPE1", "Text: Lead performer(s)/Soloist(s)");
-        id3v2_4FrameIdToString.put("TPE2", "Text: Band/orchestra/accompaniment");
-        id3v2_4FrameIdToString.put("TPE3", "Text: Conductor/performer refinement");
-        id3v2_4FrameIdToString.put("TPE4", "Text: Interpreted, remixed, or otherwise modified by");
-        id3v2_4FrameIdToString.put("TPOS", "Text: Part of a set");
-        id3v2_4FrameIdToString.put("TPRO", "Text: Produced notice");
-        id3v2_4FrameIdToString.put("TPUB", "Text: Publisher");
-        id3v2_4FrameIdToString.put("TRCK", "Text: Track number/Position in set");
-        id3v2_4FrameIdToString.put("TRSN", "Text: Internet radio station name");
-        id3v2_4FrameIdToString.put("TRSO", "Text: Internet radio station owner");
-        id3v2_4FrameIdToString.put("TSOA", "Text: Album sort order");
-        id3v2_4FrameIdToString.put("TSOP", "Text: Performer sort order");
-        id3v2_4FrameIdToString.put("TSOT", "Text: Title sort order");
-        id3v2_4FrameIdToString.put("TSRC", "Text: ISRC (international standard recording code)");
-        id3v2_4FrameIdToString.put("TSSE", "Text: Software/Hardware and settings used for encoding");
-        id3v2_4FrameIdToString.put("TSST", "Text: Set subtitle");
-        id3v2_4FrameIdToString.put("TXXX", "User defined text information frame");
-        id3v2_4FrameIdToString.put("UFID", "Unique file identifier");
-        id3v2_4FrameIdToString.put("USER", "Terms of use");
-        id3v2_4FrameIdToString.put("USLT", "Unsynchronised lyric/text transcription");
-        id3v2_4FrameIdToString.put("WCOM", "URL: Commercial information");
-        id3v2_4FrameIdToString.put("WCOP", "URL: Copyright/Legal information");
-        id3v2_4FrameIdToString.put("WOAF", "URL: Official audio file webpage");
-        id3v2_4FrameIdToString.put("WOAR", "URL: Official artist/performer webpage");
-        id3v2_4FrameIdToString.put("WOAS", "URL: Official audio source webpage");
-        id3v2_4FrameIdToString.put("WORS", "URL: Official Internet radio station homepage");
-        id3v2_4FrameIdToString.put("WPAY", "URL: Payment");
-        id3v2_4FrameIdToString.put("WPUB", "URL: Publishers official webpage");
-        id3v2_4FrameIdToString.put("WXXX", "User defined URL link frame");
-        iterator = id3v2_4FrameIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) id3v2_4FrameIdToString.get(key);
-            id3v2_4FrameStringToId.put(value, key);
+        
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("AENC"), "Audio encryption");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("APIC"), "Attached picture");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("ASPI"), "Audio seek point index");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("COMM"), "Comments");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("COMR"), "Commercial frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("ENCR"), "Encryption method registration");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("EQU2"), "Equalisation (2)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("ETCO"), "Event timing codes");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("GEOB"), "General encapsulated object");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("GRID"), "Group identification registration");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("LINK"), "Linked information");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("MCDI"), "Music CD identifier");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("MLLT"), "MPEG location lookup table");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("OWNE"), "Ownership frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("PRIV"), "Private frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("PCNT"), "Play counter");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("POPM"), "Popularimeter");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("POSS"), "Position synchronisation frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("RBUF"), "Recommended buffer size");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("RVA2"), "Relative volume adjustment (2)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("RVRB"), "Reverb");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("SEEK"), "Seek frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("SIGN"), "Signature frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("SYLT"), "Synchronised lyric/text");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("SYTC"), "Synchronised tempo codes");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TALB"), "Text: Album/Movie/Show title");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TBPM"), "Text: BPM (beats per minute)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TCOM"), "Text: Composer");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TCON"), "Text: Content type (genre)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TCOP"), "Text: Copyright message");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDEN"), "Text: Encoding time");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDLY"), "Text: Playlist delay");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDOR"), "Text: Original release time");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDRC"), "Text: Recording time");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDRL"), "Text: Release time");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TDTG"), "Text: Tagging time");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TENC"), "Text: Encoded by");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TEXT"), "Text: Lyricist/Text writer");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TFLT"), "Text: File type");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TIPL"), "Text: Involved people list");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TIT1"), "Text: Content group description");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TIT2"), "Text: Title/songname/content description");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TIT3"), "Text: Subtitle/Description refinement");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TKEY"), "Text: Initial key");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TLAN"), "Text: Language(s)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TLEN"), "Text: Length");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TMCL"), "Text: Musician credits list");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TMED"), "Text: Media type");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TMOO"), "Text: Mood");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TOAL"), "Text: Original album/movie/show title");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TOFN"), "Text: Original filename");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TOLY"), "Text: Original lyricist(s)/text writer(s)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TOPE"), "Text: Original artist(s)/performer(s)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TOWN"), "Text: File owner/licensee");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPE1"), "Text: Lead performer(s)/Soloist(s)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPE2"), "Text: Band/orchestra/accompaniment");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPE3"), "Text: Conductor/performer refinement");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPE4"), "Text: Interpreted, remixed, or otherwise modified by");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPOS"), "Text: Part of a set");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPRO"), "Text: Produced notice");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TPUB"), "Text: Publisher");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TRCK"), "Text: Track number/Position in set");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TRSN"), "Text: Internet radio station name");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TRSO"), "Text: Internet radio station owner");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSOA"), "Text: Album sort order");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSOP"), "Text: Performer sort order");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSOT"), "Text: Title sort order");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSRC"), "Text: ISRC (international standard recording code)");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSSE"), "Text: Software/Hardware and settings used for encoding");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TSST"), "Text: Set subtitle");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("TXXX"), "User defined text information frame");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("UFID"), "Unique file identifier");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("USER"), "Terms of use");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("USLT"), "Unsynchronised lyric/text transcription");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WCOM"), "URL: Commercial information");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WCOP"), "URL: Copyright/Legal information");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WOAF"), "URL: Official audio file webpage");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WOAR"), "URL: Official artist/performer webpage");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WOAS"), "URL: Official audio source webpage");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WORS"), "URL: Official Internet radio station homepage");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WPAY"), "URL: Payment");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WPUB"), "URL: Publishers official webpage");
+        id3v2_4FrameIdToString.put(TagFrameIdentifier.get("WXXX"), "User defined URL link frame");
+        
+        {
+	        Iterator<TagIdentifier> iterator = id3v2_4FrameIdToString.keySet().iterator();
+	        TagIdentifier key;
+	        String value;
+	        while (iterator.hasNext()) {
+	            key = iterator.next();
+	            value = id3v2_4FrameIdToString.get(key);
+	            id3v2_4FrameStringToId.put(value, key);
+	        }
         }
-        lyrics3v2FieldIdToString.put("IND", "Indications field");
-        lyrics3v2FieldIdToString.put("LYR", "Lyrics multi line text");
-        lyrics3v2FieldIdToString.put("INF", "Additional information multi line text");
-        lyrics3v2FieldIdToString.put("AUT", "Lyrics/Music Author name");
-        lyrics3v2FieldIdToString.put("EAL", "Extended Album name");
-        lyrics3v2FieldIdToString.put("EAR", "Extended Artist name");
-        lyrics3v2FieldIdToString.put("ETT", "Extended Track Title");
-        lyrics3v2FieldIdToString.put("IMG", "Link to an image files");
-        iterator = lyrics3v2FieldIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) lyrics3v2FieldIdToString.get(key);
-            lyrics3v2FieldStringToId.put(value, key);
+        
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("IND"), "Indications field");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("LYR"), "Lyrics multi line text");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("INF"), "Additional information multi line text");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("AUT"), "Lyrics/Music Author name");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("EAL"), "Extended Album name");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("EAR"), "Extended Artist name");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("ETT"), "Extended Track Title");
+        lyrics3v2FieldIdToString.put(TagFrameIdentifier.get("IMG"), "Link to an image files");
+        
+        {
+        	Iterator<TagIdentifier> iterator = lyrics3v2FieldIdToString.keySet().iterator();
+	        TagIdentifier key;
+	        String value;
+	        while (iterator.hasNext()) {
+	            key =  iterator.next();
+	            value = lyrics3v2FieldIdToString.get(key);
+	            lyrics3v2FieldStringToId.put(value, key);
+	        }
         }
-        id3v2_2ToId3v2_3.put("BUF", "RBUF");
-        id3v2_2ToId3v2_3.put("CNT", "PCNT");
-        id3v2_2ToId3v2_3.put("COM", "COMM");
-        id3v2_2ToId3v2_3.put("CRA", "AENC");
+        
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("BUF"), TagFrameIdentifier.get("RBUF"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("CNT"), TagFrameIdentifier.get("PCNT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("COM"), TagFrameIdentifier.get("COMM"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("CRA"), TagFrameIdentifier.get("AENC"));
 
-        //id3v2_2ToId3v2_4.put("CRM", "CRM"); // removed in ID3v2.3
-        id3v2_2ToId3v2_3.put("ETC", "ETCO");
-        id3v2_2ToId3v2_3.put("EQU", "EQUA"); // changed from EQUA to EQU2 in
+        //id3v2_2ToId3v2_4.put(TagIdentifierConst.get("CRM"), "CRM"); // removed in ID3v2.3
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("ETC"), TagFrameIdentifier.get("ETCO"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("EQU"), TagFrameIdentifier.get("EQUA")); // changed from EQUA to EQU2 in
 
         // ID3v2.4
-        id3v2_2ToId3v2_3.put("GEO", "GEOB"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("IPL", "IPLS");
-        id3v2_2ToId3v2_3.put("LNK", "LINK");
-        id3v2_2ToId3v2_3.put("MCI", "MCDI");
-        id3v2_2ToId3v2_3.put("MLL", "MLLT");
-        id3v2_2ToId3v2_3.put("PIC", "APIC"); // the APIC spec is different from
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("GEO"), TagFrameIdentifier.get("GEOB")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("IPL"), TagFrameIdentifier.get("IPLS"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("LNK"), TagFrameIdentifier.get("LINK"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("MCI"), TagFrameIdentifier.get("MCDI"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("MLL"), TagFrameIdentifier.get("MLLT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("PIC"), TagFrameIdentifier.get("APIC")); // the APIC spec is different from
 
         // PIC
-        id3v2_2ToId3v2_3.put("POP", "POPM");
-        id3v2_2ToId3v2_3.put("REV", "RVRB");
-        id3v2_2ToId3v2_3.put("RVA", "RVAD"); // changed from RVAD to RVA2 in
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("POP"), TagFrameIdentifier.get("POPM"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("REV"), TagFrameIdentifier.get("RVRB"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("RVA"), TagFrameIdentifier.get("RVAD")); // changed from RVAD to RVA2 in
 
         // ID3v2.4
-        id3v2_2ToId3v2_3.put("SLT", "SYLT");
-        id3v2_2ToId3v2_3.put("STC", "SYTC");
-        id3v2_2ToId3v2_3.put("TAL", "TALB");
-        id3v2_2ToId3v2_3.put("TBP", "TBPM");
-        id3v2_2ToId3v2_3.put("TCM", "TCOM");
-        id3v2_2ToId3v2_3.put("TCO", "TCON");
-        id3v2_2ToId3v2_3.put("TCR", "TCOP");
-        id3v2_2ToId3v2_3.put("TDA", "TDAT"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("TDY", "TDLY");
-        id3v2_2ToId3v2_3.put("TEN", "TENC");
-        id3v2_2ToId3v2_3.put("TFT", "TFLT");
-        id3v2_2ToId3v2_3.put("TIM", "TIME"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("TKE", "TKEY");
-        id3v2_2ToId3v2_3.put("TLA", "TLAN");
-        id3v2_2ToId3v2_3.put("TLE", "TLEN");
-        id3v2_2ToId3v2_3.put("TMT", "TMED");
-        id3v2_2ToId3v2_3.put("TOA", "TOPE");
-        id3v2_2ToId3v2_3.put("TOF", "TOFN");
-        id3v2_2ToId3v2_3.put("TOL", "TOLY");
-        id3v2_2ToId3v2_3.put("TOR", "TORY"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("TOT", "TOAL");
-        id3v2_2ToId3v2_3.put("TP1", "TPE1");
-        id3v2_2ToId3v2_3.put("TP2", "TPE2");
-        id3v2_2ToId3v2_3.put("TP3", "TPE3");
-        id3v2_2ToId3v2_3.put("TP4", "TPE4");
-        id3v2_2ToId3v2_3.put("TPA", "TPOS");
-        id3v2_2ToId3v2_3.put("TPB", "TPUB");
-        id3v2_2ToId3v2_3.put("TRC", "TSRC");
-        id3v2_2ToId3v2_3.put("TRD", "TRDA"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("TRK", "TRCK");
-        id3v2_2ToId3v2_3.put("TSI", "TSIZ"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("TSS", "TSSE");
-        id3v2_2ToId3v2_3.put("TT1", "TIT1");
-        id3v2_2ToId3v2_3.put("TT2", "TIT2");
-        id3v2_2ToId3v2_3.put("TT3", "TIT3");
-        id3v2_2ToId3v2_3.put("TXT", "TEXT");
-        id3v2_2ToId3v2_3.put("TXX", "TXXX");
-        id3v2_2ToId3v2_3.put("TYE", "TYER"); // Deprecated in ID3v2.4
-        id3v2_2ToId3v2_3.put("UFI", "UFID");
-        id3v2_2ToId3v2_3.put("ULT", "USLT");
-        id3v2_2ToId3v2_3.put("WAF", "WOAF");
-        id3v2_2ToId3v2_3.put("WAR", "WOAR");
-        id3v2_2ToId3v2_3.put("WAS", "WOAS");
-        id3v2_2ToId3v2_3.put("WCM", "WCOM");
-        id3v2_2ToId3v2_3.put("WCP", "WCOP");
-        id3v2_2ToId3v2_3.put("WPB", "WPUB");
-        id3v2_2ToId3v2_3.put("WXX", "WXXX");
-        iterator = id3v2_2ToId3v2_3.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) id3v2_2ToId3v2_3.get(key);
-            id3v2_3ToId3v2_2.put(value, key);
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("SLT"), TagFrameIdentifier.get("SYLT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("STC"), TagFrameIdentifier.get("SYTC"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TAL"), TagFrameIdentifier.get("TALB"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TBP"), TagFrameIdentifier.get("TBPM"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TCM"), TagFrameIdentifier.get("TCOM"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TCO"), TagFrameIdentifier.get("TCON"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TCR"), TagFrameIdentifier.get("TCOP"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TDA"), TagFrameIdentifier.get("TDAT")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TDY"), TagFrameIdentifier.get("TDLY"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TEN"), TagFrameIdentifier.get("TENC"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TFT"), TagFrameIdentifier.get("TFLT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TIM"), TagFrameIdentifier.get("TIME")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TKE"), TagFrameIdentifier.get("TKEY"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TLA"), TagFrameIdentifier.get("TLAN"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TLE"), TagFrameIdentifier.get("TLEN"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TMT"), TagFrameIdentifier.get("TMED"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TOA"), TagFrameIdentifier.get("TOPE"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TOF"), TagFrameIdentifier.get("TOFN"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TOL"), TagFrameIdentifier.get("TOLY"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TOR"), TagFrameIdentifier.get("TORY")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TOT"), TagFrameIdentifier.get("TOAL"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TP1"), TagFrameIdentifier.get("TPE1"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TP2"), TagFrameIdentifier.get("TPE2"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TP3"), TagFrameIdentifier.get("TPE3"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TP4"), TagFrameIdentifier.get("TPE4"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TPA"), TagFrameIdentifier.get("TPOS"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TPB"), TagFrameIdentifier.get("TPUB"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TRC"), TagFrameIdentifier.get("TSRC"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TRD"), TagFrameIdentifier.get("TRDA")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TRK"), TagFrameIdentifier.get("TRCK"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TSI"), TagFrameIdentifier.get("TSIZ")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TSS"), TagFrameIdentifier.get("TSSE"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TT1"), TagFrameIdentifier.get("TIT1"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TT2"), TagFrameIdentifier.get("TIT2"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TT3"), TagFrameIdentifier.get("TIT3"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TXT"), TagFrameIdentifier.get("TEXT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TXX"), TagFrameIdentifier.get("TXXX"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("TYE"), TagFrameIdentifier.get("TYER")); // Deprecated in ID3v2.4
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("UFI"), TagFrameIdentifier.get("UFID"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("ULT"), TagFrameIdentifier.get("USLT"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WAF"), TagFrameIdentifier.get("WOAF"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WAR"), TagFrameIdentifier.get("WOAR"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WAS"), TagFrameIdentifier.get("WOAS"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WCM"), TagFrameIdentifier.get("WCOM"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WCP"), TagFrameIdentifier.get("WCOP"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WPB"), TagFrameIdentifier.get("WPUB"));
+        id3v2_2ToId3v2_3.put(TagFrameIdentifier.get("WXX"), TagFrameIdentifier.get("WXXX"));
+        
+        {
+	        Iterator<TagIdentifier> iterator = id3v2_2ToId3v2_3.keySet().iterator();
+	        TagIdentifier key;
+	        TagIdentifier value;	        
+	        while (iterator.hasNext()) {
+	            key = iterator.next();
+	            value = id3v2_2ToId3v2_3.get(key);
+	            id3v2_3ToId3v2_2.put(value, key);
+	        }
         }
-        id3v2_3ToId3v2_4.put("EQUA", "EQU2"); // changed from EQUA to EQU2 in
+        
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("EQUA"), TagFrameIdentifier.get("EQU2")); // changed from EQUA to EQU2 in
 
         // ID3v2.4
-        id3v2_3ToId3v2_4.put("GEOB", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("RVAD", "RVA2"); // changed from RVAD to RVA2 in
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("GEOB"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("RVAD"), TagFrameIdentifier.get("RVA2")); // changed from RVAD to RVA2 in
 
         // ID3v2.4
-        id3v2_3ToId3v2_4.put("TDAT", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("TIME", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("TORY", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("TRDA", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("TSIZ", null); // Deprecated in ID3v2.4
-        id3v2_3ToId3v2_4.put("TYER", null); // Deprecated in ID3v2.4
-        iterator = id3v2_3ToId3v2_4.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            if (key != null) {
-                value = (String) id3v2_3ToId3v2_4.get(key);
-                id3v2_4ToId3v2_3.put(value, key);
-            }
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TDAT"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TIME"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TORY"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TRDA"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TSIZ"), null); // Deprecated in ID3v2.4
+        id3v2_3ToId3v2_4.put(TagFrameIdentifier.get("TYER"), null); // Deprecated in ID3v2.4
+        
+        {
+	        Iterator<TagIdentifier> iterator = id3v2_3ToId3v2_4.keySet().iterator();
+	        TagIdentifier key;
+	        TagIdentifier value;
+	        while (iterator.hasNext()) {
+	            key = iterator.next();
+	            if (key != null) {
+	                value = id3v2_3ToId3v2_4.get(key);
+	                id3v2_4ToId3v2_3.put(value, key);
+	            }
+	        }
         }
+        
         genreIdToString.put(new Long(0), "Blues");
         genreIdToString.put(new Long(1), "Classic Rock");
         genreIdToString.put(new Long(2), "Country");
@@ -870,11 +904,13 @@ public class TagConstant {
 
         // ID's are typed as Integer because the combo box expects it
         Long lkey;
-        iterator = genreIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) genreIdToString.get(lkey);
-            genreStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = genreIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = genreIdToString.get(lkey);
+	            genreStringToId.put(value, lkey);
+	        }
         }
 
         // MPEG-1, Layer I (E)
@@ -1437,30 +1473,37 @@ public class TagConstant {
         languageIdToString.put("znd", "Zande");
         languageIdToString.put("zul", "Zulu");
         languageIdToString.put("zun", "Zuni");
-        iterator = languageIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            value = (String) languageIdToString.get(key);
-            languageStringToId.put(value, key);
+        {
+	        Iterator<String> iterator2 = languageIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            String key2 = iterator2.next();
+	            String value = languageIdToString.get(key2);
+	            languageStringToId.put(value, key2);
+	        }
         }
         textEncodingIdToString.put(new Long(0), "ISO-8859-1");
         textEncodingIdToString.put(new Long(1), "UTF-16");
         textEncodingIdToString.put(new Long(2), "UTF-16BE");
         textEncodingIdToString.put(new Long(3), "UTF-8");
-        iterator = textEncodingIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) textEncodingIdToString.get(lkey);
-            textEncodingStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = textEncodingIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = textEncodingIdToString.get(lkey);
+	            textEncodingStringToId.put(value, lkey);
+	        }
         }
         interpolationMethodIdToString.put(new Long(0), "Band");
         interpolationMethodIdToString.put(new Long(1), "Linear");
-        iterator = interpolationMethodIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) interpolationMethodIdToString.get(lkey);
-            interpolationMethodStringToId.put(value, lkey);
+        {
+        	Iterator<Long> iterator2 = interpolationMethodIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = (Long) iterator2.next();
+	            String value = interpolationMethodIdToString.get(lkey);
+	            interpolationMethodStringToId.put(value, lkey);
+	        }
         }
+        
         pictureTypeIdToString.put(new Long(0), "Other");
         pictureTypeIdToString.put(new Long(1), "32x32 pixels 'file icon' (PNG only)");
         pictureTypeIdToString.put(new Long(2), "Other file icon");
@@ -1482,19 +1525,23 @@ public class TagConstant {
         pictureTypeIdToString.put(new Long(18), "Illustration");
         pictureTypeIdToString.put(new Long(19), "Band/artist logotype");
         pictureTypeIdToString.put(new Long(20), "Publisher/Studio logotype");
-        iterator = pictureTypeIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) pictureTypeIdToString.get(lkey);
-            pictureTypeStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = pictureTypeIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = pictureTypeIdToString.get(lkey);
+	            pictureTypeStringToId.put(value, lkey);
+	        }
         }
         timeStampFormatIdToString.put(new Long(1), "Absolute time using MPEG [MPEG] frames as unit");
         timeStampFormatIdToString.put(new Long(2), "Absolute time using milliseconds as unit");
-        iterator = timeStampFormatIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) timeStampFormatIdToString.get(lkey);
-            timeStampFormatStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = timeStampFormatIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = timeStampFormatIdToString.get(lkey);
+	            timeStampFormatStringToId.put(value, lkey);
+	        }
         }
         typeOfEventIdToString.put(new Long(0x00), "Padding (has no meaning)");
         typeOfEventIdToString.put(new Long(0x01), "End of initial silence");
@@ -1521,11 +1568,13 @@ public class TagConstant {
         typeOfEventIdToString.put(new Long(0x16), "Profanity end");
         typeOfEventIdToString.put(new Long(0xFD), "Audio end (start of silence)");
         typeOfEventIdToString.put(new Long(0xFE), "Audio file ends");
-        iterator = typeOfEventIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) typeOfEventIdToString.get(lkey);
-            typeOfEventStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = typeOfEventIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = typeOfEventIdToString.get(lkey);
+	            typeOfEventStringToId.put(value, lkey);
+	        }
         }
         typeOfChannelIdToString.put(new Long(0x00), "Other");
         typeOfChannelIdToString.put(new Long(0x01), "Master volume");
@@ -1536,11 +1585,13 @@ public class TagConstant {
         typeOfChannelIdToString.put(new Long(0x06), "Front centre");
         typeOfChannelIdToString.put(new Long(0x07), "Back centre");
         typeOfChannelIdToString.put(new Long(0x08), "Subwoofer");
-        iterator = typeOfChannelIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) typeOfChannelIdToString.get(lkey);
-            typeOfChannelStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = typeOfChannelIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = typeOfChannelIdToString.get(lkey);
+	            typeOfChannelStringToId.put(value, lkey);
+	        }
         }
         recievedAsIdToString.put(new Long(0x00), "Other");
         recievedAsIdToString.put(new Long(0x01), "Standard CD album with other songs");
@@ -1551,11 +1602,13 @@ public class TagConstant {
         recievedAsIdToString.put(new Long(0x06), "As note sheets in a book with other sheets");
         recievedAsIdToString.put(new Long(0x07), "Music on other media");
         recievedAsIdToString.put(new Long(0x08), "Non-musical merchandise");
-        iterator = recievedAsIdToString.keySet().iterator();
-        while (iterator.hasNext()) {
-            lkey = (Long) iterator.next();
-            value = (String) recievedAsIdToString.get(lkey);
-            recievedAsStringToId.put(value, lkey);
+        {
+	        Iterator<Long> iterator2 = recievedAsIdToString.keySet().iterator();
+	        while (iterator2.hasNext()) {
+	            lkey = iterator2.next();
+	            String value = recievedAsIdToString.get(lkey);
+	            recievedAsStringToId.put(value, lkey);
+	        }
         }
     }
 

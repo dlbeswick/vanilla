@@ -1,5 +1,7 @@
 package org.farng.mp3.id3;
 
+import org.farng.mp3.TagIdentifier;
+
 /**
  * <h3>4.6.&nbsp;&nbsp; MPEG location lookup table</h3>
  * <p/>
@@ -59,7 +61,7 @@ public class FrameBodyMLLT extends AbstractID3v2FrameBody {
         throw new UnsupportedOperationException("This frame has not been implemented.");
     }
 
-    public String getIdentifier() {
+    public TagIdentifier getIdentifier() {
         throw new UnsupportedOperationException("This frame has not been implemented.");
     }
 }

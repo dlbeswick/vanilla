@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -143,12 +145,13 @@ public class FrameBodyRVAD extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyRVAD object.
      */
-    public FrameBodyRVAD(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyRVAD(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "RVAD";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("RVAD");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public int getSize() {
@@ -183,11 +186,11 @@ public class FrameBodyRVAD extends AbstractID3v2FrameBody {
         throw new UnsupportedOperationException();
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         final int size;
         int offset = 0;
         final byte[] buffer;
-        size = readHeader(file);
+        size = readHeader(file, parent);
         buffer = new byte[size];
         file.read(buffer);
         this.increment = buffer[offset++];
@@ -292,10 +295,10 @@ public class FrameBodyRVAD extends AbstractID3v2FrameBody {
                                                                                                                                                                                                                                                                                          .peakBass;
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final byte[] buffer;
         int offset = 0;
-        writeHeader(file, this.getSize());
+        writeHeader(file, this.getSize(), parent);
         buffer = new byte[this.getSize()];
         buffer[offset++] = this.increment;
         buffer[offset++] = this.bytesUsed;

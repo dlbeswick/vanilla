@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.object.ObjectNumberHashMap;
 import org.farng.mp3.object.ObjectStringHashMap;
 
@@ -42,12 +44,13 @@ public class FrameBodyTLAN extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTLAN object.
      */
-    public FrameBodyTLAN(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTLAN(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TLAN";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TLAN");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     protected void setupObjectList() {

@@ -1,13 +1,17 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagUtility;
+import org.farng.mp3.object.AbstractMP3Object;
 import org.farng.mp3.object.ObjectID3v2LyricLine;
 import org.farng.mp3.object.ObjectLyrics3Line;
 import org.farng.mp3.object.ObjectLyrics3TimeStamp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -102,7 +106,7 @@ import java.util.LinkedList;
  */
 public class FrameBodySYLT extends AbstractID3v2FrameBody {
 
-    LinkedList lines = new LinkedList();
+    LinkedList<ObjectID3v2LyricLine> lines = new LinkedList<ObjectID3v2LyricLine>();
     String description = "";
     String language = "";
     byte contentType = 0;
@@ -151,8 +155,8 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodySYLT object.
      */
-    public FrameBodySYLT(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodySYLT(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     public byte getContentType() {
@@ -163,8 +167,9 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
         return this.description;
     }
 
-    public String getIdentifier() {
-        return "SYLT";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("SYLT");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public String getLanguage() {
@@ -204,7 +209,7 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
     }
 
     public void addLyric(final ObjectLyrics3Line line) {
-        final Iterator iterator = line.getTimeStamp();
+        final Iterator<?> iterator = line.getTimeStamp();
         ObjectLyrics3TimeStamp timeStamp;
         final String lyric = line.getLyric();
         long time;
@@ -239,21 +244,21 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
         throw new java.lang.UnsupportedOperationException("Method equals() not yet implemented.");
     }
 
-    public Iterator iterator() {
-        return this.lines.iterator();
+    public Iterator<AbstractMP3Object> iterator() {
+        return (Collections.<AbstractMP3Object>unmodifiableList(this.lines)).iterator();
     }
 
     protected void setupObjectList() {
 //        throw new UnsupportedOperationException();
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         final int size;
         final int delim;
         int offset = 0;
         final byte[] buffer;
         final String str;
-        size = readHeader(file);
+        size = readHeader(file, parent);
         buffer = new byte[size];
         file.read(buffer);
         str = new String(buffer);
@@ -300,10 +305,10 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
         return str;
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         final byte[] buffer;
         int offset = 0;
-        writeHeader(file, this.getSize());
+        writeHeader(file, this.getSize(), parent);
         buffer = new byte[this.getSize()];
         buffer[offset++] = this.textEncoding; // text encoding;
         this.language = TagUtility.truncate(this.language, 3);

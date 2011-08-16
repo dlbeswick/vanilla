@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -37,11 +39,12 @@ public class FrameBodyTRSN extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTRSN object.
      */
-    public FrameBodyTRSN(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTRSN(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TRSN";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TRSN");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

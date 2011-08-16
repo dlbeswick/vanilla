@@ -144,7 +144,7 @@ public class FilenameParenthesis extends FilenameDelimiter {
      *
      * @return an iterator through each <code>FilenameToken</code> in this composite
      */
-    public Iterator iterator() {
+    public Iterator<?> iterator() {
         return new FilenameParenthesisIterator(this);
     }
 
@@ -155,7 +155,7 @@ public class FilenameParenthesis extends FilenameDelimiter {
      *
      * @param id3v2FrameBodyClass Class of keywords to match against.
      */
-    public void matchAgainstKeyword(final Class id3v2FrameBodyClass) {
+    public void matchAgainstKeyword(final Class<?> id3v2FrameBodyClass) {
         if (AbstractID3v2FrameBody.class.isAssignableFrom(id3v2FrameBodyClass)) {
             if (getBeforeComposite() != null) {
                 getBeforeComposite().matchAgainstKeyword(id3v2FrameBodyClass);

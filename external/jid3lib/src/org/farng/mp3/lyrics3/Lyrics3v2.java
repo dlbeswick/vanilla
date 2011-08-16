@@ -3,8 +3,11 @@ package org.farng.mp3.lyrics3;
 import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.InvalidTagException;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.TagOptionSingleton;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.id3.AbstractID3v2Frame;
 import org.farng.mp3.id3.ID3v1;
 import org.farng.mp3.id3.ID3v2_4;
@@ -78,7 +81,7 @@ import java.util.Map;
  */
 public class Lyrics3v2 extends AbstractLyrics3 {
 
-    private Map fieldMap = new HashMap(8);
+    private Map<TagIdentifier, Lyrics3v2Field> fieldMap = new HashMap<TagIdentifier, Lyrics3v2Field>(8);
 
     /**
      * Creates a new Lyrics3v2 object.
@@ -92,12 +95,12 @@ public class Lyrics3v2 extends AbstractLyrics3 {
      */
     public Lyrics3v2(final Lyrics3v2 copyObject) {
         super(copyObject);
-        final Iterator iterator = copyObject.fieldMap.keySet().iterator();
-        String oldIdentifier;
-        String newIdentifier;
+        final Iterator<TagIdentifier> iterator = copyObject.fieldMap.keySet().iterator();
+        TagIdentifier oldIdentifier;
+        TagIdentifier newIdentifier;
         Lyrics3v2Field newObject;
         while (iterator.hasNext()) {
-            oldIdentifier = iterator.next().toString();
+            oldIdentifier = iterator.next();
             newIdentifier = oldIdentifier;
             newObject = new Lyrics3v2Field((Lyrics3v2Field) copyObject.fieldMap.get(newIdentifier));
             fieldMap.put(newIdentifier, newObject);
@@ -119,7 +122,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
                 fieldMap.put(newField.getIdentifier(), newField);
             } else {
                 Lyrics3v2Field newField;
-                final Iterator iterator;
+                final Iterator<?> iterator;
                 iterator = (new ID3v2_4(mp3tag)).iterator();
                 while (iterator.hasNext()) {
                     try {
@@ -137,8 +140,8 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      * Creates a new Lyrics3v2 object.
      */
-    public Lyrics3v2(final RandomAccessFile file) throws TagNotFoundException, IOException {
-        this.read(file);
+    public Lyrics3v2(final RandomAccessFile file, AbstractID3 parent) throws TagNotFoundException, IOException {
+        this.read(file, parent);
     }
 
     public void setField(final Lyrics3v2Field field) {
@@ -154,7 +157,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
      *
      * @return The value associated with the identifier
      */
-    public Lyrics3v2Field getField(final String identifier) {
+    public Lyrics3v2Field getField(final TagIdentifier identifier) {
         return (Lyrics3v2Field) this.fieldMap.get(identifier);
     }
 
@@ -162,16 +165,16 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         return this.fieldMap.size();
     }
 
-    public String getIdentifier() {
-        return "Lyrics3v2.00";
+    public TagIdentifier getIdentifier() {
+        return TagFrameIdentifier.get("Lyrics3v2.00");
     }
 
     public int getSize() {
         int size = 0;
-        final Iterator iterator = this.fieldMap.values().iterator();
+        final Iterator<Lyrics3v2Field> iterator = this.fieldMap.values().iterator();
         Lyrics3v2Field field;
         while (iterator.hasNext()) {
-            field = (Lyrics3v2Field) iterator.next();
+            field = iterator.next();
             size += field.getSize();
         }
 
@@ -188,11 +191,11 @@ public class Lyrics3v2 extends AbstractLyrics3 {
             } else {
                 newTag = new Lyrics3v2(tag);
             }
-            Iterator iterator = newTag.fieldMap.values().iterator();
+            Iterator<Lyrics3v2Field> iterator = newTag.fieldMap.values().iterator();
             Lyrics3v2Field field;
             AbstractLyrics3v2FieldBody body;
             while (iterator.hasNext()) {
-                field = (Lyrics3v2Field) iterator.next();
+                field = iterator.next();
                 if (oldTag.hasField(field.getIdentifier()) == false) {
                     oldTag.setField(field);
                 } else {
@@ -205,10 +208,10 @@ public class Lyrics3v2 extends AbstractLyrics3 {
             }
 
             // reset tag options to save all current fields.
-            iterator = oldTag.fieldMap.keySet().iterator();
-            String id;
-            while (iterator.hasNext()) {
-                id = (String) iterator.next();
+            Iterator<TagIdentifier> iteratorTagId = oldTag.fieldMap.keySet().iterator();
+            TagIdentifier id;
+            while (iteratorTagId.hasNext()) {
+                id = iteratorTagId.next();
                 TagOptionSingleton.getInstance().setLyrics3SaveField(id, true);
             }
         }
@@ -225,11 +228,11 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         return super.equals(obj);
     }
 
-    public boolean hasField(final String identifier) {
+    public boolean hasField(final TagIdentifier identifier) {
         return this.fieldMap.containsKey(identifier);
     }
 
-    public Iterator iterator() {
+    public Iterator<Lyrics3v2Field> iterator() {
         return this.fieldMap.values().iterator();
     }
 
@@ -242,7 +245,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
             } else {
                 newTag = new Lyrics3v2(tag);
             }
-            Iterator iterator = newTag.fieldMap.values().iterator();
+            Iterator<Lyrics3v2Field> iterator = newTag.fieldMap.values().iterator();
             Lyrics3v2Field field;
             while (iterator.hasNext()) {
                 field = (Lyrics3v2Field) iterator.next();
@@ -252,16 +255,17 @@ public class Lyrics3v2 extends AbstractLyrics3 {
             }
 
             // reset tag options to save all current fields.
-            iterator = oldTag.fieldMap.keySet().iterator();
-            String id;
-            while (iterator.hasNext()) {
-                id = (String) iterator.next();
+            Iterator<TagIdentifier> iteratorTagId = oldTag.fieldMap.keySet().iterator();
+            TagIdentifier id;
+            while (iteratorTagId.hasNext()) {
+                id = iteratorTagId.next();
                 TagOptionSingleton.getInstance().setLyrics3SaveField(id, true);
             }
         }
     }
 
-    public void read(final RandomAccessFile file) throws TagNotFoundException, IOException {
+    // dbeswick fix
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws TagNotFoundException, IOException {
         final long filePointer;
         final int lyricSize;
         if (seek(file)) {
@@ -273,13 +277,13 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         // reset file pointer to the beginning of the tag;
         seek(file);
         filePointer = file.getFilePointer();
-        this.fieldMap = new HashMap();
+        this.fieldMap = new HashMap<TagIdentifier, Lyrics3v2Field>();
         Lyrics3v2Field lyric;
 
         // read each of the fields
         while ((file.getFilePointer() - filePointer) < (lyricSize - 11)) {
             try {
-                lyric = new Lyrics3v2Field(file);
+                lyric = new Lyrics3v2Field(file, parent);
                 setField(lyric);
             } catch (InvalidTagException ex) {
                 // keep reading until we're done
@@ -287,7 +291,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         }
     }
 
-    public void removeField(final String identifier) {
+    public void removeField(final TagIdentifier identifier) {
         this.fieldMap.remove(identifier);
     }
 
@@ -331,7 +335,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public String toString() {
-        final Iterator iterator = this.fieldMap.values().iterator();
+        final Iterator<Lyrics3v2Field> iterator = this.fieldMap.values().iterator();
         Lyrics3v2Field field;
         String str = getIdentifier() + " " + this.getSize() + "\n";
         while (iterator.hasNext()) {
@@ -365,7 +369,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
             } else {
                 newTag = new Lyrics3v2(tag);
             }
-            final Iterator iterator = newTag.fieldMap.values().iterator();
+            final Iterator<Lyrics3v2Field> iterator = newTag.fieldMap.values().iterator();
             Lyrics3v2Field field;
             oldTag.fieldMap.clear();
             while (iterator.hasNext()) {
@@ -375,13 +379,12 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         }
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
         int offset = 0;
         final long filePointer;
         final byte[] buffer = new byte[6 + 9];
         String str;
         Lyrics3v2Field field;
-        final Iterator iterator;
         ID3v1 id3v1tag = new ID3v1();
         id3v1tag = id3v1tag.getID3tag(file);
         delete(file);
@@ -396,14 +399,14 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         // IND needs to go first. lets create/update it and write it first.
         updateField("IND");
         field = (Lyrics3v2Field) this.fieldMap.get("IND");
-        field.write(file);
-        iterator = this.fieldMap.values().iterator();
-        while (iterator.hasNext()) {
-            field = (Lyrics3v2Field) iterator.next();
-            final String id = field.getIdentifier();
+        field.write(file, parent);
+        Iterator<Lyrics3v2Field> iteratorLyricsField = this.fieldMap.values().iterator();
+        while (iteratorLyricsField.hasNext()) {
+            field = (Lyrics3v2Field) iteratorLyricsField.next();
+            final TagIdentifier id = field.getIdentifier();
             final boolean save = TagOptionSingleton.getInstance().getLyrics3SaveField(id);
             if ((id.equals("IND") == false) && save) {
-                field.write(file);
+                field.write(file, parent);
             }
         }
         final long size;
@@ -461,7 +464,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getSongTitle() {
         String title = "";
-        Lyrics3v2Field field = getField("ETT");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("ETT"));
         if (field != null) {
             FieldBodyETT body = (FieldBodyETT) field.getBody();
             title = body.getTitle();
@@ -471,7 +474,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getLeadArtist() {
         String artist = "";
-        Lyrics3v2Field field = getField("EAR");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("EAR"));
         if (field != null) {
             FieldBodyEAR body = (FieldBodyEAR) field.getBody();
             artist = body.getArtist();
@@ -481,7 +484,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getAlbumTitle() {
         String album = "";
-        Lyrics3v2Field field = getField("EAL");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("EAL"));
         if (field != null) {
             FieldBodyEAL body = (FieldBodyEAL) field.getBody();
             album = body.getAlbum();
@@ -495,7 +498,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getSongComment() {
         String additionalInformation = "";
-        Lyrics3v2Field field = getField("INF");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("INF"));
         if (field != null) {
             FieldBodyINF body = (FieldBodyINF) field.getBody();
             additionalInformation = body.getAdditionalInformation();
@@ -513,7 +516,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getSongLyric() {
         String lyrics = "";
-        Lyrics3v2Field field = getField("LYR");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("LYR"));
         if (field != null) {
             FieldBodyLYR body = (FieldBodyLYR) field.getBody();
             lyrics = body.getLyric();
@@ -523,7 +526,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     public String getAuthorComposer() {
         String author = "";
-        Lyrics3v2Field field = getField("AUT");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("AUT"));
         if (field != null) {
             FieldBodyAUT body = (FieldBodyAUT) field.getBody();
             author = body.getAuthor();
@@ -532,7 +535,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setSongTitle(String songTitle) {
-        Lyrics3v2Field field = getField("ETT");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("ETT"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyETT(songTitle.trim()));
             setField(field);
@@ -542,7 +545,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setLeadArtist(String leadArtist) {
-        Lyrics3v2Field field = getField("EAR");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("EAR"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyEAR(leadArtist.trim()));
             setField(field);
@@ -552,7 +555,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setAlbumTitle(String albumTitle) {
-        Lyrics3v2Field field = getField("EAL");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("EAL"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyEAL(albumTitle.trim()));
             setField(field);
@@ -566,7 +569,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setSongComment(String songComment) {
-        Lyrics3v2Field field = getField("INF");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("INF"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyINF(songComment.trim()));
             setField(field);
@@ -584,7 +587,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setSongLyric(String songLyrics) {
-        Lyrics3v2Field field = getField("LYR");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("LYR"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyLYR(songLyrics.trim()));
             setField(field);
@@ -594,7 +597,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     }
 
     public void setAuthorComposer(String authorComposer) {
-        Lyrics3v2Field field = getField("AUT");
+        Lyrics3v2Field field = getField(TagFrameIdentifier.get("AUT"));
         if (field == null) {
             field = new Lyrics3v2Field(new FieldBodyAUT(authorComposer.trim()));
             setField(field);

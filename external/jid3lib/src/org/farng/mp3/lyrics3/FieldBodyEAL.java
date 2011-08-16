@@ -1,6 +1,9 @@
 package org.farng.mp3.lyrics3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.object.ObjectStringSizeTerminated;
 
 import java.io.RandomAccessFile;
@@ -42,8 +45,8 @@ public class FieldBodyEAL extends AbstractLyrics3v2FieldBody {
     /**
      * Creates a new FieldBodyEAL object.
      */
-    public FieldBodyEAL(final RandomAccessFile file) throws InvalidTagException, java.io.IOException {
-        this.read(file);
+    public FieldBodyEAL(final RandomAccessFile file, AbstractID3 parent) throws InvalidTagException, java.io.IOException {
+        this.read(file, parent);
     }
 
     public void setAlbum(final String album) {
@@ -54,8 +57,9 @@ public class FieldBodyEAL extends AbstractLyrics3v2FieldBody {
         return (String) getObject("Album");
     }
 
-    public String getIdentifier() {
-        return "EAL";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("EAL");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     protected void setupObjectList() {

@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * @author Eric Farng
  * @version $Revision: 1.4 $
  */
-public class Lyrics3v1Iterator implements Iterator {
+public class Lyrics3v1Iterator implements Iterator<Object> {
 
     private Lyrics3v1 tag = null;
     private int lastIndex = 0;

@@ -4,7 +4,10 @@ import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.TagConstant;
 import org.farng.mp3.TagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 import org.farng.mp3.TagUtility;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.id3.AbstractID3v2Frame;
 import org.farng.mp3.id3.FrameBodyCOMM;
 import org.farng.mp3.id3.FrameBodySYLT;
@@ -22,6 +25,7 @@ import org.farng.mp3.id3.ID3v2_4;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -118,15 +122,15 @@ public class FilenameTag extends AbstractMP3Tag {
      *
      * @return a frame of this tag
      */
-    public AbstractID3v2Frame getFrame(final String identifier) {
+    public AbstractID3v2Frame getFrame(final TagIdentifier identifier) {
         AbstractID3v2Frame frame = null;
         if (id3tag != null) {
             frame = id3tag.getFrame(identifier);
         }
         return frame;
     }
-
-    public Iterator getFrameOfType(final String identifier) {
+    
+    public Iterator<AbstractID3v2Frame> getFrameOfType(final TagIdentifier identifier) {
         return id3tag.getFrameOfType(identifier);
     }
 
@@ -138,9 +142,11 @@ public class FilenameTag extends AbstractMP3Tag {
     public void setId3tag(final ID3v2_4 id3tag) {
         this.id3tag = id3tag;
         if (id3tag != null) {
-            final Iterator iterator = id3tag.iterator();
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = id3tag.iterator();
             while (iterator.hasNext()) {
-                composite.setFrame((AbstractID3v2Frame) iterator.next());
+            	for (AbstractID3v2Frame frame : iterator.next()) {
+            		composite.setFrame(frame);
+            	}
             }
             if (composite != null) {
                 composite.matchAgainstTag(id3tag);
@@ -157,8 +163,8 @@ public class FilenameTag extends AbstractMP3Tag {
         return id3tag;
     }
 
-    public String getIdentifier() {
-        return "FilenameTagv1.00";
+    public TagIdentifier getIdentifier() {
+    	return TagFrameIdentifier.get("FilenameTagv1.00");
     }
 
     public void setMp3file(final MP3File mp3file) {
@@ -198,22 +204,22 @@ public class FilenameTag extends AbstractMP3Tag {
         throw new UnsupportedOperationException("Method delete() not yet implemented.");
     }
 
-    public boolean hasFrame(final String identifier) {
+    public boolean hasFrame(final TagIdentifier identifier) {
         if (id3tag != null) {
             return id3tag.hasFrame(identifier);
         }
         return false;
     }
-
-    public boolean hasFrameOfType(final String identifier) {
+    
+    public boolean hasFrameOfType(final TagIdentifier identifier) {
         if (id3tag != null) {
             return id3tag.hasFrameOfType(identifier);
         }
         return false;
     }
 
-    public Iterator iterator() {
-        Iterator iterator = null;
+    public Iterator<?> iterator() {
+        Iterator<?> iterator = null;
         if (composite != null) {
             iterator = composite.iterator();
         }
@@ -229,11 +235,15 @@ public class FilenameTag extends AbstractMP3Tag {
         write(file);
     }
 
-    public void read(final RandomAccessFile file) {
+    public void read(final RandomAccessFile file, AbstractID3 parent) {
         //todo Implement this org.farng.mp3.AbstractMP3Tag abstract method
         throw new UnsupportedOperationException("Method read() not yet implemented.");
     }
 
+    public void read(final RandomAccessFile file) throws IOException, TagException {
+    	read(file, null);
+    }
+    
     public boolean seek(final RandomAccessFile file) {
         //todo Implement this org.farng.mp3.AbstractMP3Tag abstract method
         throw new UnsupportedOperationException("Method seek() not yet implemented.");
@@ -241,7 +251,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String toString() {
         final StringBuffer stringBuffer = new StringBuffer(128);
-        final Iterator iterator = iterator();
+        final Iterator<?> iterator = iterator();
         while (iterator.hasNext()) {
             stringBuffer.append(iterator.next().toString());
             stringBuffer.append(TagConstant.SEPERATOR_LINE);
@@ -255,6 +265,11 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void write(final RandomAccessFile file) throws IOException, TagException {
+    	write(file, null);
+    }
+    
+    // fix interface, parent is always 'this'
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException, TagException {
         final File originalFile = getMp3file().getMp3file();
         final File newFile = new File(originalFile.getParentFile(), composeFilename());
         if (!newFile.getName().equals(originalFile.getName())) {
@@ -272,7 +287,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getSongTitle() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TIT2");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TIT2"));
         if (frame != null) {
             FrameBodyTIT2 body = (FrameBodyTIT2) frame.getBody();
             text = body.getText();
@@ -282,7 +297,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getLeadArtist() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TPE1");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TPE1"));
         if (frame != null) {
             FrameBodyTPE1 body = (FrameBodyTPE1) frame.getBody();
             text = body.getText();
@@ -292,7 +307,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getAlbumTitle() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TALB");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TALB"));
         if (frame != null) {
             FrameBodyTALB body = (FrameBodyTALB) frame.getBody();
             text = body.getText();
@@ -302,7 +317,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getYearReleased() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TDRC");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TDRC"));
         if (frame != null) {
             FrameBodyTDRC body = (FrameBodyTDRC) frame.getBody();
             text = body.getText();
@@ -312,7 +327,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getSongComment() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("COMM");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("COMM"));
         if (frame != null) {
             FrameBodyCOMM body = (FrameBodyCOMM) frame.getBody();
             text = body.getText();
@@ -322,7 +337,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getSongGenre() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TCON");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TCON"));
         if (frame != null) {
             FrameBodyTCON body = (FrameBodyTCON) frame.getBody();
             text = body.getText();
@@ -332,7 +347,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getTrackNumberOnAlbum() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TRCK");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TRCK"));
         if (frame != null) {
             FrameBodyTRCK body = (FrameBodyTRCK) frame.getBody();
             text = body.getText();
@@ -342,13 +357,13 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getSongLyric() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("SYLT");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("SYLT"));
         if (frame != null) {
             FrameBodySYLT body = (FrameBodySYLT) frame.getBody();
             text = body.getLyric();
         }
         if (text == null) {
-            frame = getFrame("USLT");
+            frame = getFrame(TagFrameIdentifier.get("USLT"));
             if (frame != null) {
                 FrameBodyUSLT body = (FrameBodyUSLT) frame.getBody();
                 text = body.getLyric();
@@ -359,7 +374,7 @@ public class FilenameTag extends AbstractMP3Tag {
 
     public String getAuthorComposer() {
         String text = null;
-        AbstractID3v2Frame frame = getFrame("TCOM");
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("TCOM"));
         if (frame != null) {
             FrameBodyTCOM body = (FrameBodyTCOM) frame.getBody();
             text = body.getText();
@@ -368,7 +383,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setSongTitle(String songTitle) {
-        AbstractID3v2Frame field = getFrame("TIT2");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TIT2"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTIT2((byte) 0, songTitle.trim()));
             setFrame(field);
@@ -378,7 +393,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setLeadArtist(String leadArtist) {
-        AbstractID3v2Frame field = getFrame("TPE1");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TPE1"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTPE1((byte) 0, leadArtist.trim()));
             setFrame(field);
@@ -388,7 +403,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setAlbumTitle(String albumTitle) {
-        AbstractID3v2Frame field = getFrame("TALB");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TALB"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTALB((byte) 0, albumTitle.trim()));
             setFrame(field);
@@ -398,7 +413,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setYearReleased(String yearReleased) {
-        AbstractID3v2Frame field = getFrame("TDRC");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TDRC"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTDRC((byte) 0, yearReleased.trim()));
             setFrame(field);
@@ -408,7 +423,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setSongComment(String songComment) {
-        AbstractID3v2Frame field = getFrame("COMM");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("COMM"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyCOMM((byte) 0, "ENG", "", songComment.trim()));
             setFrame(field);
@@ -418,7 +433,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setSongGenre(String songGenre) {
-        AbstractID3v2Frame field = getFrame("TCON");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TCON"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTCON((byte) 0, songGenre.trim()));
             setFrame(field);
@@ -428,7 +443,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setTrackNumberOnAlbum(String trackNumberOnAlbum) {
-        AbstractID3v2Frame field = getFrame("TRCK");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TRCK"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTRCK((byte) 0, trackNumberOnAlbum.trim()));
             setFrame(field);
@@ -438,7 +453,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setSongLyric(String songLyrics) {
-        AbstractID3v2Frame field = getFrame("SYLT");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("SYLT"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyUSLT((byte) 0, "ENG", "", songLyrics.trim()));
             setFrame(field);
@@ -448,7 +463,7 @@ public class FilenameTag extends AbstractMP3Tag {
     }
 
     public void setAuthorComposer(String authorComposer) {
-        AbstractID3v2Frame field = getFrame("TCOM");
+        AbstractID3v2Frame field = getFrame(TagFrameIdentifier.get("TCOM"));
         if (field == null) {
             field = new ID3v2_3Frame(new FrameBodyTCOM((byte) 0, authorComposer.trim()));
             setFrame(field);

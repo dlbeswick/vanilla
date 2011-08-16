@@ -1,18 +1,18 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.AbstractMP3Tag;
+import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.TagException;
 import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.TagUtility;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Superclass for all ID3v2 tags
@@ -26,7 +26,7 @@ public abstract class AbstractID3v2 extends AbstractID3 {
      * just used to add up the padding. the size written to the file is determined by file pointer
      */
     private static int paddingCounter = 0;
-    private Map frameMap = null;
+    private Map<TagIdentifier, ArrayList<AbstractID3v2Frame>> frameMap = null;
     private String duplicateFrameId = null;
     private byte majorVersion = (byte) 0;
     private byte revision = (byte) 0;
@@ -41,7 +41,7 @@ public abstract class AbstractID3v2 extends AbstractID3 {
      */
     protected AbstractID3v2() {
         super();
-        frameMap = new HashMap();
+        frameMap = new HashMap<TagIdentifier, ArrayList<AbstractID3v2Frame>>();
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class AbstractID3v2 extends AbstractID3 {
      */
     protected AbstractID3v2(final AbstractID3v2 copyObject) {
         super(copyObject);
-        frameMap = new HashMap();
+        frameMap = new HashMap<TagIdentifier, ArrayList<AbstractID3v2Frame>>();
         duplicateFrameId = copyObject.duplicateFrameId;
         majorVersion = copyObject.majorVersion;
         revision = copyObject.revision;
@@ -58,24 +58,45 @@ public abstract class AbstractID3v2 extends AbstractID3 {
         fileReadSize = copyObject.fileReadSize;
         invalidFrameBytes = copyObject.invalidFrameBytes;
         padding = copyObject.padding;
-        final Iterator iterator = copyObject.frameMap.keySet().iterator();
-        String identifier;
+        final Iterator<TagIdentifier> iterator = copyObject.frameMap.keySet().iterator();
+        TagIdentifier identifier;
         AbstractID3v2Frame newFrame;
         while (iterator.hasNext()) {
-            identifier = (String) iterator.next();
+            identifier = iterator.next();
             newFrame = (AbstractID3v2Frame) TagUtility.copyObject(copyObject.frameMap.get(identifier));
-            frameMap.put(newFrame.getIdentifier(), newFrame);
+            setFrame(newFrame);
         }
     }
 
+    public boolean tit2FrameHas6ByteHeader() {
+    	return true;
+    }
+    
+    protected ArrayList<AbstractID3v2Frame> frameListFor(TagIdentifier key, boolean allowCreate) {
+    	ArrayList<AbstractID3v2Frame> result = frameMap.get(key);
+    	
+    	if (result == null) {
+    		if (allowCreate) {
+    			result = new ArrayList<AbstractID3v2Frame>();
+    			frameMap.put(key, result);
+    		}
+    	}
+    	
+    	return result;
+    }
+    
     public void setFrame(final AbstractID3v2Frame frame) {
         if (frame.getBody() != null) {
-            frameMap.put(frame.getIdentifier(), frame);
+            frameListFor(frame.getIdentifier(), true).add(frame);
         }
     }
 
-    public AbstractID3v2Frame getFrame(final String identifier) {
-        return (AbstractID3v2Frame) frameMap.get(identifier);
+    public AbstractID3v2Frame getFrame(final TagIdentifier identifier) {
+    	ArrayList<AbstractID3v2Frame> result = frameMap.get(identifier);
+    	if (result != null)
+    		return result.get(0);
+    	else
+    		return null;
     }
 
     public int getFrameCount() {
@@ -90,41 +111,32 @@ public abstract class AbstractID3v2 extends AbstractID3 {
         this.frameMap.clear();
     }
 
-    public Iterator getFrameIterator() {
+    public Iterator<ArrayList<AbstractID3v2Frame>> getFrameIterator() {
         return this.frameMap.values().iterator();
     }
 
-    public Iterator getFrameOfType(final String identifier) {
-        final Iterator iterator = frameMap.keySet().iterator();
-        final Set result = new HashSet(frameMap.size());
-        String hashSetKey;
-        while (iterator.hasNext()) {
-            hashSetKey = (String) iterator.next();
-            if (hashSetKey.startsWith(identifier)) {
-                result.add(frameMap.get(hashSetKey));
-            }
-        }
-        return result.iterator();
+    public Iterator<AbstractID3v2Frame> getFrameOfType(final TagIdentifier identifier) {
+    	ArrayList<AbstractID3v2Frame> result = frameListFor(identifier, false);
+    	
+    	if (result != null)
+    		return result.iterator();
+    	else
+    		return null;
     }
 
-    public boolean hasFrame(final String identifier) {
+    public boolean TagIdentifier(final TagIdentifier identifier) {
         return frameMap.containsKey(identifier);
     }
 
-    public boolean hasFrameOfType(final String identifier) {
-        final Iterator iterator = frameMap.keySet().iterator();
-        String hashMapKey;
-        boolean found = false;
-        while (iterator.hasNext() && !found) {
-            hashMapKey = (String) iterator.next();
-            if (hashMapKey.startsWith(identifier)) {
-                found = true;
-            }
-        }
-        return found;
+    public boolean hasFrame(final TagIdentifier identifier) {
+    	return hasFrameOfType(identifier);
+    }
+    
+    public boolean hasFrameOfType(final TagIdentifier identifier) {
+        return frameMap.containsKey(identifier);
     }
 
-    public Iterator iterator() {
+    public Iterator<ArrayList<AbstractID3v2Frame>> iterator() {
         return frameMap.values().iterator();
     }
 
@@ -132,15 +144,15 @@ public abstract class AbstractID3v2 extends AbstractID3 {
         frameMap.remove(identifier);
     }
 
-    public void removeFrameOfType(final String identifier) {
-        final Iterator iterator = getFrameOfType(identifier);
+    public void removeFrameOfType(final TagIdentifier identifier) {
+        final Iterator<AbstractID3v2Frame> iterator = getFrameOfType(identifier);
         while (iterator.hasNext()) {
             final AbstractID3v2Frame frame = (AbstractID3v2Frame) iterator.next();
             frameMap.remove(frame.getIdentifier());
         }
     }
 
-    public Collection values() {
+    public Collection<ArrayList<AbstractID3v2Frame>> values() {
         return frameMap.values();
     }
 
@@ -153,12 +165,13 @@ public abstract class AbstractID3v2 extends AbstractID3 {
             } else {
                 newTag = new ID3v2_4(abstractMP3Tag);
             }
-            final Iterator iterator = newTag.getFrameIterator();
-            AbstractID3v2Frame frame;
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = newTag.getFrameIterator();
+
             while (iterator.hasNext()) {
-                frame = (AbstractID3v2Frame) iterator.next();
-                if (!oldTag.hasFrame(frame.getIdentifier())) {
-                    oldTag.setFrame(frame);
+                for (AbstractID3v2Frame frame : iterator.next()) {
+	                if (!oldTag.hasFrame(frame.getIdentifier())) {
+	                    oldTag.setFrame(frame);
+	                }
                 }
             }
         }
@@ -217,11 +230,12 @@ public abstract class AbstractID3v2 extends AbstractID3 {
             } else {
                 newTag = new ID3v2_4(abstractMP3Tag);
             }
-            final Iterator iterator = newTag.getFrameIterator();
-            AbstractID3v2Frame frame;
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = newTag.getFrameIterator();
+
             while (iterator.hasNext()) {
-                frame = (AbstractID3v2Frame) iterator.next();
-                oldTag.setFrame(frame);
+            	for (AbstractID3v2Frame frame : iterator.next()) {
+            		oldTag.setFrame(frame);
+            	}
             }
         }
     }
@@ -249,6 +263,10 @@ public abstract class AbstractID3v2 extends AbstractID3 {
         }
     }
 
+    public void write(final RandomAccessFile file) throws IOException, TagException {
+    	write(file, this);
+    }
+    
     public void write(final AbstractMP3Tag abstractMP3Tag) {
         final AbstractID3v2 oldTag = this;
         final AbstractID3v2 newTag;
@@ -258,12 +276,12 @@ public abstract class AbstractID3v2 extends AbstractID3 {
             } else {
                 newTag = new ID3v2_4(abstractMP3Tag);
             }
-            final Iterator iterator = newTag.getFrameIterator();
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = newTag.getFrameIterator();
             oldTag.frameMap.clear();
-            AbstractID3v2Frame frame;
+
             while (iterator.hasNext()) {
-                frame = (AbstractID3v2Frame) iterator.next();
-                oldTag.setFrame(frame);
+                for (AbstractID3v2Frame eachFrame : iterator.next())
+                	oldTag.setFrame(eachFrame);
             }
         }
     }

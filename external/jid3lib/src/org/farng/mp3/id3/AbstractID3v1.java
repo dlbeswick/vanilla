@@ -33,14 +33,14 @@ public abstract class AbstractID3v1 extends AbstractID3 {
         try {
             oldTag = new ID3v1_1(file);
             oldTag.append(this);
-            oldTag.write(file);
+            oldTag.write(file, oldTag);
         } catch (TagNotFoundException ex) {
             try {
                 oldTag = new ID3v1(file);
                 oldTag.append(this);
-                oldTag.write(file);
+                oldTag.write(file, oldTag);
             } catch (TagNotFoundException ex2) {
-                write(file);
+                write(file, this);
             }
         }
     }
@@ -50,14 +50,14 @@ public abstract class AbstractID3v1 extends AbstractID3 {
         try {
             oldTag = new ID3v1_1(file);
             oldTag.overwrite(this);
-            oldTag.write(file);
+            oldTag.write(file, this);
         } catch (TagNotFoundException ex) {
             try {
                 oldTag = new ID3v1(file);
                 oldTag.overwrite(this);
-                oldTag.write(file);
+                oldTag.write(file, this);
             } catch (TagNotFoundException ex2) {
-                write(file);
+                write(file, this);
             }
         }
     }

@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -15,7 +17,7 @@ import java.util.Arrays;
  */
 public class FrameBodyUnsupported extends AbstractID3v2FrameBody {
 
-    private String identifier = "";
+    private TagIdentifier identifier = TagFrameIdentifier.EMPTY;
     private byte[] value;
 
     /**
@@ -30,18 +32,19 @@ public class FrameBodyUnsupported extends AbstractID3v2FrameBody {
      */
     public FrameBodyUnsupported(final FrameBodyUnsupported copyObject) {
         super(copyObject);
-        this.identifier = new String(copyObject.identifier);
+        this.identifier = copyObject.identifier;
+        assert(copyObject == null || this.identifier != null);
         this.value = (byte[]) copyObject.value.clone();
     }
 
     /**
      * Creates a new FrameBodyUnsupported object.
      */
-    public FrameBodyUnsupported(final RandomAccessFile file) throws IOException, InvalidTagException {
-        this.read(file);
+    public FrameBodyUnsupported(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
+    public TagIdentifier getIdentifier() {
         return this.identifier;
     }
 
@@ -84,23 +87,23 @@ public class FrameBodyUnsupported extends AbstractID3v2FrameBody {
 //        throw new UnsupportedOperationException();
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         final int size;
         final byte[] buffer;
-        if (has6ByteHeader()) {
+        if (has6ByteHeader(parent)) {
             // go back and read the 3 byte unsupported identifier;
             file.seek(file.getFilePointer() - 3);
             buffer = new byte[3];
             file.read(buffer);
-            this.identifier = new String(buffer, 0, 3);
+            this.identifier = TagFrameIdentifier.get(buffer);
         } else {
             // go back and read the 4 byte unsupported identifier;
             file.seek(file.getFilePointer() - 4);
             buffer = new byte[4];
             file.read(buffer);
-            this.identifier = new String(buffer);
+            this.identifier = TagFrameIdentifier.get(buffer);
         }
-        size = readHeader(file);
+        size = readHeader(file, parent);
 
         // read the data
         this.value = new byte[size];
@@ -111,8 +114,8 @@ public class FrameBodyUnsupported extends AbstractID3v2FrameBody {
         return "??" + getIdentifier() + " : " + (new String(this.value));
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
-        writeHeader(file, this.getSize());
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+        writeHeader(file, this.getSize(), parent);
         file.write(this.value);
     }
 }

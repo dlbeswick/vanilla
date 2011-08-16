@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -36,11 +38,13 @@ public class FrameBodyTCOM extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTCOM object.
      */
-    public FrameBodyTCOM(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTCOM(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TCOM";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TCOM");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
+
 }

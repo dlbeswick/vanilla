@@ -1,6 +1,9 @@
 package org.farng.mp3.lyrics3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.id3.AbstractID3;
 import org.farng.mp3.object.ObjectStringSizeTerminated;
 
 import java.io.RandomAccessFile;
@@ -42,12 +45,13 @@ public class FieldBodyETT extends AbstractLyrics3v2FieldBody {
     /**
      * Creates a new FieldBodyETT object.
      */
-    public FieldBodyETT(final RandomAccessFile file) throws InvalidTagException, java.io.IOException {
-        this.read(file);
+    public FieldBodyETT(final RandomAccessFile file, AbstractID3 parent) throws InvalidTagException, java.io.IOException {
+        this.read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "ETT";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("ETT");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public void setTitle(final String title) {

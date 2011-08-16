@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -104,13 +106,14 @@ public class FrameBodyASPI extends AbstractID3v2FrameBody {
     /**
      * Creates a new FrameBodyASPI object.
      */
-    public FrameBodyASPI(final RandomAccessFile file) throws IOException, InvalidTagException {
+    public FrameBodyASPI(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
         super();
-        read(file);
+        read(file, parent);
     }
 
-    public String getIdentifier() {
-        return "ASPI";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("ASPI");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
     public int getSize() {
@@ -131,8 +134,8 @@ public class FrameBodyASPI extends AbstractID3v2FrameBody {
 //        throw new UnsupportedOperationException();
     }
 
-    public void read(final RandomAccessFile file) throws IOException, InvalidTagException {
-        final int size = readHeader(file);
+    public void read(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        final int size = readHeader(file, parent);
         if (size == 0) {
             throw new InvalidTagException("Empty Frame");
         }
@@ -153,7 +156,7 @@ public class FrameBodyASPI extends AbstractID3v2FrameBody {
     }
 
     public String toString() {
-        return getIdentifier() + ' ' + this
+        return getIdentifier().toString() + ' ' + this
                 .dataStart + ' ' + this
                 .dataLength + ' ' + this
                 .indexPoints + ' ' + this
@@ -161,8 +164,8 @@ public class FrameBodyASPI extends AbstractID3v2FrameBody {
                 .toString();
     }
 
-    public void write(final RandomAccessFile file) throws IOException {
-        writeHeader(file, getSize());
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+        writeHeader(file, getSize(), parent);
         file.writeInt(dataStart);
         file.writeInt(dataLength);
         file.writeShort(indexPoints);

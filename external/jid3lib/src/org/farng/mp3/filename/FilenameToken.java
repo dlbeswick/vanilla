@@ -10,6 +10,7 @@ import org.farng.mp3.id3.FrameBodyCOMM;
 import org.farng.mp3.id3.ID3v2_4;
 import org.farng.mp3.id3.ID3v2_4Frame;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -23,7 +24,7 @@ public class FilenameToken extends AbstractFilenameComposite {
     /**
      * what information this object represents.
      */
-    private Class id3v2FrameBodyClass = null;
+    private Class<?> id3v2FrameBodyClass = null;
     /**
      * token that this object represents
      */
@@ -70,7 +71,7 @@ public class FilenameToken extends AbstractFilenameComposite {
      *
      * @param id3v2FrameBodyClass the ID3v2 frame body that this token represents
      */
-    public void setId3v2FrameBodyClass(final Class id3v2FrameBodyClass) {
+    public void setId3v2FrameBodyClass(final Class<?> id3v2FrameBodyClass) {
         this.id3v2FrameBodyClass = id3v2FrameBodyClass;
     }
 
@@ -79,7 +80,7 @@ public class FilenameToken extends AbstractFilenameComposite {
      *
      * @return the ID3v2 frame body that this token represents
      */
-    public Class getId3v2FrameBodyClass() {
+    public Class<?> getId3v2FrameBodyClass() {
         return id3v2FrameBodyClass;
     }
 
@@ -146,7 +147,7 @@ public class FilenameToken extends AbstractFilenameComposite {
      *
      * @return an iterator through each <code>FilenameToken</code> in this composite
      */
-    public Iterator iterator() {
+    public Iterator<?> iterator() {
         return new FilenameTokenIterator(this);
     }
 
@@ -157,10 +158,10 @@ public class FilenameToken extends AbstractFilenameComposite {
      *
      * @param matchId3v2FrameBodyClass Class of keywords to match against.
      */
-    public void matchAgainstKeyword(final Class matchId3v2FrameBodyClass) {
+    public void matchAgainstKeyword(final Class<?> matchId3v2FrameBodyClass) {
         if (AbstractID3v2FrameBody.class.isAssignableFrom(matchId3v2FrameBodyClass)) {
             if (TagOptionSingleton.getInstance().isCompositeMatchOverwrite() || id3v2FrameBodyClass == null) {
-                final Iterator iterator = TagOptionSingleton.getInstance()
+                final Iterator<?> iterator = TagOptionSingleton.getInstance()
                         .getKeywordListIterator(matchId3v2FrameBodyClass);
                 final String lowerCaseToken = token.toLowerCase();
                 while (iterator.hasNext()) {
@@ -190,34 +191,35 @@ public class FilenameToken extends AbstractFilenameComposite {
             } else {
                 tag = new ID3v2_4(matchTag);
             }
-            final Iterator iterator = tag.iterator();
-            AbstractID3v2Frame frame;
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = tag.iterator();
+
             AbstractID3v2FrameBody body;
             String matchString = null;
             final String lowerCaseToken = token.toLowerCase();
             while (iterator.hasNext()) {
-                frame = (ID3v2_4Frame) iterator.next();
-                body = (AbstractID3v2FrameBody) frame.getBody();
-                //todo add support for more tag matches. only doing text
-                //      information and URL links right now because i'm lazy
-                if (body instanceof AbstractFrameBodyTextInformation) {
-                    matchString = ((AbstractFrameBodyTextInformation) body).getText();
-                    if (matchString != null) {
-                        matchString = matchString.toLowerCase();
-                    }
-                } else if (body instanceof AbstractFrameBodyUrlLink) {
-                    matchString = ((AbstractFrameBodyUrlLink) body).getUrlLink();
-                    if (matchString != null) {
-                        matchString = matchString.toLowerCase();
-                    }
-                } else if (body instanceof FrameBodyCOMM) {
-                    matchString = ((FrameBodyCOMM) body).getText();
-                }
-                if (lowerCaseToken.equals(matchString) ||
-                    matchString != null &&
-                    (matchString.indexOf(lowerCaseToken) >= 0 || lowerCaseToken.indexOf(matchString) >= 0)) {
-                    setId3v2FrameBodyClass(body.getClass());
-                    break;
+                for (AbstractID3v2Frame frame : iterator.next()) {
+	                body = (AbstractID3v2FrameBody) frame.getBody();
+	                //todo add support for more tag matches. only doing text
+	                //      information and URL links right now because i'm lazy
+	                if (body instanceof AbstractFrameBodyTextInformation) {
+	                    matchString = ((AbstractFrameBodyTextInformation) body).getText();
+	                    if (matchString != null) {
+	                        matchString = matchString.toLowerCase();
+	                    }
+	                } else if (body instanceof AbstractFrameBodyUrlLink) {
+	                    matchString = ((AbstractFrameBodyUrlLink) body).getUrlLink();
+	                    if (matchString != null) {
+	                        matchString = matchString.toLowerCase();
+	                    }
+	                } else if (body instanceof FrameBodyCOMM) {
+	                    matchString = ((FrameBodyCOMM) body).getText();
+	                }
+	                if (lowerCaseToken.equals(matchString) ||
+	                    matchString != null &&
+	                    (matchString.indexOf(lowerCaseToken) >= 0 || lowerCaseToken.indexOf(matchString) >= 0)) {
+	                    setId3v2FrameBodyClass(body.getClass());
+	                    break;
+	                }
                 }
             }
         }

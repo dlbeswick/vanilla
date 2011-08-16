@@ -1,6 +1,8 @@
 package org.farng.mp3.id3;
 
 import org.farng.mp3.InvalidTagException;
+import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 import java.io.RandomAccessFile;
 
@@ -40,11 +42,12 @@ public class FrameBodyTMCL extends AbstractFrameBodyTextInformation {
     /**
      * Creates a new FrameBodyTMCL object.
      */
-    public FrameBodyTMCL(final RandomAccessFile file) throws java.io.IOException, InvalidTagException {
-        super(file);
+    public FrameBodyTMCL(final RandomAccessFile file, AbstractID3 parent) throws java.io.IOException, InvalidTagException {
+        super(file, parent);
     }
 
-    public String getIdentifier() {
-        return "TMCL";
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("TMCL");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 }

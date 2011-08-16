@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * @author Eric Farng
  * @version $Revision: 1.1 $
  */
-public class FilenameTokenIterator implements Iterator {
+public class FilenameTokenIterator implements Iterator<Object> {
 
     /**
      * Token class that this iterator is for
