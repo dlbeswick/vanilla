@@ -535,6 +535,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				startForegroundCompat(NOTIFICATION_ID, mNotification);
 			if (mMediaPlayerInitialized) {
 				synchronized (mMediaPlayer) {
+					if (mCurrentSong != null)
+						applyReplaygain(mCurrentSong);
 					mMediaPlayer.start();
 				}
 			}
@@ -630,10 +632,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 					mMediaPlayerInitialized = true;
 			}
 
-			applyReplaygain(song);
-				
-			if ((mState & FLAG_PLAYING) != 0)
+			if ((mState & FLAG_PLAYING) != 0) {
+				applyReplaygain(song);
 				mMediaPlayer.start();
+			}
 			
 			mCurrentSong = song;
 			
@@ -655,23 +657,26 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		float trackGainScale;
 		
 		if (mEnableReplaygain) {
-			float trackGainDb = 0;
+			AmplitudeGain trackGain = null;
 			
 			try {
 				if (!song.getReplaygainInfo().hasTrackGain()) {
-					final float preampWhenNoReplaygainDb = -10.0f;
-					trackGainDb = preampWhenNoReplaygainDb;
-					Log.i(this.getClass().getName(), String.format("Replaygain: no replaygain info for this track, applying constant attenuation %fdb.", trackGainDb));
+					final AmplitudeGain preampWhenNoReplaygainDb = AmplitudeGain.inDecibels(-10.0f);
+					
+					trackGain = preampWhenNoReplaygainDb;
+					Log.i(this.getClass().getName(), String.format("Replaygain: no replaygain info for this track, applying constant attenuation %s.", trackGain));
 				} else {
-					final float preampWhenReplaygainDb = -6.0f; 
-					trackGainDb = song.getReplaygainInfo().getTrackGain() + preampWhenReplaygainDb;
-					Log.i(this.getClass().getName(), String.format("Replaygain: setting track gain to %fdb + %fdb = %fdb", song.getReplaygainInfo().getTrackGain(), preampWhenReplaygainDb, trackGainDb));
+					final AmplitudeGain preampWhenReplaygainDb = AmplitudeGain.inDecibels(-6.0f);
+					
+					trackGain = song.getReplaygainInfo().trackGain();
+					trackGain.increment(preampWhenReplaygainDb);
+					Log.i(this.getClass().getName(), String.format("Replaygain: setting track gain to %s + %s = %s", song.getReplaygainInfo().trackGain(), preampWhenReplaygainDb, trackGain));
 				}
 			} catch (NotPopulatedException e) {
 				assert(false); // song should always be populated by this point.
 			}
 			
-			trackGainScale = Math.min((float)Math.pow(10.0f, trackGainDb/20.0f), 1.0f);
+			trackGainScale = trackGain.linearScale();
 			Log.i(this.getClass().getName(), String.format("Setting player volume to %f.", trackGainScale));
 		} else {
 			trackGainScale = mUserVolume;

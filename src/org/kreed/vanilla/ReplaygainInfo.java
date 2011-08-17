@@ -13,8 +13,8 @@ import org.farng.mp3.id3.FrameBodyTXXX;
 import android.util.Log;
 
 public class ReplaygainInfo {
-	private float mAlbumGain = Float.MAX_VALUE;
-	private float mTrackGain = Float.MAX_VALUE;
+	private AmplitudeGain mAlbumGain = null;
+	private AmplitudeGain mTrackGain = null;
 	private String mFilePath;
 	private boolean mDataLoaded;
 	
@@ -26,32 +26,32 @@ public class ReplaygainInfo {
 	{
 		ensureDataLoaded();
 		
-		return mAlbumGain != Float.MAX_VALUE;
+		return mAlbumGain != null;
 	}
 	
 	public boolean hasTrackGain()
 	{
 		ensureDataLoaded();
 		
-		return mAlbumGain != Float.MAX_VALUE;
+		return mAlbumGain != null;
 	}
 	
-	public float getAlbumGain()
+	public AmplitudeGain albumGain()
 	{
 		ensureDataLoaded();
 		
-		if (mAlbumGain == Float.MAX_VALUE)
-			return 0.0f;
+		if (mAlbumGain == null)
+			return AmplitudeGain.ZERO;
 		else
 			return mAlbumGain;
 	}
 	
-	public float getTrackGain()
+	public AmplitudeGain trackGain()
 	{
 		ensureDataLoaded();
 		
-		if (mTrackGain == Float.MAX_VALUE)
-			return 0.0f;
+		if (mTrackGain == null)
+			return AmplitudeGain.ZERO;
 		else
 			return mTrackGain;
 	}
@@ -72,11 +72,10 @@ public class ReplaygainInfo {
 						FrameBodyTXXX txxx = (FrameBodyTXXX)iterator.next().getBody();
 						String description = txxx.getDescription();
 						
-						if (description.equalsIgnoreCase("replaygain_track_gain")) {
+						if (description.equalsIgnoreCase("replaygain_track_gain"))
 							mTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-						} else if (description.equalsIgnoreCase("replaygain_album_gain")) {
+						else if (description.equalsIgnoreCase("replaygain_album_gain"))
 							mAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-						}
 					}
 				}
 			}
@@ -91,18 +90,17 @@ public class ReplaygainInfo {
 		mDataLoaded = true;
 	}
 
-	// Returns Float.MAX_VALUE if text is an invalid value.
-	protected float parseReplaygainDbValue(String text)
+	// Returns null if text is an invalid value.
+	protected AmplitudeGain parseReplaygainDbValue(String text)
 	{
 		int dbIndex = text.toLowerCase().indexOf("db");
 		if (dbIndex == -1)
-			return Float.MAX_VALUE;
-		
+			return null;
 		try {
-			return Float.parseFloat(text.substring(0, dbIndex - 1));
+			return AmplitudeGain.inDecibels(Float.parseFloat(text.substring(0, dbIndex - 1)));
 		} catch (NumberFormatException e) {
 			Log.i(this.getClass().getName(), String.format("Failed to parse replaygain db value '%s': %s", text, e.toString()));
-			return Float.MAX_VALUE;
+			return null;
 		}
 	}
 }
