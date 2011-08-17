@@ -315,19 +315,21 @@ public class Song implements Parcelable {
 		try {
 			MP3File mp3file = new MP3File(new File(path), false);
 			
-			Iterator<AbstractID3v2Frame> iterator = mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("TXXX"));
-			
-			if (iterator != null) {
-				while (iterator.hasNext()) {
-					FrameBodyTXXX txxx = (FrameBodyTXXX)iterator.next().getBody();
-					String description = txxx.getDescription();
-					
-					if (description.equalsIgnoreCase("replaygain_track_gain")) {
-						replaygainTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-						Log.i(this.getClass().getName(), String.format("Track gain for song %s is %sdb.", path, replaygainTrackGain));
-					} else if (description.equalsIgnoreCase("replaygain_album_gain")) {
-						replaygainAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-						Log.i(this.getClass().getName(), String.format("Album gain for song %s is %sdb.", path, replaygainAlbumGain));
+			if (mp3file.getID3v2Tag() != null) {				
+				Iterator<AbstractID3v2Frame> iterator = mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("TXXX"));
+				
+				if (iterator != null) {
+					while (iterator.hasNext()) {
+						FrameBodyTXXX txxx = (FrameBodyTXXX)iterator.next().getBody();
+						String description = txxx.getDescription();
+						
+						if (description.equalsIgnoreCase("replaygain_track_gain")) {
+							replaygainTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+							Log.i(this.getClass().getName(), String.format("Track gain for song %s is %sdb.", path, replaygainTrackGain));
+						} else if (description.equalsIgnoreCase("replaygain_album_gain")) {
+							replaygainAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+							Log.i(this.getClass().getName(), String.format("Album gain for song %s is %sdb.", path, replaygainAlbumGain));
+						}
 					}
 				}
 			}
@@ -337,7 +339,6 @@ public class Song implements Parcelable {
 			
 			if (!hasReplaygainAlbumGain())
 				Log.i(this.getClass().getName(), String.format("No replaygain album gain frame found in id3 tag for file %s.", path));
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
