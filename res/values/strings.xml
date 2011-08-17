@@ -120,4 +120,6 @@
 	<string name="idle_timeout_summary">The amount of time that must pass before becoming idle</string>
 	<string name="scrobble_title">Use ScrobbleDroid API</string>
 	<string name="scrobble_summary">Scrobble to Last.FM through ScrobbleDroid or Simple Last.FM Scrobbler</string>
+	<string name="enable_replaygain">Enable Replaygain</string>
+	<string name="enable_replaygain_summary">Ensures that all songs play at a similar volume. Replaygain data must have been written into the files.</string>
 </resources>

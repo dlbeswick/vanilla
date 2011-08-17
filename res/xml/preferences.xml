@@ -21,9 +21,7 @@
 	android:persistent="true">
 	<PreferenceCategory android:title="@string/pref_output">
 		<org.kreed.vanilla.VolumePreference
-			android:key="volume"
-			android:title="@string/volume_title"
-			android:summary="@string/volume_summary" />
+			android:key="volume" android:summary="@string/volume_summary" android:title="@string/volume_title"/>
 		<CheckBoxPreference
 			android:key="media_button"
 			android:title="@string/media_button_title"
@@ -39,6 +37,7 @@
 			android:title="@string/headset_pause_title"
 			android:defaultValue="true"
 			android:summary="@string/headset_pause_summary" />
+		<CheckBoxPreference android:title="@string/enable_replaygain" android:key="enable_replaygain" android:summary="@string/enable_replaygain_summary" android:defaultValue="false"></CheckBoxPreference>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_notifications">
 		<ListPreference

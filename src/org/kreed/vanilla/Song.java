@@ -24,29 +24,19 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Debug;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-
-import org.farng.mp3.MP3File;
-import org.farng.mp3.TagException;
-import org.farng.mp3.TagFrameIdentifier;
-import org.farng.mp3.id3.AbstractID3v2Frame;
-import org.farng.mp3.id3.FrameBodyTXXX;
 
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
@@ -109,13 +99,12 @@ public class Song implements Parcelable {
 	 */
 	public String artist;
 
-	private float replaygainAlbumGain = Float.MAX_VALUE;
-	private float replaygainTrackGain = Float.MAX_VALUE;
-	
 	/**
 	 * Song flags. Currently FLAG_RANDOM or 0.
 	 */
 	public int flags;
+
+	private ReplaygainInfo mReplaygainInfo;
 
 	public static void onMediaStoreContentsChanged()
 	{
@@ -137,11 +126,12 @@ public class Song implements Parcelable {
 		return mMediaStoreSongCountCache;
 	}
 	
+	
 	/**
 	 * @return true if it's possible to retrieve any songs, otherwise false. For example, false
 	 * could be returned if there are no songs in the library.
 	 */
-	public static boolean isSongAvailable()
+	public static boolean isSongAvailableInMediaLibrary()
 	{
 		return getMediaStoreSongCount() > 0;
 	}
@@ -269,85 +259,6 @@ public class Song implements Parcelable {
 		this.flags = flags;
 	}
 
-	public boolean hasReplaygainAlbumGain()
-	{
-		return replaygainAlbumGain != Float.MAX_VALUE;
-	}
-	
-	public boolean hasReplaygainTrackGain()
-	{
-		return replaygainAlbumGain != Float.MAX_VALUE;
-	}
-	
-	public float getReplaygainAlbumGain()
-	{
-		if (replaygainAlbumGain == Float.MAX_VALUE)
-			return 0.0f;
-		else
-			return replaygainAlbumGain;
-	}
-	
-	public float getReplaygainTrackGain()
-	{
-		if (replaygainTrackGain == Float.MAX_VALUE)
-			return 0.0f;
-		else
-			return replaygainTrackGain;
-	}
-	
-	// Returns Float.MAX_VALUE if text is an invalid value.
-	protected float parseReplaygainDbValue(String text)
-	{
-		int dbIndex = text.toLowerCase().indexOf("db");
-		if (dbIndex == -1)
-			return Float.MAX_VALUE;
-		
-		try {
-			return Float.parseFloat(text.substring(0, dbIndex - 1));
-		} catch (NumberFormatException e) {
-			Log.i(this.getClass().getName(), String.format("Failed to parse replaygain db value '%s': %s", text, e.toString()));
-			return Float.MAX_VALUE;
-		}
-	}
-	
-	protected void populateReplaygainInfo(String path)
-	{
-		try {
-			MP3File mp3file = new MP3File(new File(path), false);
-			
-			if (mp3file.getID3v2Tag() != null) {				
-				Iterator<AbstractID3v2Frame> iterator = mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("TXXX"));
-				
-				if (iterator != null) {
-					while (iterator.hasNext()) {
-						FrameBodyTXXX txxx = (FrameBodyTXXX)iterator.next().getBody();
-						String description = txxx.getDescription();
-						
-						if (description.equalsIgnoreCase("replaygain_track_gain")) {
-							replaygainTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-							Log.i(this.getClass().getName(), String.format("Track gain for song %s is %sdb.", path, replaygainTrackGain));
-						} else if (description.equalsIgnoreCase("replaygain_album_gain")) {
-							replaygainAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
-							Log.i(this.getClass().getName(), String.format("Album gain for song %s is %sdb.", path, replaygainAlbumGain));
-						}
-					}
-				}
-			}
-			
-			if (!hasReplaygainTrackGain())
-				Log.i(this.getClass().getName(), String.format("No replaygain track gain frame found in id3 tag for file %s.", path));
-			
-			if (!hasReplaygainAlbumGain())
-				Log.i(this.getClass().getName(), String.format("No replaygain album gain frame found in id3 tag for file %s.", path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TagException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * Populate fields with data from the supplied cursor.
 	 *
@@ -361,8 +272,6 @@ public class Song implements Parcelable {
 		album = cursor.getString(3);
 		artist = cursor.getString(4);
 		albumId = cursor.getLong(5);
-
-		populateReplaygainInfo(path);
 	}
 
 	/**
@@ -428,6 +337,32 @@ public class Song implements Parcelable {
 		return song.id;
 	}
 
+	public boolean isPopulated()
+	{
+		return path.length() != 0;
+	}
+	
+	public class NotPopulatedException extends Exception 
+	{
+		public NotPopulatedException(String detailMessage) {
+			super(detailMessage);
+		}
+
+		private static final long serialVersionUID = 1;
+	};
+	
+	ReplaygainInfo getReplaygainInfo() throws NotPopulatedException
+	{
+		if (mReplaygainInfo == null) {
+			if (!isPopulated())
+				throw(new NotPopulatedException("The song must be populated before Replaygain info can be retrieved."));
+						
+			mReplaygainInfo = new ReplaygainInfo(path);
+		}
+
+		return mReplaygainInfo;
+	}
+	
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
 		public Song createFromParcel(Parcel in)
 		{
