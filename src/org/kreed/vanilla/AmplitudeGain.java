@@ -1,5 +1,7 @@
 package org.kreed.vanilla;
 
+// Describes a gain made to an amplitude value. Can be specified either as a linear scaling or as a
+// gain in decibels.
 public class AmplitudeGain {
 	static public final AmplitudeGain ZERO = AmplitudeGain.inDecibels(0);
 	
