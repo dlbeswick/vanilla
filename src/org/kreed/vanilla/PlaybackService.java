@@ -616,9 +616,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mMediaPlayer.reset();
 				mMediaPlayer.setDataSource(song.path);
 				mMediaPlayer.prepare();
+				
 				if (!mMediaPlayerInitialized)
 					mMediaPlayerInitialized = true;
 			}
+
+			applyReplaygain(song);
+				
 			if ((mState & FLAG_PLAYING) != 0)
 				mMediaPlayer.start();
 			// Ensure that we broadcast a change event even if we play the same
@@ -633,6 +637,24 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			userActionTriggered();
 
 		mHandler.sendEmptyMessage(PROCESS_SONG);
+	}
+
+	private void applyReplaygain(Song song) {
+		float trackGainDb;
+		
+		if (!song.hasReplaygainTrackGain()) {
+			final float preampWhenNoReplaygainDb = -10.0f;
+			trackGainDb = preampWhenNoReplaygainDb;
+			Log.i(this.getClass().getName(), String.format("Replaygain: no replaygain info for this track, applying constant attenuation %fdb.", trackGainDb));
+		} else {
+			final float preampWhenReplaygainDb = -6.0f; 
+			trackGainDb = song.getReplaygainTrackGain() + preampWhenReplaygainDb;
+			Log.i(this.getClass().getName(), String.format("Replaygain: setting track gain to %fdb + %fdb = %fdb", song.getReplaygainTrackGain(), preampWhenReplaygainDb, trackGainDb));
+		}
+		
+		float trackGainScale = Math.min((float)Math.pow(10.0f, trackGainDb/20.0f), 1.0f);
+		Log.i(this.getClass().getName(), String.format("Setting player volume to %f.", trackGainScale));
+		mMediaPlayer.setVolume(trackGainScale, trackGainScale);
 	}
 
 	public void onCompletion(MediaPlayer player)
