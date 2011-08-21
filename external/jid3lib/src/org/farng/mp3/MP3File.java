@@ -1,7 +1,6 @@
 package org.farng.mp3;
 
 import org.farng.mp3.filename.FilenameTag;
-import org.farng.mp3.filename.FilenameTagBuilder;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.AbstractID3v2Frame;
 import org.farng.mp3.id3.ID3v1;

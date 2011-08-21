@@ -20,6 +20,8 @@ package org.kreed.vanilla;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.DialogPreference;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
 import org.kreed.vanilla_dev.R;
@@ -27,7 +29,12 @@ import org.kreed.vanilla_dev.R;
 /**
  * The preferences activity in which one can change application preferences.
  */
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity 
+	extends PreferenceActivity
+	implements SharedPreferences.OnSharedPreferenceChangeListener 
+{
+	SharedPreferences mSettings;
+	
 	/**
 	 * Initialize the activity, loading the preference specifications.
 	 */
@@ -38,10 +45,54 @@ public class PreferencesActivity extends PreferenceActivity {
 		ContextApplication.addActivity(this);
 		addPreferencesFromResource(R.xml.preferences);
 
-		SharedPreferences settings = getSettings();
-		settings.registerOnSharedPreferenceChangeListener(this);
+		mSettings = ContextApplication.getContext().getSettings();
+		mSettings.registerOnSharedPreferenceChangeListener(this);
+		
+		updateReplayGainPreferenceState();
 	}
 
+	@Override 
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) 
+	{
+		updateReplayGainPreferenceState();
+	}
+	
+	/**
+	 * Returns all of the preference keys that should be enabled or disabled according to the 
+	 * state of the replaygain_enabled setting, excluding "replaygain_enabled".
+	 */
+	protected String[] replaygainPreferenceKeys()
+	{
+		return new String[] {
+				"replaygain_max_boost",
+				"replaygain_no_data_attenuation"
+		};
+	}
+	
+	/**
+	 * Gets an instance of a DialogPreference for the given preference key.
+	 * @param key
+	 */
+	protected DialogPreference getDialogPreference(String key)
+	{
+		return ((DialogPreference)this.getPreferenceManager().findPreference(key));
+	}
+	
+	/**
+	 * Updates the 'enabled' state of all preferences relating to replaygain, according to whether
+	 * replaygain processing is enabled or not.
+	 */
+	protected void updateReplayGainPreferenceState()
+	{
+		boolean replaygainEnabled = ((CheckBoxPreference)this.getPreferenceManager().findPreference("enable_replaygain")).isChecked();
+		
+		for (String key : replaygainPreferenceKeys()) {
+			getDialogPreference(key).setEnabled(replaygainEnabled);
+		}
+		
+		getDialogPreference("volume").setEnabled(!replaygainEnabled);
+	}
+	
 	@Override
 	public void onDestroy()
 	{
@@ -49,12 +100,6 @@ public class PreferencesActivity extends PreferenceActivity {
 		ContextApplication.removeActivity(this);
 	}
 
-	@Override
-	public void onContentChanged()
-	{
-		super.onContentChanged();
-	}
-	
 	/**
 	 * Implement the long-press-back-quits-application behavior.
 	 */

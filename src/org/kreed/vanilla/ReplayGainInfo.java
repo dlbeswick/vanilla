@@ -12,13 +12,13 @@ import org.farng.mp3.id3.FrameBodyTXXX;
 
 import android.util.Log;
 
-public class ReplaygainInfo {
+public class ReplayGainInfo {
 	private AmplitudeGain mAlbumGain = null;
 	private AmplitudeGain mTrackGain = null;
 	private String mFilePath;
 	private boolean mDataLoaded;
 	
-	ReplaygainInfo(String filePath) {
+	ReplayGainInfo(String filePath) {
 		mFilePath = filePath;
 	}
 	
@@ -73,9 +73,9 @@ public class ReplaygainInfo {
 						String description = txxx.getDescription();
 						
 						if (description.equalsIgnoreCase("replaygain_track_gain"))
-							mTrackGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+							mTrackGain = parseReplayGainDbValue(txxx.getObject("Text").toString());
 						else if (description.equalsIgnoreCase("replaygain_album_gain"))
-							mAlbumGain = parseReplaygainDbValue(txxx.getObject("Text").toString());
+							mAlbumGain = parseReplayGainDbValue(txxx.getObject("Text").toString());
 					}
 				}
 			}
@@ -91,7 +91,7 @@ public class ReplaygainInfo {
 	}
 
 	// Returns null if text is an invalid value.
-	protected AmplitudeGain parseReplaygainDbValue(String text)
+	protected AmplitudeGain parseReplayGainDbValue(String text)
 	{
 		int dbIndex = text.toLowerCase().indexOf("db");
 		if (dbIndex == -1)

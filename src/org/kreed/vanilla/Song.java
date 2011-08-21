@@ -104,7 +104,7 @@ public class Song implements Parcelable {
 	 */
 	public int flags;
 
-	private ReplaygainInfo mReplaygainInfo;
+	private ReplayGainInfo mReplayGainInfo;
 
 	public static void onMediaStoreContentsChanged()
 	{
@@ -353,16 +353,16 @@ public class Song implements Parcelable {
 		private static final long serialVersionUID = 1;
 	};
 	
-	ReplaygainInfo getReplaygainInfo() throws NotPopulatedException
+	ReplayGainInfo getReplayGainInfo() throws NotPopulatedException
 	{
-		if (mReplaygainInfo == null) {
+		if (mReplayGainInfo == null) {
 			if (!isPopulated())
-				throw(new NotPopulatedException("The song must be populated before Replaygain info can be retrieved."));
+				throw(new NotPopulatedException("The song must be populated before ReplayGain info can be retrieved."));
 						
-			mReplaygainInfo = new ReplaygainInfo(path);
+			mReplayGainInfo = new ReplayGainInfo(path);
 		}
 
-		return mReplaygainInfo;
+		return mReplayGainInfo;
 	}
 	
 	public static Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {

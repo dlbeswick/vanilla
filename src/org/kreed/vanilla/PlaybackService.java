@@ -155,6 +155,13 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	public static final int WHEN_PLAYING = 1;
 	public static final int ALWAYS = 2;
 
+	/**
+	 * This constant should be incremented if a change is made to preferences that would
+	 * cause any part of the code to fail when loading old preference data. 
+	 */
+	private static final int PREFERENCES_VERSION = 1;
+	private static final String PREFERENCES_VERSION_KEY = "playbackservice_preferences_version";
+	
 	boolean mHeadsetPause;
 	boolean mHeadsetOnly;
 	private boolean mScrobble;
@@ -170,7 +177,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private boolean mMediaPlayerInitialized;
 	private PowerManager.WakeLock mWakeLock;
 	private Notification mNotification;
-	private SharedPreferences mSettings;
 	private AudioManager mAudioManager;
 	private NotificationManager mNotificationManager;
 
@@ -199,7 +205,9 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private Method mStartForeground;
 	private Method mStopForeground;
 
-	private boolean mEnableReplaygain;
+	private boolean mEnableReplayGain;
+	private AmplitudeGain mReplayGainMaxBoostDecibels;
+	private AmplitudeGain mReplayGainNoDataAttenuationDecibels;
 
 	private Song mCurrentSong;
 
@@ -351,9 +359,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private SharedPreferences getSettings()
 	{
-		if (mSettings == null)
-			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-		return mSettings;
+		return ContextApplication.getContext().getSettings();
 	}
 
 	private void initialize()
@@ -384,19 +390,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 		}
 
-		SharedPreferences settings = getSettings();
-		settings.registerOnSharedPreferenceChangeListener(this);
-		mHeadsetOnly = settings.getBoolean("headset_only", false);
-		mEnableReplaygain = settings.getBoolean("enable_replaygain", false);
-		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
-		mScrobble = settings.getBoolean("scrobble", false);
-		float volume = settings.getFloat("volume", 1.0f);
-		if (volume != 1.0f) {
-			mCurrentVolume = mUserVolume = volume;
-			mMediaPlayer.setVolume(volume, volume);
-		}
-		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
-
+		initializePreferences();
+		
 		PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "VanillaMusicSongChangeLock");
 
@@ -408,6 +403,72 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			mMediaPlayer.seekTo(mPendingSeek);
 
 		mHandler.sendEmptyMessage(POST_CREATE);
+	}
+	
+	private void setVolumeFromPreferences()
+	{
+		SharedPreferences settings = getSettings();
+		
+		float volume = settings.getFloat("volume", 1.0f);
+		if (volume != 1.0f) {
+			mCurrentVolume = mUserVolume = volume;
+			mMediaPlayer.setVolume(volume, volume);
+		}
+	}
+	
+	/**
+	 * Load the initial values for preferences, and perform any versioning work to convert preference
+	 * data from old version formats.
+	 */
+	private void initializePreferences()
+	{
+		SharedPreferences settings = getSettings();
+		settings.registerOnSharedPreferenceChangeListener(this);
+		
+		int version = 0;
+		
+		// dbeswick: I encountered problems loading preferences when I renamed the Preference class used
+		// for this data. A ClassCastException is thrown when the old settings are loaded. I added the
+		// versioning code in case this situation happens in future.
+		try {
+			version = settings.getInt(PREFERENCES_VERSION_KEY, 0);
+		} catch (ClassCastException e) {
+			Log.w(
+				getClass().getName(), 
+				String.format("Exception while retrieving preference version key, setting preference version to 0 (%s)", e.getClass().getName())
+			);
+		}
+		
+		mHeadsetOnly = settings.getBoolean("headset_only", false);
+		mNotificationMode = Integer.parseInt(settings.getString("notification_mode", "1"));
+		mScrobble = settings.getBoolean("scrobble", false);
+		
+		setVolumeFromPreferences();
+
+		mIdleTimeout = settings.getBoolean("use_idle_timeout", false) ? settings.getInt("idle_timeout", 3600) : 0;
+
+		mEnableReplayGain = settings.getBoolean("enable_replaygain", false);
+
+		if (version < 1) {
+			SharedPreferences.Editor editor = settings.edit();
+			editor.remove("replaygain_max_boost");
+			editor.remove("replaygain_no_data_attenuation");
+			editor.commit();
+			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, true);
+		}
+		
+		mReplayGainMaxBoostDecibels = AmplitudeGain.inDecibels(
+				Float.valueOf(settings.getString("replaygain_max_boost", "3.0"))
+			);
+		
+		mReplayGainNoDataAttenuationDecibels = AmplitudeGain.inDecibels(
+				Float.valueOf(settings.getString("replaygain_no_data_attenuation", "-10"))
+			);
+		
+		// Update the perferences version number.
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt(PREFERENCES_VERSION_KEY, PREFERENCES_VERSION);
+		editor.commit();
 	}
 
 	private void loadPreference(String key)
@@ -428,13 +489,21 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		} else if ("scrobble".equals(key)) {
 			mScrobble = settings.getBoolean("scrobble", false);
 		} else if ("enable_replaygain".equals(key)) {
-			mEnableReplaygain = settings.getBoolean("enable_replaygain", false);
+			mEnableReplayGain = settings.getBoolean(key, false);
+		} else if ("replaygain_max_boost".equals(key)) {
+			mReplayGainMaxBoostDecibels = AmplitudeGain.inDecibels(
+					Float.valueOf(settings.getString(key, "3.0"))
+				);
+		} else if ("replaygain_no_data_attenuation".equals(key)) {
+			mReplayGainNoDataAttenuationDecibels = AmplitudeGain.inDecibels(
+					Float.valueOf(settings.getString(key, "-10.0"))
+				);
 		} else if ("volume".equals(key)) {
 			float volume = settings.getFloat("volume", 1.0f);
 			mCurrentVolume = mUserVolume = volume;
 			if (mMediaPlayer != null) {
 				synchronized (mMediaPlayer) {
-					mMediaPlayer.setVolume(volume, volume);
+					ensureMediaPlayerVolume();
 				}
 			}
 		} else if ("media_button".equals(key)) {
@@ -446,6 +515,36 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		}
 	}
 
+	/** 
+	 * Returns the amount of gain that should be applied to the player's volume for the given Song.
+	 */
+	private AmplitudeGain getReplayGainAmount(Song song)
+	{
+		AmplitudeGain trackGain = null;
+			
+		try {
+			if (song.getReplayGainInfo() == null) {
+				trackGain = mReplayGainNoDataAttenuationDecibels;
+			} else if (!song.getReplayGainInfo().hasTrackGain()) {
+				final AmplitudeGain preampWhenNoReplayGainDb = mReplayGainNoDataAttenuationDecibels;
+				
+				trackGain = preampWhenNoReplayGainDb;
+				Log.i(this.getClass().getName(), String.format("ReplayGain: no replaygain info for this track, applying constant attenuation %s.", trackGain));
+			} else {
+				final AmplitudeGain preampWhenReplayGainDb = AmplitudeGain.inDecibels(-mReplayGainMaxBoostDecibels.decibels());
+				
+				trackGain = song.getReplayGainInfo().trackGain();
+				trackGain = trackGain.increment(preampWhenReplayGainDb);
+				Log.i(this.getClass().getName(), String.format("ReplayGain: setting track gain to %s + %s = %s", song.getReplayGainInfo().trackGain(), preampWhenReplayGainDb, trackGain));
+			}
+		} catch (NotPopulatedException e) {
+			assert(false); // song should always be populated by this point.
+			trackGain = mReplayGainNoDataAttenuationDecibels;
+		}
+			
+		return trackGain;
+	}
+	
 	private void broadcastReplaceSong(int delta, Song song)
 	{
 		Intent intent = new Intent(EVENT_REPLACE_SONG);
@@ -536,7 +635,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			if (mMediaPlayerInitialized) {
 				synchronized (mMediaPlayer) {
 					if (mCurrentSong != null)
-						applyReplaygain(mCurrentSong);
+						applyReplayGain(mCurrentSong);
 					mMediaPlayer.start();
 				}
 			}
@@ -633,7 +732,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 
 			if ((mState & FLAG_PLAYING) != 0) {
-				applyReplaygain(song);
+				applyReplayGain(song);
 				mMediaPlayer.start();
 			}
 			
@@ -653,36 +752,34 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		mHandler.sendEmptyMessage(PROCESS_SONG);
 	}
 
-	protected void applyReplaygain(Song song) {
-		float trackGainScale;
+	/**
+	 * Makes sure that the media player volume is set appropriately given the current user
+	 * preference settings. This method should be called in preference to setVolumeFromPreferences
+	 * because it also takes into account ReplayGain preferences based on the current song.
+	 */
+	private void ensureMediaPlayerVolume() {
+		if (mCurrentSong != null)
+			applyReplayGain(mCurrentSong);
+		else
+			setVolumeFromPreferences();
+	}
+	
+	/**
+	 * Sets data in the media player necessary for normalizing volume with ReplayGain for the
+	 * given Song instance.
+	 */
+	private void applyReplayGain(Song song) {
+		// The preference screen may be accessed before the media player is initialized.
+		if (mMediaPlayer == null)
+			return;
 		
-		if (mEnableReplaygain) {
-			AmplitudeGain trackGain = null;
-			
-			try {
-				if (!song.getReplaygainInfo().hasTrackGain()) {
-					final AmplitudeGain preampWhenNoReplaygainDb = AmplitudeGain.inDecibels(-10.0f);
-					
-					trackGain = preampWhenNoReplaygainDb;
-					Log.i(this.getClass().getName(), String.format("Replaygain: no replaygain info for this track, applying constant attenuation %s.", trackGain));
-				} else {
-					final AmplitudeGain preampWhenReplaygainDb = AmplitudeGain.inDecibels(-6.0f);
-					
-					trackGain = song.getReplaygainInfo().trackGain();
-					trackGain.increment(preampWhenReplaygainDb);
-					Log.i(this.getClass().getName(), String.format("Replaygain: setting track gain to %s + %s = %s", song.getReplaygainInfo().trackGain(), preampWhenReplaygainDb, trackGain));
-				}
-			} catch (NotPopulatedException e) {
-				assert(false); // song should always be populated by this point.
-			}
-			
-			trackGainScale = trackGain.linearScale();
-			Log.i(this.getClass().getName(), String.format("Setting player volume to %f.", trackGainScale));
+		if (!mEnableReplayGain) {
+			setVolumeFromPreferences();
 		} else {
-			trackGainScale = mUserVolume;
+			float trackGainScale = getReplayGainAmount(song).linearScale();
+			mMediaPlayer.setVolume(trackGainScale, trackGainScale);
+			mCurrentVolume = trackGainScale;
 		}
-
-		mMediaPlayer.setVolume(trackGainScale, trackGainScale);
 	}
 
 	public void onCompletion(MediaPlayer player)
@@ -802,7 +899,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		loadPreference(key);
 
 		if (mCurrentSong != null)
-			applyReplaygain(mCurrentSong);
+			applyReplayGain(mCurrentSong);
 	}
 
 	private void setupReceiver()
@@ -899,7 +996,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			initialize();
 			break;
 		case POST_CREATE:
-			mHeadsetPause = mSettings.getBoolean("headset_pause", true);
+			mHeadsetPause = getSettings().getBoolean("headset_pause", true);
 			setupReceiver();
 
 			// Don't receive broadcasts through the external receiver now that
@@ -932,7 +1029,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			}
 			if (mMediaPlayer != null) {
 				synchronized (mMediaPlayer) {
-					mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
+					ensureMediaPlayerVolume();
 				}
 			}
 			break;
@@ -1050,7 +1147,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 
 		if (mCurrentVolume != mUserVolume) {
 			mCurrentVolume = mUserVolume;
-			mMediaPlayer.setVolume(mCurrentVolume, mCurrentVolume);
+			ensureMediaPlayerVolume();
 		}
 	}
 }

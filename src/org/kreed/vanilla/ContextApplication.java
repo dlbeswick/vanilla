@@ -23,11 +23,12 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
 /**
@@ -38,6 +39,7 @@ public class ContextApplication extends Application {
 	private static ArrayList<Activity> mActivities;
 	private static PlaybackService mService;
 	private static Random mRandom;
+	private static SharedPreferences mSettings;
 
 	public ContextApplication()
 	{
@@ -79,9 +81,20 @@ public class ContextApplication extends Application {
 	}
 
 	/**
+	 * Return the SharedPreferences instance containing the application
+	 * settings, creating it if necessary.
+	 */
+	public SharedPreferences getSettings()
+	{
+		if (mSettings == null)
+			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		return mSettings;
+	}
+	
+	/**
 	 * Provides an easy to access Context instance.
 	 */
-	public static Context getContext()
+	public static ContextApplication getContext()
 	{
 		return mInstance;
 	}
