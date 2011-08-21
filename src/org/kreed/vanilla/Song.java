@@ -219,7 +219,9 @@ public class Song implements Parcelable {
 		if (mRandomSongIdx > mRandomSongLastPopulatedIdx) {
 			assert(!mRandomSongIds.isEmpty());
 			
-			List<Long> selectedIds = mRandomSongIds.subList(mRandomSongIdx, mRandomSongIdx + mRandomSongPopulationSize);
+			int numberOfSongsToRetrieve = Math.min(mRandomSongIdx + mRandomSongPopulationSize, mRandomSongIds.size());
+			
+			List<Long> selectedIds = mRandomSongIds.subList(mRandomSongIdx, mRandomSongIdx + numberOfSongsToRetrieve);
 			
 		    //Debug.startMethodTracing("getSongsById");
 		    mRandomSongs = getSongsById(selectedIds, true);
@@ -230,7 +232,7 @@ public class Song implements Parcelable {
 				return null;
 			}
 
-			mRandomSongLastPopulatedIdx = mRandomSongIdx + mRandomSongPopulationSize;  
+			mRandomSongLastPopulatedIdx = mRandomSongIdx + selectedIds.size();  
 		}
 
 		Song result = mRandomSongs.get(mRandomSongIdx % mRandomSongPopulationSize);

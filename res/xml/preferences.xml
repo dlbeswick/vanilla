@@ -17,11 +17,10 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:persistent="true">
+	android:persistent="true" xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="@string/pref_output">
 		<org.kreed.vanilla.VolumePreference
-			android:key="volume" android:summary="@string/volume_summary" android:title="@string/volume_title"/>
+			android:key="volume" android:title="@string/volume_title" android:summary="@string/volume_summary"/>
 		<CheckBoxPreference
 			android:key="media_button"
 			android:title="@string/media_button_title"
@@ -37,7 +36,21 @@
 			android:title="@string/headset_pause_title"
 			android:defaultValue="true"
 			android:summary="@string/headset_pause_summary" />
-		<CheckBoxPreference android:title="@string/enable_replaygain" android:key="enable_replaygain" android:summary="@string/enable_replaygain_summary" android:defaultValue="false"></CheckBoxPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_replaygain">
+    <CheckBoxPreference android:title="@string/enable_replaygain" android:key="enable_replaygain" android:defaultValue="false" android:summary="@string/enable_replaygain_summary"/> 
+    <org.kreed.vanilla.PreferenceDecibelValues 
+      android:key="replaygain_max_boost" 
+      android:entryValues="@array/replaygain_max_boost_entries" 
+      android:title="@string/replaygain_max_boost_title" 
+      android:summary="@string/replaygain_max_boost_summary" 
+      android:defaultValue="1"/>
+    <org.kreed.vanilla.PreferenceDecibelValues 
+      android:key="replaygain_no_data_attenuation" 
+      android:entryValues="@array/replaygain_no_data_attenuation_entries" 
+      android:title="@string/replaygain_no_data_attenuation_title" 
+      android:summary="@string/replaygain_no_data_attenuation_summary" 
+      android:defaultValue="3"/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_notifications">
 		<ListPreference

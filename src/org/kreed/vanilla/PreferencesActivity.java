@@ -18,6 +18,7 @@
 
 package org.kreed.vanilla;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
@@ -36,6 +37,9 @@ public class PreferencesActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		ContextApplication.addActivity(this);
 		addPreferencesFromResource(R.xml.preferences);
+
+		SharedPreferences settings = getSettings();
+		settings.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -45,6 +49,12 @@ public class PreferencesActivity extends PreferenceActivity {
 		ContextApplication.removeActivity(this);
 	}
 
+	@Override
+	public void onContentChanged()
+	{
+		super.onContentChanged();
+	}
+	
 	/**
 	 * Implement the long-press-back-quits-application behavior.
 	 */

@@ -122,4 +122,9 @@
 	<string name="scrobble_summary">Scrobble to Last.FM through ScrobbleDroid or Simple Last.FM Scrobbler</string>
 	<string name="enable_replaygain">Enable Replaygain</string>
 	<string name="enable_replaygain_summary">Ensures that all songs play at a similar volume. Replaygain data must have been written into the files.</string>
+	<string name="pref_replaygain">Replaygain</string>
+	<string name="replaygain_max_boost_summary">The maximum amount that quiet songs can be boosted. The larger this value, the quieter all songs will be.</string>
+	<string name="replaygain_max_boost_title">Max Volume Boost</string>
+  <string name="replaygain_no_data_attenuation_title">Attenuation Without Data</string> 
+  <string name="replaygain_no_data_attenuation_summary">Songs without Replaygain data are usually too loud. This value sets how much quieter they should be.</string> 
 </resources>

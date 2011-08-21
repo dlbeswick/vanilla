@@ -55,16 +55,24 @@ public class AmplitudeGain {
 		}
 	}
 
-	public void increment(AmplitudeGain gain)
+	public AmplitudeGain increment(AmplitudeGain gain)
 	{
 		if (mDecibels != null)
-			mDecibels += gain.decibels();
+			return new AmplitudeGain(mDecibels + gain.decibels(), null);
 		else
-			mLinearScale += gain.linearScale();
+			return new AmplitudeGain(null, mLinearScale + gain.decibels());
+	}
+	
+	public AmplitudeGain decrement(AmplitudeGain gain)
+	{
+		if (mDecibels != null)
+			return new AmplitudeGain(mDecibels - gain.decibels(), null);
+		else
+			return new AmplitudeGain(null, mLinearScale - gain.decibels());
 	}
 	
 	public String toString() 
 	{
-		return String.format("%+f.2", decibels());
+		return String.format("%+.2f", decibels());
 	}
 }

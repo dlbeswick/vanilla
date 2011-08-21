@@ -32,9 +32,23 @@
 		<item>Open Mini Player</item>
 		<item>Skip To Next Song</item>
 	</string-array>
-	<string-array name="entry_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
+  <string-array name="replaygain_max_boost_entries">
+    <item>0</item>
+    <item>3</item>
+    <item>6</item>
+    <item>10</item>
+    <item>15</item>
+  </string-array>
+	<string-array name="replaygain_no_data_attenuation_entries">
+	  <item>0</item>
+    <item>-3</item>
+    <item>-6</item>
+    <item>-10</item>
+    <item>-15</item>
 	</string-array>
+  <string-array name="entry_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
 </resources>

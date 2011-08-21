@@ -331,16 +331,12 @@ public final class SongTimeline {
 					}
 				}
 			}
+		} else {
+			song = Song.randomSong();
 		}
 
-		if (song == null)
+		if (song == null || !song.query(false)) {
 			return null;
-		
-		if (!song.query(false)) {
-			song.copy(Song.randomSong());
-			
-			if (song == null || !song.query(false))
-				return null;
 		}
 
 		return song;
