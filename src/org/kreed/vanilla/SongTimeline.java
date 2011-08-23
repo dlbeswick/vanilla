@@ -115,6 +115,11 @@ public final class SongTimeline {
 					mSongs = songs;
 					mCurrentPos = in.readInt();
 					mRepeatStart = in.readInt();
+					
+					// dbeswick: had a bug with this in the past, being defensive here.
+					assert(mRepeatStart >= -1);
+					mRepeatStart = Math.max(-1, mRepeatStart);
+					
 					mShuffle = in.readBoolean();
 					extra = in.readInt();
 				}
@@ -331,7 +336,9 @@ public final class SongTimeline {
 					}
 				}
 			}
-		} else {
+		}
+		
+		if (song == null) {
 			song = Song.randomSong();
 		}
 
@@ -424,10 +431,14 @@ public final class SongTimeline {
 	public void purge()
 	{
 		synchronized (this) {
-			while (mCurrentPos > 10 && mRepeatStart > 0) {
+			boolean hasRepeat = mRepeatStart != -1;
+			
+			while (mCurrentPos >= 10 && (!hasRepeat || mRepeatStart > 0)) {
 				mSongs.remove(0);
 				--mCurrentPos;
-				--mRepeatStart;
+				
+				if (mRepeatStart > -1)
+					--mRepeatStart;
 			}
 		}
 	}
