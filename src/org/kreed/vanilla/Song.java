@@ -219,7 +219,7 @@ public class Song implements Parcelable {
 		if (mRandomSongIdx > mRandomSongLastPopulatedIdx) {
 			assert(!mRandomSongIds.isEmpty());
 			
-			int numberOfSongsToRetrieve = Math.min(mRandomSongIdx + mRandomSongPopulationSize, mRandomSongIds.size());
+			int numberOfSongsToRetrieve = Math.min(mRandomSongPopulationSize, mRandomSongIds.size() - mRandomSongIdx);
 			
 			List<Long> selectedIds = mRandomSongIds.subList(mRandomSongIdx, mRandomSongIdx + numberOfSongsToRetrieve);
 			
