@@ -34,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import org.kreed.vanilla_dev.R;
 
 public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.OnSeekBarChangeListener, View.OnLongClickListener {
 	/**

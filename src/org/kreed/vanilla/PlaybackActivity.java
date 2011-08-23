@@ -29,7 +29,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import org.kreed.vanilla_dev.R;
 
 public class PlaybackActivity extends Activity implements Handler.Callback, View.OnClickListener {
 	Handler mHandler;

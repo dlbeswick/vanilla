@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.kreed.vanilla.Song.NotPopulatedException;
-import org.kreed.vanilla_dev.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;

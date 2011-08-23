@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import org.kreed.vanilla_dev.R;
 
 /**
  * Compact playback activity that displays itself like a dialog. That is, the

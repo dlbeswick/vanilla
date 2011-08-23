@@ -41,7 +41,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
-import org.kreed.vanilla_dev.R;
 
 /**
  * MediaAdapter provides an adapter backed by a MediaStore content provider.

@@ -24,7 +24,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.DialogPreference;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
-import org.kreed.vanilla_dev.R;
 
 /**
  * The preferences activity in which one can change application preferences.

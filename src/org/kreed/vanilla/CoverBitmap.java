@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import org.kreed.vanilla_dev.R;
 
 /**
  * Class containing utility functions to create Bitmaps display song info and

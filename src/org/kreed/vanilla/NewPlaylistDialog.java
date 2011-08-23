@@ -26,7 +26,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import org.kreed.vanilla_dev.R;
 
 /**
  * Simple dialog to prompt to user to enter a playlist name. Has an EditText to
