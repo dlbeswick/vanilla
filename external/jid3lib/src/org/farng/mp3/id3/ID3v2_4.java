@@ -15,6 +15,7 @@ import org.farng.mp3.lyrics3.Lyrics3v2Field;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -400,11 +401,13 @@ public class ID3v2_4 extends ID3v2_3 {
                 size += 2;
             }
         }
-        final Iterator<?> iterator = this.getFrameIterator();
-        AbstractID3v2Frame frame;
+
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = this.getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (AbstractID3v2Frame) iterator.next();
-            size += frame.getSize();
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+        		size += frame.getSize();
+        	}
         }
         return size;
     }
@@ -635,11 +638,9 @@ public class ID3v2_4 extends ID3v2_3 {
         super.write(tag);
     }
 
-    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException, TagException {
         int size;
         final String str;
-        final Iterator<?> iterator;
-        ID3v2_4Frame frame;
         final byte[] buffer = new byte[6];
         final MP3File mp3 = new MP3File();
         mp3.seekMP3Frame(file);
@@ -717,10 +718,12 @@ public class ID3v2_4 extends ID3v2_3 {
         }
 
         // write all frames
-        iterator = this.getFrameIterator();
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = this.getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (ID3v2_4Frame) iterator.next();
-            frame.write(file, parent);
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+                frame.write(file, parent);
+        	}
         }
     }
 
@@ -752,13 +755,13 @@ public class ID3v2_4 extends ID3v2_3 {
             this.unsynchronization = id3tag.unsynchronization;
         }
         final AbstractID3v2 id3tag = mp3tag;
-        final Iterator<?> iterator = id3tag.getFrameIterator();
-        AbstractID3v2Frame frame;
-        ID3v2_4Frame newFrame;
+
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = id3tag.getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (AbstractID3v2Frame) iterator.next();
-            newFrame = new ID3v2_4Frame(frame);
-            this.setFrame(newFrame);
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+                this.setFrame(new ID3v2_4Frame(frame));
+        	}
         }
     }
 

@@ -294,7 +294,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     // fix interface, parent is always 'this'
-    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException, TagException {
     	parent = this;
     	
         final String str;

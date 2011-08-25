@@ -11,6 +11,7 @@ import org.farng.mp3.TagNotFoundException;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -168,11 +169,13 @@ public class ID3v2_3 extends ID3v2_2 {
                 size += (4 + 2 + 4);
             }
         }
-        final Iterator<?> iterator = this.getFrameIterator();
-        AbstractID3v2Frame frame;
+
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = this.getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (AbstractID3v2Frame) iterator.next();
-            size += frame.getSize();
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+        		size += frame.getSize();
+        	}
         }
         return size;
     }
@@ -341,15 +344,13 @@ public class ID3v2_3 extends ID3v2_2 {
     }
 
     // "parent" is the AbstractID3-derived instance making use of this frame.
-    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException {
+    public void write(final RandomAccessFile file, AbstractID3 parent) throws IOException, TagException {
         final String str;
-        final Iterator<?> iterator;
         final byte[] buffer = new byte[6];
         final MP3File mp3 = new MP3File();
         mp3.seekMP3Frame(file);
         final long mp3start = file.getFilePointer();
         file.seek(0);
-        ID3v2_3Frame frame;
         str = "ID3";
         for (int i = 0; i < str.length(); i++) {
             buffer[i] = (byte) str.charAt(i);
@@ -385,10 +386,12 @@ public class ID3v2_3 extends ID3v2_2 {
         }
 
         // write all frames
-        iterator = this.getFrameIterator();
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (ID3v2_3Frame) iterator.next();
-            frame.write(file, parent);
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+                frame.write(file, parent);
+        	}
         }
     }
 

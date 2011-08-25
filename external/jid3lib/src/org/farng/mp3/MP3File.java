@@ -594,32 +594,35 @@ public class MP3File {
         final ID3v2_4 lyrics3 = new ID3v2_4(lyrics3tag);
         final ID3v2_4 filename = new ID3v2_4(filenameTag);
         final AbstractID3v2 id3v2 = id3v2tag;
-        final Iterator<?> iterator = total.iterator();
+
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = total.getFrameIterator();
+
         while (iterator.hasNext()) {
-            final AbstractID3v2Frame frame = (AbstractID3v2Frame) iterator.next();
-            final TagIdentifier identifier = frame.getIdentifier();
-            if (id3v2 != null) {
-                if (id3v2.hasFrame(identifier)) {
-                    if (!id3v2.getFrame(identifier).isSubsetOf(frame)) {
-                        set.add(identifier);
-                    }
-                }
-            }
-            if (id3v1.hasFrame(identifier)) {
-                if (!id3v1.getFrame(identifier).isSubsetOf(frame)) {
-                    set.add(identifier);
-                }
-            }
-            if (lyrics3.hasFrame(identifier)) {
-                if (!lyrics3.getFrame(identifier).isSubsetOf(frame)) {
-                    set.add(identifier);
-                }
-            }
-            if (filename.hasFrame(identifier)) {
-                if (!filename.getFrame(identifier).isSubsetOf(frame)) {
-                    set.add(identifier);
-                }
-            }
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+	            final TagIdentifier identifier = frame.getIdentifier();
+	            if (id3v2 != null) {
+	                if (id3v2.hasFrame(identifier)) {
+	                    if (!id3v2.getFrame(identifier).isSubsetOf(frame)) {
+	                        set.add(identifier);
+	                    }
+	                }
+	            }
+	            if (id3v1.hasFrame(identifier)) {
+	                if (!id3v1.getFrame(identifier).isSubsetOf(frame)) {
+	                    set.add(identifier);
+	                }
+	            }
+	            if (lyrics3.hasFrame(identifier)) {
+	                if (!lyrics3.getFrame(identifier).isSubsetOf(frame)) {
+	                    set.add(identifier);
+	                }
+	            }
+	            if (filename.hasFrame(identifier)) {
+	                if (!filename.getFrame(identifier).isSubsetOf(frame)) {
+	                    set.add(identifier);
+	                }
+	            }
+	        }
         }
         return set;
     }

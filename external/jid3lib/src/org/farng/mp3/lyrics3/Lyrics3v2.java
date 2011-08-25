@@ -14,6 +14,7 @@ import org.farng.mp3.id3.ID3v2_4;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -122,16 +123,19 @@ public class Lyrics3v2 extends AbstractLyrics3 {
                 fieldMap.put(newField.getIdentifier(), newField);
             } else {
                 Lyrics3v2Field newField;
-                final Iterator<?> iterator;
-                iterator = (new ID3v2_4(mp3tag)).iterator();
+
+                final Iterator<ArrayList<AbstractID3v2Frame>> iterator = (new ID3v2_4(mp3tag)).getFrameIterator();
+
                 while (iterator.hasNext()) {
-                    try {
-                        newField = new Lyrics3v2Field((AbstractID3v2Frame) iterator.next());
-                        this.fieldMap.put(newField.getIdentifier(), newField);
-                    } catch (TagException ex) {
-                        //invalid frame to create lyrics3 field. ignore and
-                        // keep going
-                    }
+                	for (AbstractID3v2Frame frame : iterator.next()) {
+	                    try {
+	                        newField = new Lyrics3v2Field(frame);
+	                        this.fieldMap.put(newField.getIdentifier(), newField);
+	                    } catch (TagException ex) {
+	                        //invalid frame to create lyrics3 field. ignore and
+	                        // keep going
+	                    }
+	                }
                 }
             }
         }
