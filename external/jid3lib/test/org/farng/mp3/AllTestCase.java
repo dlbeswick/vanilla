@@ -44,6 +44,10 @@ package org.farng.mp3;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.farng.mp3.MP3FileTest;
+import org.farng.mp3.MiscellaneousTest;
+import org.farng.mp3.TagUtilityTest;
 import org.farng.mp3.id3.AbstractMP3Tag;
 import org.farng.mp3.object.AbstractMP3ObjectTest;
 import org.farng.mp3.object.ObjectBooleanByteTest;
@@ -77,7 +81,11 @@ import java.util.Iterator;
  * @version 1.0
  */
 public class AllTestCase extends TestCase {
-
+    /**
+    * Path to the 'test' folder in the jid3lib project. Adjust if necessary.
+    */
+	public static String TEST_PATH = "external/jid3lib/test";
+	
     /**
      *
      */
@@ -205,6 +213,7 @@ public class AllTestCase extends TestCase {
 
     /**
      * @param args
+     * @throws Exception 
      */
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());

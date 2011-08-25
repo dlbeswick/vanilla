@@ -115,12 +115,10 @@ public class MP3FileTest extends TestCase {
 
     /**
      * Creates a new MP3FileTest object.
+     * @throws Exception 
      */
     public MP3FileTest(String name) {
         super(name);
-        File parentDir = (new File("test")).getParentFile();
-        this.testMusicDirectory = new File(parentDir, "working");
-        this.testMusicOriginalDirectory = new File(parentDir, "music");
     }
 
     /**
@@ -1620,6 +1618,13 @@ public class MP3FileTest extends TestCase {
      * @throws Exception
      */
     protected void setUp() throws Exception {
+        File parentDir = (new File(AllTestCase.TEST_PATH)).getParentFile();
+        if (parentDir == null)
+        	throw(new Exception("Couldn't find the directory 'test'."));
+        
+        this.testMusicDirectory = new File(parentDir, "working");
+        this.testMusicOriginalDirectory = new File(parentDir, "music");
+        
         // copy over original files
         FileFilter fileFilter = new FileOnlyFileFilter();
         File[] testFileArray = this.testMusicDirectory.listFiles(fileFilter);
