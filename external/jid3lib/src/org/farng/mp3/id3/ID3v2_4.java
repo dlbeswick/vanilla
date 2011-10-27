@@ -359,12 +359,12 @@ public class ID3v2_4 extends ID3v2_3 {
                 } else {
                     lyric = new Lyrics3v2(mp3tag);
                 }
-                final Iterator<?> iterator = lyric.iterator();
+                final Iterator<Lyrics3v2Field> iterator = lyric.iterator();
                 Lyrics3v2Field field;
                 ID3v2_4Frame newFrame;
                 while (iterator.hasNext()) {
                     try {
-                        field = (Lyrics3v2Field) iterator.next();
+                        field = iterator.next();
                         newFrame = new ID3v2_4Frame(field);
                         this.setFrame(newFrame);
                     } catch (InvalidTagException ex) {

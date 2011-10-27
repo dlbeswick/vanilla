@@ -315,8 +315,8 @@ public class ID3v2_3 extends ID3v2_2 {
     }
 
     public String toString() {
-        final Iterator<?> iterator = this.getFrameIterator();
-        AbstractID3v2Frame frame;
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = this.getFrameIterator();
+
         String str = getIdentifier() + " " + this.getSize() + "\n";
         str += ("compression        = " + this.compression + "\n");
         str += ("unsynchronization  = " + this.unsynchronization + "\n");
@@ -326,8 +326,9 @@ public class ID3v2_3 extends ID3v2_2 {
         str += ("extended           = " + this.extended + "\n");
         str += ("paddingSize        = " + this.paddingSize + "\n");
         while (iterator.hasNext()) {
-            frame = (ID3v2_3Frame) iterator.next();
-            str += (frame.toString() + "\n");
+        	for (AbstractID3v2Frame frame : iterator.next()) {
+        		str += (frame.toString() + "\n");
+        	}
         }
         return str + "\n";
     }
@@ -437,7 +438,7 @@ public class ID3v2_3 extends ID3v2_2 {
 
     public String getSongComment() {
         String text = "";
-        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("COMM" + ((char) 0) + "eng" + ((char) 0) + ""));
+        AbstractID3v2Frame frame = getFrame(TagFrameIdentifier.get("COMM"));
         if (frame != null) {
             FrameBodyCOMM body = (FrameBodyCOMM) frame.getBody();
             text = body.getText();
@@ -473,7 +474,7 @@ public class ID3v2_3 extends ID3v2_2 {
             text = body.getLyric();
         }
         if (text == "") {
-            frame = getFrame(TagFrameIdentifier.get("USLT" + ((char) 0) + "eng" + ((char) 0) + ""));
+            frame = getFrame(TagFrameIdentifier.get("USLT"));
             if (frame != null) {
                 FrameBodyUSLT body = (FrameBodyUSLT) frame.getBody();
                 text = body.getLyric();

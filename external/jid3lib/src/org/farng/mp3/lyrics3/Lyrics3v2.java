@@ -103,7 +103,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         while (iterator.hasNext()) {
             oldIdentifier = iterator.next();
             newIdentifier = oldIdentifier;
-            newObject = new Lyrics3v2Field((Lyrics3v2Field) copyObject.fieldMap.get(newIdentifier));
+            newObject = new Lyrics3v2Field(copyObject.fieldMap.get(newIdentifier));
             fieldMap.put(newIdentifier, newObject);
         }
     }
@@ -162,7 +162,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
      * @return The value associated with the identifier
      */
     public Lyrics3v2Field getField(final TagIdentifier identifier) {
-        return (Lyrics3v2Field) this.fieldMap.get(identifier);
+        return this.fieldMap.get(identifier);
     }
 
     public int getFieldCount() {

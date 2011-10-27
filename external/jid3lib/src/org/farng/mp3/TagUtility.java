@@ -58,24 +58,23 @@ public class TagUtility {
      *
      * @return frame description
      */
-    public static String getFrameDescription(final String identifier) {
+    public static String getFrameDescription(final TagFrameIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         String returnValue = null;
         if (identifier.length() > 2) {
             if (identifier.length() == 4) {
-                final String idPrefix = identifier.substring(0, 4);
-                returnValue = (String) TagConstant.id3v2_4FrameIdToString.get(idPrefix);
+                returnValue = (String) TagConstant.id3v2_4FrameIdToString.get(identifier);
                 if (returnValue == null) {
-                    returnValue = (String) TagConstant.id3v2_3FrameIdToString.get(idPrefix);
+                    returnValue = (String) TagConstant.id3v2_3FrameIdToString.get(identifier);
                 }
             }
             if (returnValue == null) {
-                returnValue = (String) TagConstant.id3v2_2FrameIdToString.get(identifier.substring(0, 3));
+                returnValue = (String) TagConstant.id3v2_2FrameIdToString.get(identifier);
             }
             if (returnValue == null) {
-                returnValue = (String) TagConstant.lyrics3v2FieldIdToString.get(identifier.substring(0, 3));
+                returnValue = (String) TagConstant.lyrics3v2FieldIdToString.get(identifier);
             }
         }
         return returnValue;
@@ -99,9 +98,9 @@ public class TagUtility {
         } else {
             final String upperIdentifier = identifier.toString().toUpperCase();
             if (upperIdentifier.charAt(3) >= 'A' && upperIdentifier.charAt(3) <= 'Z') {
-                return TagConstant.id3v2_2FrameIdToString.containsKey(upperIdentifier.substring(0, 4));
+                return TagConstant.id3v2_2FrameIdToString.containsKey(TagFrameIdentifier.get(upperIdentifier.substring(0, 4).toString()));
             }
-            return TagConstant.id3v2_2FrameIdToString.containsKey(upperIdentifier.subSequence(0, 3));
+            return TagConstant.id3v2_2FrameIdToString.containsKey(TagFrameIdentifier.get(upperIdentifier.subSequence(0, 3).toString()));
         }
     }
 
@@ -146,14 +145,14 @@ public class TagUtility {
      *
      * @return true if the identifier is a valid Lyrics3v2 frame identifier
      */
-    public static boolean isLyrics3v2FieldIdentifier(final String identifier) {
+    public static boolean isLyrics3v2FieldIdentifier(final TagIdentifier identifier) {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
         if (identifier.length() < 3) {
             return false;
         }
-        return TagConstant.lyrics3v2FieldIdToString.containsKey(identifier.substring(0, 3));
+        return TagConstant.lyrics3v2FieldIdToString.containsKey(identifier);
     }
 
     /**

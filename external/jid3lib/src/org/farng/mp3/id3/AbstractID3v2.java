@@ -63,8 +63,10 @@ public abstract class AbstractID3v2 extends AbstractID3 {
         AbstractID3v2Frame newFrame;
         while (iterator.hasNext()) {
             identifier = iterator.next();
-            newFrame = (AbstractID3v2Frame) TagUtility.copyObject(copyObject.frameMap.get(identifier));
-            setFrame(newFrame);
+            for (AbstractID3v2Frame frame : copyObject.frameMap.get(identifier)) {
+            	newFrame = (AbstractID3v2Frame) TagUtility.copyObject(frame);
+            	setFrame(newFrame);
+            }
         }
     }
 

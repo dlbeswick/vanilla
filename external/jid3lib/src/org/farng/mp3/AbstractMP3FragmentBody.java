@@ -105,7 +105,7 @@ public abstract class AbstractMP3FragmentBody extends AbstractMP3FileItem {
     public void setObject(final String identifier, final Object object) {
         final Iterator<AbstractMP3Object> iterator = objectList.listIterator();
         while (iterator.hasNext()) {
-            final AbstractMP3Object abstractMP3Object = (AbstractMP3Object) iterator.next();
+            final AbstractMP3Object abstractMP3Object = iterator.next();
             final String currentIdentifier = abstractMP3Object.getIdentifier();
             if (currentIdentifier.equals(identifier)) {
                 abstractMP3Object.setValue(object);

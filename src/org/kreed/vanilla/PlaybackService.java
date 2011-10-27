@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.kreed.vanilla.ReplayGainInfo.DataExtractException;
+import org.kreed.vanilla.ReplayGainInfo.UnsupportedFiletypeException;
 import org.kreed.vanilla.Song.NotPopulatedException;
+import org.kreed.vanilla.support.MediaAccessException;
 import org.kreed.vanilla_dev.R;
 
 import android.app.Notification;
@@ -520,28 +523,42 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 */
 	private AmplitudeGain getReplayGainAmount(Song song)
 	{
+		boolean gotInfo = false;
 		AmplitudeGain trackGain = null;
 			
 		try {
-			if (song.getReplayGainInfo() == null) {
-				trackGain = mReplayGainNoDataAttenuationDecibels;
-			} else if (!song.getReplayGainInfo().hasTrackGain()) {
-				final AmplitudeGain preampWhenNoReplayGainDb = mReplayGainNoDataAttenuationDecibels;
-				
-				trackGain = preampWhenNoReplayGainDb;
-				Log.i(this.getClass().getName(), String.format("ReplayGain: no replaygain info for this track, applying constant attenuation %s.", trackGain));
-			} else {
-				final AmplitudeGain preampWhenReplayGainDb = AmplitudeGain.inDecibels(-mReplayGainMaxBoostDecibels.decibels());
-				
-				trackGain = song.getReplayGainInfo().trackGain();
-				trackGain = trackGain.increment(preampWhenReplayGainDb);
-				Log.i(this.getClass().getName(), String.format("ReplayGain: setting track gain to %s + %s = %s", song.getReplayGainInfo().trackGain(), preampWhenReplayGainDb, trackGain));
+			try {
+				if (song.getReplayGainInfo() == null) {
+					gotInfo = false;
+				} else if (!song.getReplayGainInfo().hasTrackGain()) {
+					gotInfo = false;
+					
+					Log.i(this.getClass().getName(), String.format("ReplayGain: no replaygain info for this track, applying constant attenuation %s.", trackGain));
+				} else {
+					gotInfo = true;
+					
+					final AmplitudeGain preampWhenReplayGainDb = AmplitudeGain.inDecibels(-mReplayGainMaxBoostDecibels.decibels());
+					
+					trackGain = song.getReplayGainInfo().trackGain();
+					trackGain = trackGain.increment(preampWhenReplayGainDb);
+					Log.i(this.getClass().getName(), String.format("ReplayGain: setting track gain to %s + %s = %s", song.getReplayGainInfo().trackGain(), preampWhenReplayGainDb, trackGain));
+				}
+			} catch (DataExtractException e) {
+				gotInfo = false;
+			} catch (MediaAccessException e) {
+				gotInfo = false;
+			} catch (UnsupportedFiletypeException e) {
+				gotInfo = false;
+			} catch (IOException e) {
+				gotInfo = false;
 			}
 		} catch (NotPopulatedException e) {
 			assert(false); // song should always be populated by this point.
-			trackGain = mReplayGainNoDataAttenuationDecibels;
 		}
-			
+		
+		if (!gotInfo)
+			trackGain = mReplayGainNoDataAttenuationDecibels;
+		
 		return trackGain;
 	}
 	

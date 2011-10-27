@@ -1,8 +1,10 @@
 package org.kreed.vanilla;
 
-// Describes a gain made to an amplitude value. Can be specified either as a linear scaling or as a
-// gain in decibels.
-public class AmplitudeGain {
+/** 
+ * Describes a gain made to an amplitude value. Can be specified either as a linear scaling or as a
+ * gain in decibels.
+ */
+public class AmplitudeGain implements Comparable<AmplitudeGain> {
 	static public final AmplitudeGain ZERO = AmplitudeGain.inDecibels(0);
 	
 	protected Float mDecibels;
@@ -28,6 +30,39 @@ public class AmplitudeGain {
 		
 		if (mLinearScale != null && mLinearScale < 0)
 			throw(new IllegalArgumentException("Linear scale must be greater than or equal to zero."));
+	}
+
+	@Override
+	public int compareTo(AmplitudeGain rhs) {
+		if (mDecibels != null)
+			return mDecibels.compareTo(rhs.decibels());
+		else 
+			return mLinearScale.compareTo(rhs.linearScale());
+	}
+	
+	@Override
+	public boolean equals(Object rhs) {
+	     if (!getClass().isInstance(rhs)) 
+	    	 return false;
+	     
+	     return compareTo((AmplitudeGain)rhs) == 0;
+     }
+
+	/** 
+	 * The result is the hashCode of either the linear scale or decibel value, whichever was  specified on 
+	 * construction of the instance.
+	 * Be mindful of this when using these objects in hashes. AmplitudeGain objects specified with different
+	 * units won't be equivalent when it comes to hashes. This differs from the "equals" case. I think
+	 * it's more important to be stricter in this case, so floating point error doesn't cause unpredictable
+	 * results when objects of different types are added to a hash. With this implementation, the result 
+	 * may still be unexpected at times, but it's predictable.
+	 */
+	@Override
+	public int hashCode() {
+		if (mDecibels != null)
+			return mDecibels.hashCode();
+		else
+			return mLinearScale.hashCode();
 	}
 	
 	// Return the amount of gain in decibels.

@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.kreed.vanilla.ReplayGainInfo.DataExtractException;
+import org.kreed.vanilla.ReplayGainInfo.UnsupportedFiletypeException;
+
+
 /**
  * Represents a Song backed by the MediaStore. Includes basic metadata and
  * utilities to retrieve songs from the MediaStore.
@@ -104,6 +108,7 @@ public class Song implements Parcelable {
 	 */
 	public int flags;
 
+	private boolean mReplayGainInfoLoadAttempted;
 	private ReplayGainInfo mReplayGainInfo;
 
 	public static void onMediaStoreContentsChanged()
@@ -353,13 +358,19 @@ public class Song implements Parcelable {
 		private static final long serialVersionUID = 1;
 	};
 	
-	ReplayGainInfo getReplayGainInfo() throws NotPopulatedException
+	ReplayGainInfo getReplayGainInfo() 
+		throws NotPopulatedException, 
+			DataExtractException, 
+			UnsupportedFiletypeException, 
+			FileNotFoundException
 	{
-		if (mReplayGainInfo == null) {
+		if (!mReplayGainInfoLoadAttempted) {
 			if (!isPopulated())
 				throw(new NotPopulatedException("The song must be populated before ReplayGain info can be retrieved."));
 						
-			mReplayGainInfo = new ReplayGainInfo(path);
+			mReplayGainInfoLoadAttempted = true;
+			
+			mReplayGainInfo = ReplayGainInfo.forFile(path);
 		}
 
 		return mReplayGainInfo;

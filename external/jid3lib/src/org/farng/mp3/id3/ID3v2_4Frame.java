@@ -290,9 +290,9 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
     public ID3v2_4Frame(final Lyrics3v2Field field) throws InvalidTagException {
         final TagIdentifier id = field.getIdentifier();
         final String value;
-        if (id.equals("IND")) {
+        if (id == TagFrameIdentifier.get("IND")) {
             throw new InvalidTagException("Cannot create ID3v2.40 frame from Lyrics3 indications field.");
-        } else if (id.equals("LYR")) {
+        } else if (id == TagFrameIdentifier.get("LYR")) {
             final FieldBodyLYR lyric = (FieldBodyLYR) field.getBody();
             ObjectLyrics3Line line;
             final Iterator<?> iterator = lyric.iterator();
@@ -317,22 +317,22 @@ public class ID3v2_4Frame extends ID3v2_3Frame {
             } else {
                 this.setBody(unsync);
             }
-        } else if (id.equals("INF")) {
+        } else if (id == TagFrameIdentifier.get("INF")) {
             value = ((FieldBodyINF) field.getBody()).getAdditionalInformation();
             this.setBody(new FrameBodyCOMM((byte) 0, "ENG", "", value));
-        } else if (id.equals("AUT")) {
+        } else if (id == TagFrameIdentifier.get("AUT")) {
             value = ((FieldBodyAUT) field.getBody()).getAuthor();
             this.setBody(new FrameBodyTCOM((byte) 0, value));
-        } else if (id.equals("EAL")) {
+        } else if (id == TagFrameIdentifier.get("EAL")) {
             value = ((FieldBodyEAL) field.getBody()).getAlbum();
             this.setBody(new FrameBodyTALB((byte) 0, value));
-        } else if (id.equals("EAR")) {
+        } else if (id == TagFrameIdentifier.get("EAR")) {
             value = ((FieldBodyEAR) field.getBody()).getArtist();
             this.setBody(new FrameBodyTPE1((byte) 0, value));
-        } else if (id.equals("ETT")) {
+        } else if (id == TagFrameIdentifier.get("ETT")) {
             value = ((FieldBodyETT) field.getBody()).getTitle();
             this.setBody(new FrameBodyTIT2((byte) 0, value));
-        } else if (id.equals("IMG")) {
+        } else if (id == TagFrameIdentifier.get("IMG")) {
             throw new InvalidTagException("Cannot create ID3v2.40 frame from Lyrics3 image field.");
         } else {
             throw new InvalidTagException("Cannot caret ID3v2.40 frame from " + id + " Lyrics3 field");

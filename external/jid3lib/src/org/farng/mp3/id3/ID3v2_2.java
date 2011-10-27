@@ -11,6 +11,7 @@ import org.farng.mp3.TagNotFoundException;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -131,13 +132,14 @@ public class ID3v2_2 extends AbstractID3v2 {
             this.compression = convertedTag.compression;
             this.unsynchronization = convertedTag.unsynchronization;
             final AbstractID3v2 id3tag = convertedTag;
-            final Iterator<?> iterator = id3tag.getFrameIterator();
-            AbstractID3v2Frame frame;
+            final Iterator<ArrayList<AbstractID3v2Frame>> iterator = id3tag.getFrameIterator();
+
             ID3v2_2Frame newFrame;
             while (iterator.hasNext()) {
-                frame = (AbstractID3v2Frame) iterator.next();
-                newFrame = new ID3v2_2Frame(frame);
-                this.setFrame(newFrame);
+                for (AbstractID3v2Frame frame : iterator.next()) {
+                	newFrame = new ID3v2_2Frame(frame);
+                	this.setFrame(newFrame);
+                }
             }
         }
     }
@@ -155,11 +157,12 @@ public class ID3v2_2 extends AbstractID3v2 {
 
     public int getSize() {
         int size = 3 + 2 + 1 + 4;
-        final Iterator<?> iterator = getFrameIterator();
-        ID3v2_2Frame frame;
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = getFrameIterator();
+
         while (iterator.hasNext()) {
-            frame = (ID3v2_2Frame) iterator.next();
-            size += frame.getSize();
+            for (AbstractID3v2Frame frame : iterator.next()) {
+            	size += frame.getSize();
+            }
         }
         return size;
     }
@@ -273,14 +276,15 @@ public class ID3v2_2 extends AbstractID3v2 {
     }
 
     public String toString() {
-        final Iterator<?> iterator = this.getFrameIterator();
-        ID3v2_2Frame frame;
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator = this.getFrameIterator();
+
         String str = getIdentifier() + " - " + this.getSize() + " bytes\n";
         str += ("compression        = " + this.compression + "\n");
         str += ("unsynchronization  = " + this.unsynchronization + "\n");
         while (iterator.hasNext()) {
-            frame = (ID3v2_2Frame) iterator.next();
-            str += (frame.toString() + "\n");
+            for (AbstractID3v2Frame frame : iterator.next()) {
+            	str += (frame.toString() + "\n");
+            }
         }
         return str + "\n";
     }
@@ -298,8 +302,7 @@ public class ID3v2_2 extends AbstractID3v2 {
     	parent = this;
     	
         final String str;
-        ID3v2_2Frame frame;
-        final Iterator<?> iterator;
+        final Iterator<ArrayList<AbstractID3v2Frame>> iterator;
         final byte[] buffer = new byte[6];
         final MP3File mp3 = new MP3File();
         mp3.seekMP3Frame(file);
@@ -327,8 +330,9 @@ public class ID3v2_2 extends AbstractID3v2 {
         // write all frames
         iterator = this.getFrameIterator();
         while (iterator.hasNext()) {
-            frame = (ID3v2_2Frame) iterator.next();
-            frame.write(file, this);
+            for (AbstractID3v2Frame frame : iterator.next()) {
+            	frame.write(file, this);
+            }
         }
     }
 
