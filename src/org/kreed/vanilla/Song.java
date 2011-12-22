@@ -190,7 +190,7 @@ public class Song implements Parcelable {
 	 * Returns a song randomly selected from all the songs in the Android
 	 * MediaStore.
 	 */
-	public static Song randomSong()
+	public static synchronized Song randomSong()
 	{
 		if (mRandomSongIdx == -1 || mRandomSongIdx == mRandomSongIds.size())
 		{

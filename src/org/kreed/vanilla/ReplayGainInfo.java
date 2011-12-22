@@ -134,7 +134,7 @@ public abstract class ReplayGainInfo {
 	{
 		ensureDataLoaded();
 		
-		return mAlbumGain != null;
+		return mTrackGain != null;
 	}
 	
 	public AmplitudeGain albumGain() throws DataExtractException, MediaAccessException

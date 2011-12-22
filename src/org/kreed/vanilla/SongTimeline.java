@@ -283,7 +283,7 @@ public final class SongTimeline {
 	 * @param delta The offset from the current position. Should be -1, 0, or
 	 * 1.
 	 */
-	public Song getSong(int delta)
+	public synchronized Song getSong(int delta)
 	{
 		if (!Song.isSongAvailableInMediaLibrary())
 			return null;
@@ -291,57 +291,49 @@ public final class SongTimeline {
 		ArrayList<Song> timeline = mSongs;
 		Song song = null;
 		
-		if (!mSongs.isEmpty()) {
-			synchronized (this) {
-				int pos = mCurrentPos + delta;
-				if (pos < 0)
-					return null;
-	
-				int size = timeline.size();
-				if (pos > size)
-					return null;
-	
-				if (pos == size) {
-					song = Song.randomSong();
-					timeline.add(song);
-				} else {
-					song = timeline.get(pos);
+		int pos = mCurrentPos + delta;
+		if (pos < 0)
+			return null;
+
+		// add enough room for a request of any delta into the future.
+		while (timeline.size() < pos + 1)
+			timeline.add(null);
+		
+		song = timeline.get(pos);
+
+		if (song == null || !song.query(false)) {
+			song = Song.randomSong();
+			timeline.set(pos, song);
+		}
+
+		if (song != null && mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
+			if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
+				// We have reached a non-user-selected song; this song will
+				// repeated in shiftCurrentSong so take alternative
+				// measures
+				if (mShuffle)
+					song = getShuffledRepeatedSongs(mCurrentPos + 1).get(0);
+				else
+					song = timeline.get(mRepeatStart);
+			} else if (delta == 0 && mRepeatStart < mCurrentPos) {
+				// We have just been set to a position after the repeat
+				// where a repeat is necessary. Rewind to the repeat
+				// start, shuffling if needed
+				if (mShuffle) {
+					int j = mCurrentPos;
+					ArrayList<Song> songs = getShuffledRepeatedSongs(j);
+					for (int i = songs.size(); --i != -1 && --j != -1; )
+						timeline.set(j, songs.get(i));
+					mRepeatedSongs = null;
 				}
-	
-				if (song != null && mRepeatStart != -1 && (song.flags & Song.FLAG_RANDOM) != 0) {
-					if (delta == 1 && mRepeatStart < mCurrentPos + 1) {
-						// We have reached a non-user-selected song; this song will
-						// repeated in shiftCurrentSong so take alternative
-						// measures
-						if (mShuffle)
-							song = getShuffledRepeatedSongs(mCurrentPos + 1).get(0);
-						else
-							song = timeline.get(mRepeatStart);
-					} else if (delta == 0 && mRepeatStart < mCurrentPos) {
-						// We have just been set to a position after the repeat
-						// where a repeat is necessary. Rewind to the repeat
-						// start, shuffling if needed
-						if (mShuffle) {
-							int j = mCurrentPos;
-							ArrayList<Song> songs = getShuffledRepeatedSongs(j);
-							for (int i = songs.size(); --i != -1 && --j != -1; )
-								timeline.set(j, songs.get(i));
-							mRepeatedSongs = null;
-						}
-	
-						mCurrentPos = mRepeatStart;
-						song = timeline.get(mRepeatStart);
-						if (mCallback != null)
-							mCallback.songReplaced(-1, getSong(-1));
-					}
-				}
+
+				mCurrentPos = mRepeatStart;
+				song = timeline.get(mRepeatStart);
+				if (mCallback != null)
+					mCallback.songReplaced(-1, getSong(-1));
 			}
 		}
 		
-		if (song == null) {
-			song = Song.randomSong();
-		}
-
 		if (song == null || !song.query(false)) {
 			return null;
 		}
@@ -425,7 +417,7 @@ public final class SongTimeline {
 	}
 
 	/**
-	 * Removes any songs greater than 10 songs before the current song (unless
+	 * Removes any songs greater than 50 songs before the current song (unless
 	 * they are still necessary for repeating).
 	 */
 	public void purge()
@@ -433,7 +425,7 @@ public final class SongTimeline {
 		synchronized (this) {
 			boolean hasRepeat = mRepeatStart != -1;
 			
-			while (mCurrentPos >= 10 && (!hasRepeat || mRepeatStart > 0)) {
+			while (mSongs.size() > 50 && (!hasRepeat || mRepeatStart > 0)) {
 				mSongs.remove(0);
 				--mCurrentPos;
 				
