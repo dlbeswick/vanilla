@@ -1,0 +1,222 @@
+<project name = "jid3lib" default = "compile" basedir = ".">
+
+    <!-- START Project settings -->
+    <property name = "package.name" value = "org.farng.mp3" />
+    <property name = "version" value = "0.5.4" />
+
+    <property name = "src.dir" value = "src" />
+    <property name = "lib.dir" value = "lib" />
+    <property name = "test.dir" value = "test" />
+    <property name = "music.dir" value = "music" />
+    <property name = "doc.dir" value = "doc" />
+    <property name = "www.dir" value = "www" />
+    <property name = "release.notes.dir" value = "releaseNotes" />
+
+    <property name = "build.dir" value = "classes" />
+    <property name = "bin.dir" value = "bin" />
+    <!-- from eclipse? -->
+    <property name = "working.dir" value = "working" />
+    <property name = "dist.dir" value = "dist" />
+    <property name = "htdocs.dir" value = "htdocs" />
+    <property name = "emma.build.dir" value = "emmaClasses" />
+    <property name = "emma.coverage.dir" value = "emmaResults" />
+    <property name = "javadoc.dir" value = "api" />
+
+    <property name = "filename" value = "jid3lib-${version}" />
+    <property name = "jar.file" value = "${filename}.jar" />
+    <property name = "zip.file" value = "${filename}.zip" />
+    <property name = "tar.file" value = "${filename}.tar" />
+    <property name = "tar.gz.file" value = "${filename}.tar.gz" />
+
+    <path id = "lib.jarfiles">
+        <fileset dir = "${lib.dir}" includes = "**/*.jar" />
+    </path>
+
+    <!-- path element used by EMMA taskdef below: -->
+    <path id = "emma.lib">
+        <pathelement location = "${lib.dir}/emma.jar" />
+        <pathelement location = "${lib.dir}/emma_ant.jar" />
+        <pathelement location = "${emma.build.dir}/**" />
+    </path>
+
+    <!-- this loads <emma> and <emmajava> custom tasks: -->
+    <taskdef resource = "emma_ant.properties" classpathref = "emma.lib" />
+
+    <target name = "clean" description = "Remove all unnecessary files after a jar build">
+        <delete failonerror = "false">
+            <fileset dir = "${src.dir}" includes = "**/*.class" />
+        </delete>
+        <delete failonerror = "false" dir = "${emma.build.dir}" />
+        <delete failonerror = "false" dir = "${build.dir}" />
+        <delete failonerror = "false" dir = "${working.dir}" />
+        <delete failonerror = "false" file = "${dist.dir}/${tar.file}" />
+    </target>
+
+    <target name = "cleanall" depends = "clean" description = "Remove all files created by this build script">
+        <delete failonerror = "false" dir = "${bin.dir}" />
+        <delete failonerror = "false" dir = "${dist.dir}" />
+        <delete failonerror = "false" dir = "${emma.coverage.dir}" />
+        <delete failonerror = "false" dir = "${javadoc.dir}" />
+        <delete failonerror = "false" dir = "${htdocs.dir}" />
+    </target>
+
+    <target name = "init" description = "Create all directories neede by this script">
+        <tstamp />
+        <mkdir dir = "${working.dir}" />
+        <mkdir dir = "${emma.build.dir}" />
+        <mkdir dir = "${javadoc.dir}" />
+        <mkdir dir = "${build.dir}" />
+        <mkdir dir = "${working.dir}/${filename}" />
+        <mkdir dir = "${working.dir}/${filename}/${dist.dir}" />
+        <mkdir dir = "${dist.dir}" />
+    </target>
+
+    <!--
+        Emma and JUnit targets
+    -->
+
+    <target name = "emma" description = "Run Emma code coverage. To use, run ant emma junit'">
+        <property name = "emma.enabled" value = "true" />
+        <property name = "emma.filter" value = "org.farng.*" />
+    </target>
+
+    <target name = "junit" depends = "init" description = "Run all JUnit test cases">
+        <!-- compile using javac [debug="on" ensures rich(er) emma reporting]: -->
+        <javac
+                encoding = "ISO-8859-1"
+                destdir = "${emma.build.dir}"
+                classpathref = "lib.jarfiles"
+                debug = "on"
+                deprecation = "on"
+                optimize = "on">
+            <src path = "${src.dir}" />
+            <src path = "${test.dir}" />
+        </javac>
+        <emmajava
+                enabled = "${emma.enabled}"
+                libclasspathref = "lib.jarfiles"
+                fullmetadata = "yes"
+                filter = "${emma.filter}"
+                sourcepath = "${src.dir}"
+                classname = "org.farng.mp3.AllTestCase"
+                fork = "true"
+                classpathref = "lib.jarfiles"
+                failonerror = "true">
+            <classpath>
+                <pathelement path = "${emma.build.dir}" />
+                <pathelement path = "${java.class.path}" />
+            </classpath>
+            <txt outfile = "${emma.coverage.dir}/coverage.txt" />
+            <xml outfile = "${emma.coverage.dir}/coverage.xml" />
+            <html outfile = "${emma.coverage.dir}/coverage.html" />
+        </emmajava>
+    </target>
+
+    <target name = "compile"
+            depends = "init"
+            description = "Compile all source files to class files into '${build.dir}'">
+        <javac
+                encoding = "ISO-8859-1"
+                destdir = "${build.dir}"
+                classpathref = "lib.jarfiles"
+                optimize = "on">
+            <src path = "${src.dir}" />
+        </javac>
+    </target>
+
+    <target name = "jar"
+            depends = "init, compile"
+            description = "Create the library jar file into '${dist.dir}/${jar.file}'">
+        <jar destfile = "${dist.dir}/${jar.file}">
+            <fileset dir = "${build.dir}" />
+        </jar>
+    </target>
+
+    <target name = "javadoc" depends = "init" description = "Create javadoc api documentation into '${javadoc.dir}'">
+        <javadoc packagenames = "${package.name}.*"
+                 classpathref = "lib.jarfiles"
+                 sourcepath = "${src.dir}"
+                 defaultexcludes = "yes"
+                 destdir = "${javadoc.dir}"
+                 author = "true"
+                 version = "true"
+                 use = "true"
+                 windowtitle = "jid3lib ${version}">
+            <doctitle><![CDATA[<h1>Java MP3 Tag Library</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright (c) 2004 Eric Farng</i>]]></bottom>
+            <group title = "Filename Pseudo-Tag" packages = "org.farng.mp3.filename.*" />
+            <group title = "ID3 Tag" packages = "org.farng.mp3.id3.*" />
+            <group title = "Lyrics3 Tag" packages = "org.farng.mp3.lyrics3.*" />
+            <group title = "Tag Objects" packages = "org.farng.mp3.object.*" />
+        </javadoc>
+    </target>
+
+    <target name = "dist"
+            depends = "init, jar, javadoc"
+            description = "Create both unix and windows distribution files into '${dist.dir}'">
+        <copy todir = "${working.dir}/${filename}">
+            <fileset dir = ".">
+                <include name = "${src.dir}/**" />
+                <include name = "${test.dir}/**" />
+                <include name = "${lib.dir}/**" />
+                <include name = "${emma.coverage.dir}/**" />
+                <include name = "${release.notes.dir}/**" />
+                <include name = "${javadoc.dir}/**" />
+                <include name = "${doc.dir}/**" />
+                <include name = "${music.dir}/**" />
+                <include name = "${dist.dir}/${jar.file}" />
+                <include name = "build.xml" />
+                <include name = "LGPL.html" />
+            </fileset>
+        </copy>
+        <zip zipfile = "${dist.dir}/${zip.file}">
+            <fileset dir = "${working.dir}">
+                <include name = "${filename}/**" />
+            </fileset>
+        </zip>
+        <tar tarfile = "${dist.dir}/${tar.file}">
+            <tarfileset dir = "${working.dir}">
+                <include name = "${filename}/**" />
+            </tarfileset>
+        </tar>
+        <gzip src = "${dist.dir}/${tar.file}" zipfile = "${dist.dir}/${tar.gz.file}" />
+    </target>
+
+    <target name = "all"
+            depends = "cleanall, emma, junit, jar, javadoc, dist"
+            description = "Run all tagets in this build script">
+        <antcall target = "clean" />
+    </target>
+
+    <target name = "htdocs" depends = "all" description = "Create and upload htdocs directory to sourceforge.net">
+        <fail unless = "login"
+              message = "Please provide a login and password using 'ant htdocs -Dlogin=myname -Dpasswd=mypasswd'" />
+        <fail unless = "passwd"
+              message = "Please provide a login and password using 'ant htdocs -Dlogin=myname -Dpasswd=mypasswd'" />
+        <mkdir dir = "${htdocs.dir}" />
+        <mkdir dir = "${htdocs.dir}/doc" />
+        <copy todir = "${htdocs.dir}">
+            <fileset dir = "${www.dir}" />
+        </copy>
+        <copy todir = "${htdocs.dir}">
+            <fileset file = "LGPL.html" />
+        </copy>
+        <copy todir = "${htdocs.dir}/${doc.dir}">
+            <fileset dir = "${doc.dir}" />
+        </copy>
+        <copy todir = "${htdocs.dir}/${javadoc.dir}">
+            <fileset dir = "${javadoc.dir}" />
+        </copy>
+        <sshexec host = "shell.sourceforge.net"
+                 username = "${login}"
+                 password = "${passwd}"
+                 trust = "true"
+                 command = "rm -rf /home/groups/j/ja/javamusictag/htdocs/*" />
+        <scp todir = "${login}:${passwd}@shell.sourceforge.net:/home/groups/j/ja/javamusictag/htdocs "
+             trust = "true"
+             verbose = "true">
+            <fileset dir = "${htdocs.dir}" />
+        </scp>
+    </target>
+
+</project>
