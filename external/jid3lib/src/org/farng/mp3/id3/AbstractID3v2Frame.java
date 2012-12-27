@@ -61,15 +61,20 @@ public abstract class AbstractID3v2Frame extends AbstractMP3Fragment {
     // "parent" is the AbstractID3-derived instance making use of this frame body.
     protected  AbstractID3v2FrameBody readBody(final TagFrameIdentifier identifier, final RandomAccessFile file, AbstractID3 parent)
             throws IOException, InvalidTagException {
-    	final TagFrameIdentifier frameIdentifier;
-        
-        if (TagUtility.isID3v2_2FrameIdentifier(identifier)) {
+    	TagFrameIdentifier frameIdentifier = null;
+
+		if (TagUtility.isID3v2_2FrameIdentifier(identifier)) {
             frameIdentifier = (TagFrameIdentifier)TagUtility.convertFrameID2_2to2_4(identifier);
-            assert(frameIdentifier != null);
-        } else {
-            frameIdentifier = identifier;
+			// dbeswick: it seems normal for convertFrameID2_2to2_4 to return null in the case that a
+			// deprecated tag is being loaded, so this assert doesn't seem valid.
+            //assert(frameIdentifier != null);
         }
-        
+
+		if (frameIdentifier == null)
+		{
+            return null;
+        }
+		
         return frameIdentifier.createFrameBody(file, parent);
     }
 }

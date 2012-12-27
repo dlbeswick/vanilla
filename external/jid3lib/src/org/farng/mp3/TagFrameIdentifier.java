@@ -285,7 +285,7 @@ public class TagFrameIdentifier extends TagPooledIdentifier {
 	}
 	
 	public int length() {
-		return identifier.length;
+		return identifierString.length();
 	}
 	
 	static public boolean isValidID3v2FrameIdentifier(byte[] buf) {

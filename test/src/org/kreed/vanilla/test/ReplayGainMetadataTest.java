@@ -1,10 +1,10 @@
-package org.kreed.vanilla.test;
+package org.kreed.vanilladev.test;
 
-import org.kreed.vanilla.AmplitudeGain;
-import org.kreed.vanilla.ReplayGainInfo;
-import org.kreed.vanilla.ReplayGainInfo.DataExtractException;
-import org.kreed.vanilla.ReplayGainInfo.UnsupportedFiletypeException;
-import org.kreed.vanilla.support.MediaAccessException;
+import org.kreed.vanilladev.AmplitudeGain;
+import org.kreed.vanilladev.ReplayGainInfo;
+import org.kreed.vanilladev.ReplayGainInfo.DataExtractException;
+import org.kreed.vanilladev.ReplayGainInfo.UnsupportedFiletypeException;
+import org.kreed.vanilladev.support.MediaAccessException;
 
 public class ReplayGainMetadataTest extends VanillaTest {
 	public void testMP3() throws DataExtractException, MediaAccessException, UnsupportedFiletypeException {

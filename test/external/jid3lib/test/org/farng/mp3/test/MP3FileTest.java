@@ -77,10 +77,10 @@ import org.farng.mp3.lyrics3.FieldBodyINF;
 import org.farng.mp3.lyrics3.FieldBodyLYR;
 import org.farng.mp3.lyrics3.Lyrics3v2;
 import org.farng.mp3.lyrics3.Lyrics3v2Field;
-import org.kreed.vanilla.support.MediaAccessException;
-import org.kreed.vanilla.support.MediaSource;
-import org.kreed.vanilla.support.MediaSourceAndroidAsset;
-import org.kreed.vanilla.test.VanillaTest;
+import org.kreed.vanilladev.support.MediaAccessException;
+import org.kreed.vanilladev.support.MediaSource;
+import org.kreed.vanilladev.support.MediaSourceAndroidAsset;
+import org.kreed.vanilladev.test.VanillaTest;
 
 import java.io.File;
 import java.io.FileFilter;

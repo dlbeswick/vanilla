@@ -127,7 +127,7 @@ public class FieldBodyIMG extends AbstractLyrics3v2FieldBody {
     }
 
     public Iterator<AbstractMP3Object> iterator() {
-        return (Collections.<AbstractMP3Object>unmodifiableList(this.images)).iterator();
+        return Collections.<AbstractMP3Object>unmodifiableList(this.images).iterator();
     }
 
     protected void setupObjectList() {

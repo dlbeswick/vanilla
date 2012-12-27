@@ -16,11 +16,11 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-<org.kreed.vanilla.MiniPlaybackActivityLayout
+<org.kreed.vanilladev.MiniPlaybackActivityLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="wrap_content"
 	android:layout_width="wrap_content">
-	<org.kreed.vanilla.CoverView
+	<org.kreed.vanilladev.CoverView
 		android:id="@+id/cover_view"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content" />
@@ -34,13 +34,13 @@
 		android:orientation="horizontal"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content">
-		<org.kreed.vanilla.ControlButton
+		<org.kreed.vanilladev.ControlButton
 			android:id="@+id/open_button"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
 			android:layout_marginLeft="15px"
 			android:src="@drawable/fullscreen" />
-		<org.kreed.vanilla.ControlButton
+		<org.kreed.vanilladev.ControlButton
 			android:id="@+id/kill_button"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
@@ -48,4 +48,4 @@
 			android:layout_marginRight="15px"
 			android:src="@drawable/kill" />
 	</LinearLayout>
-</org.kreed.vanilla.MiniPlaybackActivityLayout>
+</org.kreed.vanilladev.MiniPlaybackActivityLayout>

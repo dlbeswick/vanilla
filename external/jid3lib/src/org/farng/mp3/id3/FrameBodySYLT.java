@@ -245,7 +245,7 @@ public class FrameBodySYLT extends AbstractID3v2FrameBody {
     }
 
     public Iterator<AbstractMP3Object> iterator() {
-        return (Collections.<AbstractMP3Object>unmodifiableList(this.lines)).iterator();
+        return Collections.<AbstractMP3Object>unmodifiableList(this.lines).iterator();
     }
 
     protected void setupObjectList() {

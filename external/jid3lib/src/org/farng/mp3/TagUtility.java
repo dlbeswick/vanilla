@@ -100,6 +100,7 @@ public class TagUtility {
             if (upperIdentifier.charAt(3) >= 'A' && upperIdentifier.charAt(3) <= 'Z') {
                 return TagConstant.id3v2_2FrameIdToString.containsKey(TagFrameIdentifier.get(upperIdentifier.substring(0, 4).toString()));
             }
+			
             return TagConstant.id3v2_2FrameIdToString.containsKey(TagFrameIdentifier.get(upperIdentifier.subSequence(0, 3).toString()));
         }
     }
@@ -279,13 +280,24 @@ public class TagUtility {
         if (identifier == null) {
             throw new NullPointerException("Identifier is null");
         }
+
         if (identifier.length() < 3) {
             return null;
         }
+
         TagIdentifier id = TagConstant.id3v2_2ToId3v2_3.get(identifier);
+
         if (id != null) {
+			TagIdentifier id2_3 = id;
             id = TagConstant.id3v2_3ToId3v2_4.get(id);
+			if (id == null && TagConstant.id3v2_4FrameIdToString.containsKey(id2_3))	{
+				id = id2_3;
+				// dbeswick: many ids are present in id 2_3 and id 2_4, but have no conversion mapping.
+				// This code ensures that the 2_4 tag is still returned even if no mapping is present for
+				// 2_3 to 2_4.
+			}
         }
+	
         return id;
     }
 

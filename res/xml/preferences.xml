@@ -19,7 +19,7 @@
 <PreferenceScreen
 	android:persistent="true" xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="@string/pref_output">
-		<org.kreed.vanilla.VolumePreference
+		<org.kreed.vanilladev.VolumePreference
 			android:key="volume" android:title="@string/volume_title" android:summary="@string/volume_summary"/>
 		<CheckBoxPreference
 			android:key="media_button"
@@ -74,13 +74,13 @@
 	</PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_replaygain">
     <CheckBoxPreference android:title="@string/enable_replaygain" android:key="enable_replaygain" android:defaultValue="false" android:summary="@string/enable_replaygain_summary"/> 
-    <org.kreed.vanilla.PreferenceDecibelValues 
+    <org.kreed.vanilladev.PreferenceDecibelValues 
       android:key="replaygain_max_boost" 
       android:entryValues="@array/replaygain_max_boost_entries" 
       android:title="@string/replaygain_max_boost_title" 
       android:summary="@string/replaygain_max_boost_summary" 
       android:defaultValue="3"/>
-    <org.kreed.vanilla.PreferenceDecibelValues 
+    <org.kreed.vanilladev.PreferenceDecibelValues 
       android:key="replaygain_no_data_attenuation" 
       android:entryValues="@array/replaygain_no_data_attenuation_entries" 
       android:title="@string/replaygain_no_data_attenuation_title" 
@@ -93,7 +93,7 @@
 			android:title="@string/use_idle_timeout_title"
 			android:summary="@string/use_idle_timeout_summary"
 			android:defaultValue="false" />
-		<org.kreed.vanilla.IdlePreference
+		<org.kreed.vanilladev.IdlePreference
 			android:key="idle_timeout"
 			android:title="@string/idle_timeout_title"
 			android:summary="@string/idle_timeout_summary"

@@ -1,4 +1,4 @@
-package org.kreed.vanilla.test;
+package org.kreed.vanilladev.test;
 
 import android.content.res.AssetManager;
 import android.test.InstrumentationTestCase;

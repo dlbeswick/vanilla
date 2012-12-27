@@ -1,4 +1,4 @@
-package org.kreed.vanilla.test;
+package org.kreed.vanilladev.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

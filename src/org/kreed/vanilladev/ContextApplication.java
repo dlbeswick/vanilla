@@ -1,0 +1,200 @@
+/*
+ * Copyright (C) 2010 Christopher Eby <kreed@kreed.org>
+ *
+ * This file is part of Vanilla Music Player.
+ *
+ * Vanilla Music Player is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Library General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * Vanilla Music Player is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.kreed.vanilladev;
+
+import java.util.ArrayList;
+import java.util.Random;
+import android.app.Activity;
+import android.app.Application;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+
+/**
+ * Subclass of Application that provides various static utility functions
+ */
+public class ContextApplication extends Application {
+	private static ContextApplication mInstance;
+	private static ArrayList<Activity> mActivities;
+	private static PlaybackService mService;
+	private static Random mRandom;
+	private static SharedPreferences mSettings;
+
+	public ContextApplication()
+	{
+		mInstance = this;
+	}
+
+	public void onCreate()
+	{
+		ContentResolver resolver = getContext().getContentResolver();
+		
+		ContentObserver observer = 
+			new ContentObserver(
+				new Handler(
+					new Handler.Callback() {
+						public boolean handleMessage(Message arg0) {
+							Song.onMediaStoreContentsChanged();
+							return false;
+						}
+					}
+				)
+			)
+		{};
+	
+		resolver.registerContentObserver(
+				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
+				true, 
+				observer
+		);
+	}
+	
+	/**
+	 * Returns a shared, application-wide Random instance.
+	 */
+	public static Random getRandom()
+	{
+		if (mRandom == null)
+			mRandom = new Random();
+		return mRandom;
+	}
+
+	/**
+	 * Return the SharedPreferences instance containing the application
+	 * settings, creating it if necessary.
+	 */
+	public SharedPreferences getSettings()
+	{
+		if (mSettings == null)
+			mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+		return mSettings;
+	}
+	
+	/**
+	 * Provides an easy to access Context instance.
+	 */
+	public static ContextApplication getContext()
+	{
+		return mInstance;
+	}
+
+	/**
+	 * Return the PlaybackService instance, creating one if needed.
+	 */
+	public static PlaybackService getService()
+	{
+		if (mService == null) {
+			mInstance.startService(new Intent(mInstance, PlaybackService.class));
+			while (mService == null) {
+				try {
+					mInstance.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		return mService;
+	}
+
+	/**
+	 * Returns whether a PlaybackService instance is active.
+	 */
+	public static boolean hasService()
+	{
+		return mService != null;
+	}
+
+	/**
+	 * Set the PlaybackService instance to <code>service</code> and notify all
+	 * clients waiting for an instance.
+	 */
+	public static void setService(PlaybackService service)
+	{
+		mService = service;
+		synchronized (mInstance) {
+			mInstance.notifyAll();
+		}
+	}
+
+	/**
+	 * Add an Activity to the list of Activities.
+	 *
+	 * @param activity The Activity to be added
+	 */
+	public static void addActivity(Activity activity)
+	{
+		if (mActivities == null)
+			mActivities = new ArrayList<Activity>();
+		mActivities.add(activity);
+	}
+
+	/**
+	 * Remove an Activity from the list of Activities.
+	 *
+	 * @param activity The Activity to be removed
+	 */
+	public static void removeActivity(Activity activity)
+	{
+		if (mActivities != null)
+			mActivities.remove(activity);
+	}
+
+	/**
+	 * Send a broadcast to all PlaybackActivities that have been added with
+	 * addActivity and then with Context.sendBroadcast.
+	 *
+	 * @param intent The intent to be sent as a broadcast
+	 */
+	public static void broadcast(Intent intent)
+	{
+		OneCellWidget.receive(intent);
+		FourLongWidget.receive(intent);
+		FourSquareWidget.receive(intent);
+
+		ArrayList<Activity> list = mActivities;
+		if (list != null) {
+			for (int i = list.size(); --i != -1; ) {
+				Activity activity = list.get(i);
+				if (activity instanceof PlaybackActivity)
+					((PlaybackActivity)activity).receive(intent);
+			}
+		}
+
+		if (mInstance != null)
+			mInstance.sendBroadcast(intent);
+	}
+
+	/**
+	 * Stop the PlaybackService, if running, and close all Activities that
+	 * have been added with <code>addActivity</code>.
+	 */
+	public static void quit()
+	{
+		if (mActivities != null) {
+			for (int i = mActivities.size(); --i != -1; )
+				mActivities.remove(i).finish();
+		}
+		mInstance.stopService(new Intent(mInstance, PlaybackService.class));
+	}
+}
