@@ -316,6 +316,7 @@ public final class CoverView extends View implements Handler.Callback {
 	 * Prunes old bitmaps if the timeline becomes full.
 	 */
 	private void generateBitmap(Song song)
+		throws Song.NotPopulatedException
 	{
 		if (song == null || song.id == -1)
 			return;
@@ -404,7 +405,11 @@ public final class CoverView extends View implements Handler.Callback {
 	{
 		switch (message.what) {
 		case MSG_GENERATE_BITMAP:
-			generateBitmap((Song)message.obj);
+			try {
+				generateBitmap((Song)message.obj);
+			} catch (Song.NotPopulatedException e) {
+				assert(false);
+			}
 			break;
 		case MSG_SET_SONG:
 			ContextApplication.getService().setCurrentSong(message.arg1);

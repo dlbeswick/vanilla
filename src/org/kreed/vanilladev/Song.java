@@ -18,6 +18,7 @@
 
 package org.kreed.vanilladev;
 
+import android.util.Log;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -357,20 +358,23 @@ public class Song implements Parcelable {
 
 		private static final long serialVersionUID = 1;
 	};
-	
+
+	// Returns null if the file has no replay gain info.
 	ReplayGainInfo getReplayGainInfo() 
-		throws NotPopulatedException, 
-			DataExtractException, 
-			UnsupportedFiletypeException, 
-			FileNotFoundException
+		throws NotPopulatedException
 	{
 		if (!mReplayGainInfoLoadAttempted) {
 			if (!isPopulated())
 				throw(new NotPopulatedException("The song must be populated before ReplayGain info can be retrieved."));
 						
 			mReplayGainInfoLoadAttempted = true;
-			
-			mReplayGainInfo = ReplayGainInfo.forFile(path);
+
+			try {
+				mReplayGainInfo = ReplayGainInfo.forFile(path);
+			} catch (java.lang.Exception e) {
+				Log.i("VanillaMusic", "Failure to load ReplayGain info for file '" + path + "': " + e.toString());
+				mReplayGainInfo = null;
+			}
 		}
 
 		return mReplayGainInfo;

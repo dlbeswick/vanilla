@@ -108,6 +108,6 @@ public class AmplitudeGain implements Comparable<AmplitudeGain> {
 	
 	public String toString() 
 	{
-		return String.format("%+.2f", decibels());
+		return String.format("%+.2f db", decibels());
 	}
 }

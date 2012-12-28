@@ -547,10 +547,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				gotInfo = false;
 			} catch (MediaAccessException e) {
 				gotInfo = false;
-			} catch (UnsupportedFiletypeException e) {
-				gotInfo = false;
-			} catch (IOException e) {
-				gotInfo = false;
 			}
 		} catch (NotPopulatedException e) {
 			assert(false); // song should always be populated by this point.

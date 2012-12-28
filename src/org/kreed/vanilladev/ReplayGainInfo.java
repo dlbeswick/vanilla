@@ -28,18 +28,36 @@ public abstract class ReplayGainInfo {
 	protected MediaSource mMediaSource;
 	private boolean mDataLoaded;
 
+	public abstract static class Exception extends ResourceException {
+		Exception(String filePath, String message, Throwable exception) {
+			super(
+				filePath,
+				message,
+				exception
+			);
+		}
+
+		Exception(String filePath, String message) {
+			super(
+				filePath,
+				message
+			);
+		}
+	};
+	
 	public static class UnsupportedFiletypeException extends Exception {
 		private static final long serialVersionUID = 6161388374756385465L;
 		
 		UnsupportedFiletypeException(String filePath) {
-			super(String.format("%s: ReplayGain is not supported for files of this type.", filePath));
+			super(filePath,
+				  "ReplayGain is not supported for files of this type.");
 		}
 	}
 	
 	/**
 	 * An exception occurred while trying to extract data from the media.
 	 */
-	public static class DataExtractException extends ResourceException {
+	public static class DataExtractException extends Exception {
 		private static final long serialVersionUID = 6161388374756385465L;
 		
 		DataExtractException(String filePath, Throwable exception) {
@@ -106,8 +124,8 @@ public abstract class ReplayGainInfo {
 	 * @param fileName The name component only (no path or uri) of the source of the media file.
 	 * @param stream A stream holding data for the file being tested.
 	 */
-	public static boolean supportsFile(MediaSource mediaSource) throws Exception {
-		throw new Exception("Please provide an implementation of this static method in your subclass.");
+	public static boolean supportsFile(MediaSource mediaSource) throws java.lang.Exception {
+		throw new java.lang.Exception("Please provide an implementation of this static method in your subclass.");
 	}
 
 	/**
@@ -182,6 +200,7 @@ public abstract class ReplayGainInfo {
 	// Returns null if text is an invalid value.
 	protected AmplitudeGain parseReplayGainDbValue(String text)
 	{
+		Log.d("VanillaMusic", text);
 		int dbIndex = text.toLowerCase().indexOf("db");
 		if (dbIndex == -1)
 			return null;

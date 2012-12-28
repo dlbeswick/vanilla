@@ -30,6 +30,8 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import org.kreed.vanilladev.R;
 
+import org.kreed.vanilladev.support.MediaAccessException;
+
 /**
  * Class containing utility functions to create Bitmaps display song info and
  * album art.
@@ -196,7 +198,23 @@ public final class CoverBitmap {
 		else
 			return song.getCover();
 	}
-	
+
+	static String getReplayGainString(Song song)
+		throws Song.NotPopulatedException
+	{
+		try	{
+			if (song.getReplayGainInfo() == null)
+				return "No ReplayGain info.";
+			else if (!song.getReplayGainInfo().hasTrackGain())
+				return "No track gain.";
+			else
+				return "Track gain: " + song.getReplayGainInfo().trackGain().toString();
+		} catch (ReplayGainInfo.Exception e) {
+			return "Exception loading ReplayGain info.";
+		} catch (MediaAccessException e) {
+			return "Exception loading ReplayGain info.";
+		}
+	}
 
 	/**
 	 * Create a normal image, displaying cover art with the song title, album
@@ -212,6 +230,7 @@ public final class CoverBitmap {
 	 * were less than 1
 	 */
 	public static Bitmap createOverlappingBitmap(Song song, int width, int height, Bitmap bitmap)
+		throws Song.NotPopulatedException
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -225,6 +244,7 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
+		String replayGain = getReplayGainString(song);
 		Bitmap cover;
 		
 		if (!shouldShowCoverArt())
@@ -241,9 +261,10 @@ public final class CoverBitmap {
 		paint.setTextSize(subSize);
 		int albumWidth = (int)paint.measureText(album);
 		int artistWidth = (int)paint.measureText(artist);
+		int replayGainWidth = (int)paint.measureText(replayGain);
 
-		int boxWidth = Math.min(width, Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 2);
-		int boxHeight = Math.min(height, titleSize + subSize * 2 + padding * 4);
+		int boxWidth = Math.min(width, Math.max(titleWidth, Math.max(replayGainWidth, Math.max(artistWidth, albumWidth))) + padding * 2);
+		int boxHeight = Math.min(height, titleSize + subSize * 3 + padding * 4);
 
 		int coverWidth;
 		int coverHeight;
@@ -310,6 +331,9 @@ public final class CoverBitmap {
 		top += subSize + padding;
 
 		drawText(canvas, artist, left, top, artistWidth, maxWidth, paint);
+		top += subSize + padding;
+
+		drawText(canvas, replayGain, left, top, replayGainWidth, maxWidth, paint);
 
 		return bitmap;
 	}
@@ -328,6 +352,7 @@ public final class CoverBitmap {
 	 * were less than 1
 	 */
 	public static Bitmap createSeparatedBitmap(Song song, int width, int height, Bitmap bitmap)
+		throws Song.NotPopulatedException
 	{
 		if (song == null || width < 1 || height < 1)
 			return null;
@@ -345,6 +370,9 @@ public final class CoverBitmap {
 		String title = song.title == null ? "" : song.title;
 		String album = song.album == null ? "" : song.album;
 		String artist = song.artist == null ? "" : song.artist;
+
+		String replayGain = getReplayGainString(song);
+
 		Bitmap cover = getSongCoverArtBitmap(song);
 
 		int textSize = TEXT_SIZE;
@@ -374,11 +402,12 @@ public final class CoverBitmap {
 		int titleWidth = (int)paint.measureText(title);
 		int albumWidth = (int)paint.measureText(album);
 		int artistWidth = (int)paint.measureText(artist);
+		int replayGainWidth = (int)paint.measureText(replayGain);
 
 		int maxBoxWidth = horizontal ? width - coverWidth : width;
 		int maxBoxHeight = horizontal ? height : height - coverHeight;
-		int boxWidth = Math.min(maxBoxWidth, textSize + Math.max(titleWidth, Math.max(artistWidth, albumWidth)) + padding * 3);
-		int boxHeight = Math.min(maxBoxHeight, textSize * 3 + padding * 4);
+		int boxWidth = Math.min(maxBoxWidth, textSize + Math.max(titleWidth, Math.max(replayGainWidth, Math.max(artistWidth, albumWidth))) + padding * 3);
+		int boxHeight = Math.min(maxBoxHeight, textSize * 4 + padding * 4);
 
 		int bitmapWidth = (int)(horizontal ? coverWidth + boxWidth : Math.max(coverWidth, boxWidth));
 		int bitmapHeight = (int)(horizontal ? Math.max(coverHeight, boxHeight) : coverHeight + boxHeight);
@@ -427,6 +456,9 @@ public final class CoverBitmap {
 
 		canvas.drawBitmap(ARTIST_ICON, left, top, paint);
 		drawText(canvas, artist, left + padding + textSize, top, maxWidth, maxWidth, paint);
+		top += textSize + padding;
+
+		drawText(canvas, replayGain, left + padding + textSize, top, maxWidth, maxWidth, paint);
 
 		return bitmap;
 	}
