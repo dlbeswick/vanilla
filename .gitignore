@@ -2,3 +2,5 @@
 /.gitignore.orig
 /bin
 /gen
+/.emacs.desktop
+/.emacs.desktop.lock
