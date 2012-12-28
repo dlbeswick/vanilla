@@ -1,2 +1,4 @@
 /test
 /.gitignore.orig
+/bin
+/gen
