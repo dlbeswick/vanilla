@@ -5,6 +5,10 @@ import org.farng.mp3.object.ObjectNumberFixedLength;
 import org.farng.mp3.object.ObjectNumberVariableLength;
 import org.farng.mp3.TagIdentifier;
 import org.farng.mp3.TagFrameIdentifier;
+import org.farng.mp3.InvalidTagException;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * <h3>4.11.&nbsp;&nbsp; Relative volume adjustment (2)</h3>
@@ -73,6 +77,10 @@ public class FrameBodyRVA2 extends AbstractID3v2FrameBody {
      */
     public FrameBodyRVA2(final FrameBodyRVA2 body) {
         super(body);
+    }
+
+    public FrameBodyRVA2(final RandomAccessFile file, AbstractID3 parent) throws IOException, InvalidTagException {
+        this.read(file, parent);
     }
 
     static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("RVA2");

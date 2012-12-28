@@ -15,6 +15,7 @@ import org.farng.mp3.id3.FrameBodyPCNT;
 import org.farng.mp3.id3.FrameBodyPOPM;
 import org.farng.mp3.id3.FrameBodyPRIV;
 import org.farng.mp3.id3.FrameBodyRVAD;
+import org.farng.mp3.id3.FrameBodyRVA2;
 import org.farng.mp3.id3.FrameBodySYLT;
 import org.farng.mp3.id3.FrameBodyTALB;
 import org.farng.mp3.id3.FrameBodyTBPM;
@@ -142,6 +143,8 @@ public class TagFrameIdentifier extends TagPooledIdentifier {
 	            return new FrameBodyPRIV(file, parent);
 	        } else if ("RVAD".equals(identifierString)) {
 	            return new FrameBodyRVAD(file, parent);
+	        } else if ("RVA2".equals(identifierString)) {
+	            return new FrameBodyRVA2(file, parent);
 	        } else if ("SYLT".equals(identifierString)) {
 	            return new FrameBodySYLT(file, parent);
 	        } else if ("TALB".equals(identifierString)) {
