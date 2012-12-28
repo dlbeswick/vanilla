@@ -250,7 +250,7 @@ public final class CoverView extends View implements Handler.Callback {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 10) {
+			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 20) {
 				// A long press was performed and thus the normal action should
 				// not be executed.
 				if (mIgnoreNextUp)
