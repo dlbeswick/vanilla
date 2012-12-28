@@ -72,7 +72,7 @@ public abstract class AbstractID3v2Frame extends AbstractMP3Fragment {
 
 		if (frameIdentifier == null)
 		{
-            return null;
+            frameIdentifier = identifier;
         }
 		
         return frameIdentifier.createFrameBody(file, parent);
