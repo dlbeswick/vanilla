@@ -69,6 +69,7 @@ public final class CoverView extends View implements Handler.Callback {
 	private float mLastMotionX;
 	private float mStartX;
 	private float mStartY;
+	private boolean mMotionBegun = false;
 	private int mTentativeCover = -1;
 	/**
 	 * Ignore the next pointer up event, for long presses.
@@ -218,8 +219,6 @@ public final class CoverView extends View implements Handler.Callback {
 			mVelocityTracker = VelocityTracker.obtain();
  		mVelocityTracker.addMovement(ev);
 
-		mHandler.removeMessages(MSG_LONG_CLICK);
-
  		float x = ev.getX();
  		int scrollX = getScrollX();
  		int width = getWidth();
@@ -232,6 +231,7 @@ public final class CoverView extends View implements Handler.Callback {
  			mStartX = x;
  			mStartY = ev.getY();
 			mLastMotionX = x;
+			mMotionBegun = true;
 
 			mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
@@ -286,8 +286,14 @@ public final class CoverView extends View implements Handler.Callback {
 				mVelocityTracker = null;
 			}
 
+			mMotionBegun = false;
+			
 			break;
  		}
+
+		if (!mMotionBegun || Math.abs(mStartX - x) > 20)
+			mHandler.removeMessages(MSG_LONG_CLICK);
+
 		return true;
 	}
 

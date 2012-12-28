@@ -122,10 +122,16 @@ public class Song implements Parcelable {
 	{
 		if (mMediaStoreSongCountCache == -1) {
 			ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+			if (resolver == null)
+				return 0;
+			
 			Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 			Cursor cursor = resolver.query(media, new String[] { MediaStore.Audio.Media._ID }, selection, null, null);
-	
+
+			if (cursor == null)
+				return 0;
+			
 			mMediaStoreSongCountCache = cursor.getCount(); 
 		}
 		
