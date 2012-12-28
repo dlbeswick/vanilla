@@ -1,6 +1,10 @@
 package org.farng.mp3.id3;
 
+import org.farng.mp3.object.ObjectStringNullTerminated;
+import org.farng.mp3.object.ObjectNumberFixedLength;
+import org.farng.mp3.object.ObjectNumberVariableLength;
 import org.farng.mp3.TagIdentifier;
+import org.farng.mp3.TagFrameIdentifier;
 
 /**
  * <h3>4.11.&nbsp;&nbsp; Relative volume adjustment (2)</h3>
@@ -71,11 +75,27 @@ public class FrameBodyRVA2 extends AbstractID3v2FrameBody {
         super(body);
     }
 
-    protected void setupObjectList() {
-        throw new UnsupportedOperationException("This frame has not been implemented.");
+    static protected final TagFrameIdentifier IDENTIFIER = TagFrameIdentifier.get("RVA2");
+    public TagIdentifier getIdentifier() {
+        return IDENTIFIER;
     }
 
-    public TagIdentifier getIdentifier() {
-        throw new UnsupportedOperationException("This frame has not been implemented.");
+	public String identification() {
+		return (String)getObject("Identification");
+	}
+
+	public Long channelType() {
+		return (Long)getObject("Type of channel");
+	}
+	
+	public double gain() {
+		return ((Long)getObject("Volume adjustment")) / 512.0;
+	}
+	
+    protected void setupObjectList() {
+        appendToObjectList(new ObjectStringNullTerminated("Identification"));
+        appendToObjectList(new ObjectNumberFixedLength("Type of channel", 1));
+        appendToObjectList(new ObjectNumberFixedLength("Volume adjustment", 2));
+        appendToObjectList(new ObjectNumberVariableLength("Peak volume", 1));
     }
 }
