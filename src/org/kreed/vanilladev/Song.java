@@ -430,6 +430,31 @@ public class Song implements Parcelable {
 		BITMAP_OPTIONS.inDither = false;
 	}
 
+	public ArrayList<Song> getAlbumSongs() {
+		ContentResolver resolver = ContextApplication.getContext().getContentResolver();
+		if (resolver == null)
+			return new ArrayList<Song>();
+			
+		Uri media = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		String selection = MediaStore.Audio.AudioColumns.ALBUM_ID + "=?";
+		Cursor cursor = resolver.query(media, FILLED_PROJECTION, selection, new String[] { String.valueOf(albumId) }, MediaStore.Audio.AudioColumns.TRACK);
+
+		ArrayList<Song> result = new ArrayList<Song>();
+
+		while (cursor != null) {
+			if (cursor.moveToNext()) {
+				Song newsong = new Song(-1);
+				newsong.populate(cursor);
+				result.add(newsong);
+			} else {
+				cursor.close();
+				break;
+			}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Query the album art for this song.
 	 *

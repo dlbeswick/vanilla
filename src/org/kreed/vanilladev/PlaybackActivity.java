@@ -230,6 +230,8 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 	 */
 	static final int MSG_SET_SONG = 1;
 
+	static final int MSG_QUEUE_SONG_ALBUM = 2;
+
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
@@ -238,6 +240,9 @@ public class PlaybackActivity extends Activity implements Handler.Callback, View
 			break;
 		case MSG_SET_SONG:
 			ContextApplication.getService().setCurrentSong(message.arg1);
+			break;
+		case MSG_QUEUE_SONG_ALBUM:
+			ContextApplication.getService().queueSongAlbum((Song)message.obj);
 			break;
 		default:
 			return false;

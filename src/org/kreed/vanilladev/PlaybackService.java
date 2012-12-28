@@ -56,6 +56,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public final class PlaybackService extends Service implements Handler.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, SharedPreferences.OnSharedPreferenceChangeListener, SongTimeline.Callback {	
 	private static final int NOTIFICATION_ID = 2;
 
@@ -1148,6 +1150,24 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 			setCurrentSong(0);
 	}
 
+	public void queueSongAlbum(Song song) {
+		ArrayList<Song> albumSongs = song.getAlbumSongs();
+
+		if (albumSongs.size() == 0)
+			return;
+		
+		int currentSongAlbumIdx = 0;
+		for (int i = 0; i < albumSongs.size(); ++i) {
+			if (albumSongs.get(i).id == song.id) {
+				currentSongAlbumIdx = i;
+				break;
+			}
+		}
+		
+		mTimeline.insertBeforeCurrent(albumSongs.subList(0, currentSongAlbumIdx));
+		mTimeline.insertAfterCurrent(albumSongs.subList(currentSongAlbumIdx + 1, albumSongs.size()));
+	}
+	
 	/**
 	 * Resets the idle timeout countdown. Should be called by a user action
 	 * has been trigger (new song chosen or playback toggled).

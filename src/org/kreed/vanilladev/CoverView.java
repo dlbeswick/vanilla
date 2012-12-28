@@ -34,6 +34,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
+import android.widget.Toast;
 
 /**
  * Displays a flingable/draggable View of cover art/song info images
@@ -67,10 +68,13 @@ public final class CoverView extends View implements Handler.Callback {
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private float mLastMotionX;
+	private float mLastMotionY;
 	private float mStartX;
 	private float mStartY;
 	private boolean mMotionBegun = false;
+	private boolean mMotionBegunY = false;
 	private int mTentativeCover = -1;
+	private boolean mQueueAlbum = false;
 	/**
 	 * Ignore the next pointer up event, for long presses.
 	 */
@@ -220,7 +224,9 @@ public final class CoverView extends View implements Handler.Callback {
  		mVelocityTracker.addMovement(ev);
 
  		float x = ev.getX();
+ 		float y = ev.getY();
  		int scrollX = getScrollX();
+		int scrollY = getScrollY();
  		int width = getWidth();
  
  		switch (ev.getAction()) {
@@ -229,25 +235,42 @@ public final class CoverView extends View implements Handler.Callback {
 				mScroller.abortAnimation();
 
  			mStartX = x;
- 			mStartY = ev.getY();
+ 			mStartY = y;
 			mLastMotionX = x;
+			mLastMotionY = y;
 			mMotionBegun = true;
 
 			mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int deltaX = (int) (mLastMotionX - x);
+			int deltaY = (int) (mLastMotionY - y);
 			mLastMotionX = x;
+			mLastMotionY = y;
 
+			// Discard y motion until a threshold is reached.
+			if (mMotionBegunY == false) {
+				mMotionBegunY = Math.abs(y - mStartY) > 50;
+				if (mMotionBegunY)
+					mStartY = y;
+				else
+					deltaY = 0;
+			}
+			
+			int scrollAmtX = 0;
+			
 			if (deltaX < 0) {
 				int availableToScroll = scrollX - (mTimelinePos == 0 ? width : 0);
 				if (availableToScroll > 0)
-					scrollBy(Math.max(-availableToScroll, deltaX), 0);
+					scrollAmtX = Math.max(-availableToScroll, deltaX);
 			} else if (deltaX > 0) {
 				int availableToScroll = getWidth() * 2 - scrollX;
 				if (availableToScroll > 0)
-					scrollBy(Math.min(availableToScroll, deltaX), 0);
+					scrollAmtX = Math.min(availableToScroll, deltaX);
 			}
+
+			scrollBy(scrollAmtX, deltaY);
+			
 			break;
 		case MotionEvent.ACTION_UP:
 			if (Math.abs(mStartX - x) + Math.abs(mStartY - ev.getY()) < 20) {
@@ -260,21 +283,25 @@ public final class CoverView extends View implements Handler.Callback {
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(250);
-				int velocity = (int) velocityTracker.getXVelocity();
+				int velocityX = (int) velocityTracker.getXVelocity();
+				int velocityY = (int) velocityTracker.getYVelocity();
 
 				int min = mTimelinePos == 0 ? 1 : 0;
 				int max = 2;
 				int nearestCover = (scrollX + width / 2) / width;
 				int whichCover = Math.max(min, Math.min(nearestCover, max));
 
-				if (velocity > SNAP_VELOCITY && whichCover != min)
+				if (velocityX > SNAP_VELOCITY && whichCover != min)
 					--whichCover;
-				else if (velocity < -SNAP_VELOCITY && whichCover != max)
+				else if (velocityX < -SNAP_VELOCITY && whichCover != max)
 					++whichCover;
+
+				if (y - mStartY < -150)
+					mQueueAlbum = true;
 
 				int newX = whichCover * width;
 				int delta = newX - scrollX;
-				mScroller.startScroll(scrollX, 0, delta, 0, Math.abs(delta) * 2);
+				mScroller.startScroll(scrollX, scrollY, delta, -scrollY, Math.abs(delta) * 2);
 				if (whichCover != 1)
 					mTentativeCover = whichCover;
 
@@ -287,11 +314,12 @@ public final class CoverView extends View implements Handler.Callback {
 			}
 
 			mMotionBegun = false;
+			mMotionBegunY = false;
 			
 			break;
  		}
 
-		if (!mMotionBegun || Math.abs(mStartX - x) > 20)
+		if (!mMotionBegun || Math.pow(Math.pow(mStartX - x, 2) + Math.pow(mStartY - y, 2), 0.5) > 20)
 			mHandler.removeMessages(MSG_LONG_CLICK);
 
 		return true;
@@ -313,6 +341,13 @@ public final class CoverView extends View implements Handler.Callback {
 			mTentativeCover = -1;
 			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, delta, 0));
 			go(delta);
+		} else if (mQueueAlbum == true) {
+			Toast.makeText(ContextApplication.getContext(), "Album tracks queued.", Toast.LENGTH_SHORT).show();
+			
+			ContextApplication.getService().queueSongAlbum(ContextApplication.getService().getSong(0));
+			mQueueAlbum = false;
+			querySongs(true); // tbd: have timeline send a 'list changed' event
+			regenerateBitmaps();
 		}
 	}
 

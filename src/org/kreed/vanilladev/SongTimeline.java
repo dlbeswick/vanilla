@@ -23,6 +23,7 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.Random;
 import android.content.Context;
@@ -341,6 +342,15 @@ public final class SongTimeline {
 		return song;
 	}
 
+	public void insertAfterCurrent(List<Song> songs) {
+		mSongs.addAll(mCurrentPos + 1, songs);
+	}
+	
+	public void insertBeforeCurrent(List<Song> songs) {
+		mSongs.addAll(mCurrentPos, songs);
+		mCurrentPos += songs.size();
+	}
+	
 	/**
 	 * Shift the current song by <code>delta</code> places.
 	 *
