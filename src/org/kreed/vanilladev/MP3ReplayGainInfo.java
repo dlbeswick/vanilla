@@ -48,6 +48,9 @@ public class MP3ReplayGainInfo extends ReplayGainInfo {
 				} else {
 					Log.i("VanillaMusic", "No TXXX field in tag.");
 				}
+
+				if (mAlbumGain != null && mTrackGain != null)
+					return;
 				
 				iterator = mp3file.getID3v2Tag().getFrameOfType(TagFrameIdentifier.get("RVA2"));
 				
