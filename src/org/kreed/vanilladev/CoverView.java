@@ -73,8 +73,9 @@ public final class CoverView extends View implements Handler.Callback {
 	private float mStartY;
 	private boolean mMotionBegun = false;
 	private boolean mMotionBegunY = false;
+	private boolean mHorizontalMoveDetected = false;
 	private int mTentativeCover = -1;
-	private boolean mQueueAlbum = false;
+
 	/**
 	 * Ignore the next pointer up event, for long presses.
 	 */
@@ -239,6 +240,7 @@ public final class CoverView extends View implements Handler.Callback {
 			mLastMotionX = x;
 			mLastMotionY = y;
 			mMotionBegun = true;
+			mHorizontalMoveDetected = false;
 
 			mHandler.sendEmptyMessageDelayed(MSG_LONG_CLICK, ViewConfiguration.getLongPressTimeout());
 			break;
@@ -248,14 +250,17 @@ public final class CoverView extends View implements Handler.Callback {
 			mLastMotionX = x;
 			mLastMotionY = y;
 
+			mHorizontalMoveDetected = mHorizontalMoveDetected || Math.abs(x - mStartX) > 50;
+			
 			// Discard y motion until a threshold is reached.
-			if (mMotionBegunY == false) {
+			if (mHorizontalMoveDetected == false && mMotionBegunY == false) {
 				mMotionBegunY = Math.abs(y - mStartY) > 50;
-				if (mMotionBegunY)
-					mStartY = y;
-				else
-					deltaY = 0;
 			}
+			
+			if (mMotionBegunY)
+				mStartY = y;
+			else
+				deltaY = 0;
 			
 			int scrollAmtX = 0;
 			
@@ -280,6 +285,10 @@ public final class CoverView extends View implements Handler.Callback {
 					mIgnoreNextUp = false;
 				else
 					performClick();
+				
+				mScroller.startScroll(scrollX, scrollY, getWidth() - scrollX, -scrollY, (int)(Math.sqrt(Math.pow(scrollX, 2) + Math.pow(scrollY, 2)) * 2));
+
+				postInvalidate();
 			} else {
 				VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(250);
@@ -296,9 +305,6 @@ public final class CoverView extends View implements Handler.Callback {
 				else if (velocityX < -SNAP_VELOCITY && whichCover != max)
 					++whichCover;
 
-				if (y - mStartY < -150)
-					mQueueAlbum = true;
-
 				int newX = whichCover * width;
 				int delta = newX - scrollX;
 				mScroller.startScroll(scrollX, scrollY, delta, -scrollY, Math.abs(delta) * 2);
@@ -307,6 +313,9 @@ public final class CoverView extends View implements Handler.Callback {
 
 				postInvalidate();
 			}
+
+			if (y < 100 && mMotionBegunY)
+				queueAlbum();
 
 			if (mVelocityTracker != null) {
 				mVelocityTracker.recycle();
@@ -325,6 +334,15 @@ public final class CoverView extends View implements Handler.Callback {
 		return true;
 	}
 
+	private void queueAlbum() {
+		Toast.makeText(ContextApplication.getContext(), "Album tracks queued.", Toast.LENGTH_SHORT).show();
+			
+		ContextApplication.getService().queueSongAlbum(ContextApplication.getService().getSong(0));
+
+		querySongs(true); // tbd: have timeline send a 'list changed' event
+		regenerateBitmaps();
+	}
+	
 	/**
 	 * Update position for fling scroll animation and, when it is finished,
 	 * notify PlaybackService that the user has requested a track change and
@@ -341,13 +359,6 @@ public final class CoverView extends View implements Handler.Callback {
 			mTentativeCover = -1;
 			mHandler.sendMessage(mHandler.obtainMessage(PlaybackActivity.MSG_SET_SONG, delta, 0));
 			go(delta);
-		} else if (mQueueAlbum == true) {
-			Toast.makeText(ContextApplication.getContext(), "Album tracks queued.", Toast.LENGTH_SHORT).show();
-			
-			ContextApplication.getService().queueSongAlbum(ContextApplication.getService().getSong(0));
-			mQueueAlbum = false;
-			querySongs(true); // tbd: have timeline send a 'list changed' event
-			regenerateBitmaps();
 		}
 	}
 
