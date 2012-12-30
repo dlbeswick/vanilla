@@ -557,6 +557,19 @@ public class Song implements Parcelable {
 		return cover;
 	}
 
+	@Override
+	public boolean equals(Object rhs) {
+		if (rhs instanceof Song)
+			return id == ((Song)rhs).id;
+		else
+			return super.equals(rhs);
+	}
+
+	@Override
+	public int hashCode() {
+		return (new Long(id)).hashCode();
+	}
+	
 	/**
 	 * Get the cover from the media store cache, the documented way.
 	 *

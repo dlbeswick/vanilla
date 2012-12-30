@@ -214,8 +214,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	private AmplitudeGain mReplayGainMaxBoostDecibels;
 	private AmplitudeGain mReplayGainNoDataAttenuationDecibels;
 
-	private Song mCurrentSong;
-
 	@Override
 	public void onCreate()
 	{
@@ -247,6 +245,10 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		Toast.makeText(this, R.string.starting, Toast.LENGTH_SHORT).show();
 	}
 
+	private Song getCurrentSong() {
+		return getSong(0);
+	}
+	
 	@Override
 	public void onStart(Intent intent, int flags)
 	{
@@ -589,7 +591,7 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 		if ((state & FLAG_NO_MEDIA) != 0 || mHeadsetOnly && isSpeakerOn())
 			state &= ~FLAG_PLAYING;
 
-		Song song = getSong(0);
+		Song song = getCurrentSong();
 		if (song == null && (state & FLAG_PLAYING) != 0)
 			return;
 		if (song == null)
@@ -649,8 +651,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				startForegroundCompat(NOTIFICATION_ID, mNotification);
 			if (mMediaPlayerInitialized) {
 				synchronized (mMediaPlayer) {
-					if (mCurrentSong != null)
-						applyReplayGain(mCurrentSong);
+					if (getCurrentSong() != null)
+						applyReplayGain(getCurrentSong());
 					mMediaPlayer.start();
 				}
 			}
@@ -755,8 +757,6 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 				mMediaPlayer.start();
 			}
 			
-			mCurrentSong = song;
-			
 			// Ensure that we broadcast a change event even if we play the same
 			// song again.
 			mLastSongBroadcast = null;
@@ -777,8 +777,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	 * because it also takes into account ReplayGain preferences based on the current song.
 	 */
 	private void ensureMediaPlayerVolume() {
-		if (mCurrentSong != null)
-			applyReplayGain(mCurrentSong);
+		if (getCurrentSong() != null)
+			applyReplayGain(getCurrentSong());
 		else
 			setVolumeFromPreferences();
 	}
@@ -917,8 +917,8 @@ public final class PlaybackService extends Service implements Handler.Callback, 
 	{
 		loadPreference(key);
 
-		if (mCurrentSong != null)
-			applyReplayGain(mCurrentSong);
+		if (getCurrentSong() != null)
+			applyReplayGain(getCurrentSong());
 	}
 
 	private void setupReceiver()

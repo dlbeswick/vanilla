@@ -282,21 +282,7 @@ public class FullPlaybackActivity extends PlaybackActivity implements SeekBar.On
 	@Override
 	public void onClick(View view)
 	{
-		if (view == mCoverView) {
-			if (mControlsTop.getVisibility() == View.VISIBLE) {
-				mControlsTop.setVisibility(View.GONE);
-				mControlsBottom.setVisibility(View.GONE);
-			} else {
-				mControlsTop.setVisibility(View.VISIBLE);
-				mControlsBottom.setVisibility(View.VISIBLE);
-
-				mPlayPauseButton.requestFocus();
-
-				updateProgress();
-			}
-		} else {
-			super.onClick(view);
-		}
+		super.onClick(view);
 	}
 
 	public boolean onLongClick(View view)

@@ -419,6 +419,7 @@ public final class CoverView extends View implements Handler.Callback {
 			Song playingSong = intent.getParcelableExtra("song");
 			boolean force = currentSong == null || !currentSong.equals(playingSong);
 			querySongs(force);
+			postInvalidate();
 		}
 	}
 
